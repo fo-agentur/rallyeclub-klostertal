@@ -24,7 +24,6 @@ yarn-error.log*
 
 # Local env files
 .env
-.env.local
 .env.development.local
 .env.test.local
 .env.production.local
@@ -40,7 +39,5 @@ next-env.d.ts
 .vscode/
 .idea/
 
-# Cursor (MCP config enthält Tokens — NUR rules committen)
-.cursor/mcp.json
-.cursor/skills/
-skills-lock.json
+# Cursor
+# (alle Cursor-Dateien werden jetzt getrackt)
