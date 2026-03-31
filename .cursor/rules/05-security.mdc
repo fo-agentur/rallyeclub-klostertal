@@ -1,0 +1,80 @@
+---
+alwaysApply: true
+---
+
+# Security & Datenschutz
+
+## Grundprinzipien
+- Security First — jede Zeile Code mit Sicherheit im Kopf schreiben
+- Least Privilege — nur minimale Berechtigungen vergeben
+- Defense in Depth — mehrere Sicherheitsschichten
+- NIEMALS Security durch Obscurity als einzige Maßnahme
+
+## Environment Variables
+- Secrets NIEMALS im Code hardcoden
+- `NEXT_PUBLIC_` Prefix NUR für Werte die im Browser sichtbar sein dürfen
+- Firebase API Key darf `NEXT_PUBLIC_` sein (wird durch Security Rules geschützt)
+- Admin Credentials, Private Keys NIEMALS mit `NEXT_PUBLIC_`
+- `.env.local` in `.gitignore` — NUR `.env.example` mit Dummy-Werten committen
+
+## Next.js Security Headers
+Folgende Headers in `next.config.js` konfigurieren:
+- `X-DNS-Prefetch-Control: on`
+- `Strict-Transport-Security: max-age=63072000; includeSubDomains; preload`
+- `X-Frame-Options: SAMEORIGIN`
+- `X-Content-Type-Options: nosniff`
+- `X-XSS-Protection: 1; mode=block`
+- `Referrer-Policy: origin-when-cross-origin`
+- `Content-Security-Policy` passend zum Projekt konfigurieren
+- Source Maps in Production DEAKTIVIEREN
+
+## Input Validation
+- ALLE User Inputs serverseitig validieren (Client-Validation ist KEIN Sicherheitsfeature)
+- Zod Schemas für Validierung auf Client UND Server
+- Datei-Uploads: Typ, Größe und Inhalt prüfen
+- Keine `dangerouslySetInnerHTML` ohne Sanitization (DOMPurify)
+- SQL/NoSQL Injection verhindern — parameterisierte Queries nutzen
+
+## API Route Security
+- Authentication Check auf JEDER geschützten API Route
+- Rate Limiting implementieren
+- CORS korrekt konfigurieren (nicht `*` in Production)
+- Request Body Size limitieren
+- Keine internen Systeminfos in Error Responses leaken
+
+## Firebase Security
+- Firestore Security Rules IMMER definieren — NIEMALS open Rules in Production
+- Storage Security Rules: Dateityp und Größe einschränken
+- Firebase Auth Token serverseitig verifizieren für geschützte Aktionen
+- Admin SDK NUR serverseitig verwenden
+- Custom Claims für Rollen-basierte Zugriffskontrolle (Admin, Member)
+
+## XSS Prevention
+- React escaped JSX standardmäßig — dieses Verhalten NICHT umgehen
+- User-generierte Inhalte immer sanitizen
+- `dangerouslySetInnerHTML` vermeiden, wenn möglich
+- Content Security Policy Header konfigurieren
+- HttpOnly Cookies für Session Tokens
+
+## DSGVO / Österreichisches Datenschutzrecht (PFLICHT!)
+- **Impressum** — eigene Seite, von jeder Seite erreichbar (Footer-Link)
+- **Datenschutzerklärung** — eigene Seite, von jeder Seite erreichbar (Footer-Link)
+- **Cookie-Banner** — wenn Cookies, Tracking oder Analytics genutzt wird
+  - Opt-in BEVOR Tracking-Cookies gesetzt werden
+  - Einfache Ablehnung ermöglichen (nicht verstecken)
+- Keine personenbezogenen Daten ohne Einwilligung verarbeiten
+- Kontaktformular: Hinweis auf Datenverarbeitung + Einwilligung
+- Daten-Minimierung: nur erheben was wirklich benötigt wird
+- SSL/HTTPS PFLICHT für die gesamte Webseite
+
+## Checkliste vor Go-Live
+- [ ] Security Headers konfiguriert
+- [ ] Environment Variables korrekt (keine Secrets im Client)
+- [ ] Firebase Security Rules getestet
+- [ ] Impressum vorhanden und korrekt
+- [ ] Datenschutzerklärung vorhanden
+- [ ] Cookie-Banner implementiert (wenn nötig)
+- [ ] HTTPS erzwungen
+- [ ] Source Maps deaktiviert
+- [ ] Console.logs mit sensiblen Daten entfernt
+- [ ] Error Pages zeigen keine System-Details

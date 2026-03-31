@@ -1,0 +1,82 @@
+---
+alwaysApply: true
+---
+
+# Design, UI/UX & Styling
+
+## Design-Philosophie
+- **Modern & Clean** — Klare Linien, großzügiger Whitespace, elegante Typografie
+- **Dynamisch & Kraftvoll** — passend zum Motorsport-Thema
+- **Mobile First** — IMMER zuerst für Mobile designen, dann nach oben skalieren
+- **Konsistenz** — gleichmäßige Abstände, Farben und Typografie auf jeder Seite
+- **Micro-Interactions** — subtile Hover-Effekte, sanfte Transitions, Scroll-Animationen
+
+## Tailwind CSS
+- KEINE inline Styles — NUR Tailwind Utilities
+- KEINE custom CSS-Klassen außer in `globals.css`
+- KEINE hardcoded Hex/RGB-Werte in Komponenten — Farben in `tailwind.config.ts` definieren
+- Responsive Breakpoints: `sm` (640px), `md` (768px), `lg` (1024px), `xl` (1280px)
+- Maximale Content-Breite: `max-w-7xl` (1280px)
+- Konsistente Spacing Scale verwenden (Tailwind Default)
+
+## Shadcn UI & Radix UI
+- Shadcn UI als Basis für wiederverwendbare UI-Komponenten (Button, Card, Dialog, Sheet, etc.)
+- Radix UI Primitives für accessible, unstyled Components
+- Shadcn Komponenten in `/components/ui` ablegen
+- Theme/Farben über CSS Variables in `globals.css` konfigurieren
+- Class Variance Authority (CVA) für Komponenten-Varianten
+
+## Farb-System
+- Maximal 5 Hauptfarben: Primary, Secondary, Accent, Background, Text
+- Farben als CSS Custom Properties definieren (Shadcn Convention)
+- Dark/Light Varianten für Primary und Secondary bereitstellen
+- Kontrast-Ratio mindestens 4.5:1 (WCAG AA)
+- Motorsport-Thema: Kräftige Akzente, dunkle Töne, dynamische Kontraste
+
+## Typografie
+- Maximal 2 Schriftarten (Heading + Body)
+- Fonts über `next/font` laden (kein Google Fonts CDN)
+- Klare Hierarchie: h1 > h2 > h3 > h4 (nicht springen!)
+- Body mindestens `text-base` (16px)
+- `leading-relaxed` für Fließtext
+- Headings: bold, groß, impactful
+
+## Layout-Regeln
+- Sections: großzügiges Padding (`py-16 md:py-20 lg:py-24`)
+- Container: `mx-auto max-w-7xl px-4 sm:px-6 lg:px-8`
+- Grid System: CSS Grid oder Flexbox mit Tailwind
+- Hero Section: vollbreite, klar, eine Message, starker CTA
+- Whitespace ist dein Freund — nicht alles vollstopfen
+
+## UI-Komponenten Standards
+- **Buttons:** Mindestens 44px Touch-Target, klare Hover/Active/Focus States
+- **Navigation:** Sticky/fixed, klar erkennbar, Mobile Hamburger Menu (Sheet)
+- **Footer:** Kontakt, Social Links, Impressum/Datenschutz (rechtlich Pflicht!)
+- **Cards:** Rounded corners (`rounded-2xl`), subtle shadow, hover elevation
+- **Smooth Scroll** für Anker-Links
+- **Loading States** für alle async Aktionen (Skeleton, nicht Spinner)
+
+## Animationen & Transitions
+- Subtil und purposeful — KEINE nervigen oder übertriebenen Animationen
+- Standard: `transition-all duration-300 ease-in-out`
+- Hover-Effekte: Scale, Opacity, Color Shifts
+- Scroll-Animationen: Fade-in, Slide-up (mit Intersection Observer oder Framer Motion)
+- Reduce Motion respektieren: `motion-reduce:transition-none`
+- Page Transitions smooth halten
+
+## Accessibility (a11y)
+- Semantische HTML-Elemente (nav, main, article, section, header, footer)
+- ARIA Labels und Roles für interaktive Elemente
+- Keyboard Navigation für alle interaktiven Elemente (tabindex, focus states)
+- Focus Ring sichtbar: `focus-visible:ring-2 focus-visible:ring-primary`
+- Alt-Text auf ALLEN Bildern (beschreibend, nicht "Bild von...")
+- Skip-to-content Link
+- Farben nie als einziges Unterscheidungsmerkmal
+
+## Bilder
+- IMMER `next/image` verwenden (width, height, alt PFLICHT)
+- WebP Format bevorzugen
+- Hero-Bilder: Vollbreite, hochqualitativ
+- Blur Placeholder für Bilder beim Laden
+- Lazy Loading für alles unterhalb des Folds
+- Bilder > 1MB gehören in Firebase Storage / CDN

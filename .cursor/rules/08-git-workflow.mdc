@@ -1,0 +1,54 @@
+---
+globs: ["**/.gitignore", "**/README.md"]
+---
+
+# Git Workflow & Conventions
+
+## Branch-Strategie
+- `main` = Production (Live-Seite)
+- `dev` = Entwicklung (Staging)
+- Feature Branches von `dev` abzweigen
+- NIEMALS direkt auf `main` pushen — immer Branch + Pull Request
+
+## Branch Naming
+- Feature: `feature/event-kalender`, `feature/hero-section`
+- Fix: `fix/navigation-mobile`, `fix/image-loading`
+- Style: `style/footer-redesign`, `style/dark-mode`
+- Chore: `chore/update-dependencies`, `chore/cleanup`
+
+## Conventional Commits
+Format: `<type>[optional scope]: <beschreibung>`
+
+- `feat:` — Neues Feature (`feat: add event calendar page`)
+- `fix:` — Bugfix (`fix: mobile navigation not closing`)
+- `style:` — Styling-Änderungen, kein Code-Change (`style: update hero section spacing`)
+- `refactor:` — Code-Refactoring ohne Feature/Fix (`refactor: extract event card component`)
+- `docs:` — Dokumentation (`docs: update README setup instructions`)
+- `chore:` — Maintenance, Dependencies (`chore: update next.js to 14.2`)
+- `perf:` — Performance-Verbesserung (`perf: lazy load gallery images`)
+- `test:` — Tests hinzufügen/ändern
+
+## Commit-Regeln
+- KLEINE Commits — eine logische Änderung pro Commit
+- Imperative Mood im Subject: "add feature" nicht "added feature"
+- Subject max 72 Zeichen
+- Kein Punkt am Ende des Subjects
+- Deutsch ist okay für die Beschreibung
+
+## Was NICHT ins Repo darf
+- `.env` / `.env.local` (NUR `.env.example` mit Dummy-Werten)
+- `node_modules/`
+- `.next/`
+- Persönliche IDE-Settings (außer `.cursor/rules/`)
+- Große Medien-Dateien (>1MB) — gehören in Firebase Storage
+- API Keys, Secrets, Passwörter
+- Build Outputs
+
+## Pull Request Workflow
+1. Feature Branch erstellen: `git checkout -b feature/beschreibung`
+2. Änderungen committen (kleine, logische Commits)
+3. Push: `git push -u origin feature/beschreibung`
+4. PR auf GitHub erstellen (dev ← feature branch)
+5. Code Review (wenn im Team)
+6. Merge + Branch löschen
+7. `dev` → `main` für Deployments (nach Testing)

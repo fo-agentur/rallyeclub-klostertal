@@ -1,0 +1,85 @@
+---
+globs: ["**/*.ts", "**/*.tsx"]
+---
+
+# Error Handling & Validation
+
+## Error Handling Philosophie
+- Errors FRÜH abfangen — Guard Clauses am Anfang der Funktion
+- Early Returns für Fehlerbedingungen
+- Happy Path ans Ende der Funktion
+- KEINE tief verschachtelten if-else Konstrukte
+- User-freundliche Fehlermeldungen (auf Deutsch für den User)
+- Technische Details NUR in Logs, NIEMALS dem User zeigen
+
+## Error Handling Pattern
+```typescript
+const handleEventSubmit = async (data: EventFormData) => {
+  if (!data.title) return { error: "Titel ist erforderlich" }
+  if (!data.date) return { error: "Datum ist erforderlich" }
+
+  try {
+    const result = await createEvent(data)
+    return { success: true, data: result }
+  } catch (error) {
+    console.error("Event creation failed:", { error, data: data.title })
+    return { error: "Event konnte nicht erstellt werden. Bitte versuche es erneut." }
+  }
+}
+```
+
+## Next.js Error Boundaries
+- `error.tsx` in jedem Route Segment für Error Boundaries
+- `global-error.tsx` im Root für unerwartete Fehler
+- `not-found.tsx` für 404 Seiten mit hilfreicher Navigation
+- Error Boundaries müssen `"use client"` sein
+- Reset-Button anbieten: `reset()` Funktion nutzen
+
+## Server Actions Error Handling
+- Expected Errors als Return Values modellieren — KEIN try/catch für erwartete Fehler
+- Unexpected Errors mit Error Boundaries abfangen
+- Immer ein typisiertes Result-Objekt zurückgeben: `{ success: boolean, data?: T, error?: string }`
+- `next-safe-action` für type-safe Server Actions mit eingebauter Fehlerbehandlung
+
+## Zod Validation
+- Zod Schemas für ALLE Formulare und API Inputs
+- Client-side Validation für bessere UX (sofortiges Feedback)
+- Server-side Validation als Sicherheitsschicht (PFLICHT)
+- `z.infer<typeof schema>` für automatische Type Inference
+- Custom Error Messages auf Deutsch
+
+```typescript
+import { z } from "zod"
+
+const contactFormSchema = z.object({
+  name: z.string().min(2, "Name muss mindestens 2 Zeichen lang sein"),
+  email: z.string().email("Bitte gib eine gültige E-Mail-Adresse ein"),
+  message: z.string().min(10, "Nachricht muss mindestens 10 Zeichen lang sein").max(1000, "Nachricht darf maximal 1000 Zeichen lang sein"),
+})
+
+type ContactFormData = z.infer<typeof contactFormSchema>
+```
+
+## Form Handling
+- `react-hook-form` + Zod Resolver für Formulare
+- `useFormState` / `useActionState` für Server Action Forms
+- Inline Validation Errors direkt unter dem Feld anzeigen
+- Submit Button disabled während Submission
+- Success/Error Toast nach Absenden
+- Form Reset nach erfolgreichem Submit
+
+## Firebase Error Handling
+- Firebase Errors haben spezifische Error Codes — diese mappen:
+  - `auth/user-not-found` → "E-Mail-Adresse nicht gefunden"
+  - `auth/wrong-password` → "Falsches Passwort"
+  - `auth/email-already-in-use` → "Diese E-Mail ist bereits registriert"
+  - `permission-denied` → "Keine Berechtigung für diese Aktion"
+  - `unavailable` → "Dienst vorübergehend nicht verfügbar"
+- Network Errors gesondert behandeln (Offline-Erkennung)
+- Retry Logic für transiente Fehler
+
+## Logging
+- KEINE `console.log` in Production — nur `console.error` und `console.warn`
+- KEINE sensiblen Daten loggen (Passwörter, Tokens, persönliche Daten)
+- Strukturiertes Logging: `{ action, userId, timestamp, error }`
+- Alle Security-relevanten Events loggen (Login, Failed Auth, Permission Denied)
