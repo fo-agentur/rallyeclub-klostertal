@@ -132,20 +132,41 @@
     }
     .scroll-buddy {
       position: fixed;
-      right: 12px;
+      right: 0;
       top: 0;
       bottom: 0;
       z-index: 400;
-      width: 48px;
+      width: 56px;
       pointer-events: none;
       opacity: 0;
-      -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%);
-      mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%);
     }
-    .scroll-buddy svg {
-      display: block;
+    .scroll-buddy-track {
+      position: absolute;
+      right: 22px;
+      top: 8%;
+      bottom: 8%;
+      width: 2px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 1px;
+    }
+    .scroll-buddy-progress {
+      position: absolute;
+      top: 0;
+      left: 0;
       width: 100%;
-      height: 100%;
+      height: 0%;
+      background: linear-gradient(to bottom, #dc2626, #f97316);
+      border-radius: 1px;
+      transition: height 0.05s linear;
+    }
+    .scroll-buddy-car {
+      position: absolute;
+      right: 10px;
+      top: 8%;
+      width: 26px;
+      height: 46px;
+      transform: translateY(0) rotate(0deg);
+      filter: drop-shadow(0 0 6px rgba(220,38,38,0.3));
     }
     @media (max-width: 1023px), (prefers-reduced-motion: reduce) {
       .scroll-buddy {
@@ -196,33 +217,23 @@
   <div id="page-overlay" class="pointer-events-none fixed inset-0 z-[10000] bg-black translate-y-0" aria-hidden="true"></div>
   <div id="custom-cursor" class="cursor-dot hidden lg:block" aria-hidden="true"></div>
   <div id="scroll-buddy" class="scroll-buddy" aria-hidden="true">
-    <!-- Clean kurvige Strecke + Porsche-Silhouette, Scroll-gesteuert via MotionPath -->
-    <svg viewBox="0 0 52 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <path id="buddy-route-path" fill="none" stroke="none" d="M 26 2 C 44 10 48 20 30 30 C 10 40 8 52 32 62 C 50 70 44 82 26 90 C 16 95 22 99 26 99.5"/>
-      <use href="#buddy-route-path" stroke="rgba(249,115,22,0.05)" stroke-width="16" stroke-linecap="round"/>
-      <use href="#buddy-route-path" stroke="#111118" stroke-width="10" stroke-linecap="round"/>
-      <use href="#buddy-route-path" stroke="rgba(255,255,255,0.06)" stroke-width="11" stroke-linecap="round"/>
-      <use href="#buddy-route-path" stroke="#f97316" stroke-width="0.7" stroke-linecap="round" stroke-dasharray="1.5 2.2" opacity="0.55"/>
-      <circle cx="30" cy="30" r="1.4" fill="#dc2626" opacity="0.35"/>
-      <circle cx="32" cy="62" r="1.4" fill="#dc2626" opacity="0.35"/>
-      <circle cx="26" cy="90" r="1.4" fill="#dc2626" opacity="0.35"/>
-      <g id="scroll-car">
-        <g transform="translate(-3.2,-5.5)">
-          <path d="M 3.2 0.3 C 1.6 1 0.5 2.4 0.4 4.2 L 0.3 7.5 C 0.4 9.5 1.4 10.8 3.2 11 C 5 10.8 6 9.5 6.1 7.5 L 6 4.2 C 5.9 2.4 4.8 1 3.2 0.3 Z" fill="#c0392b"/>
-          <path d="M 3.2 0.3 C 2.2 0.8 1.4 1.6 1 2.6 L 1.2 4.6 C 1.6 5.2 2.4 5.5 3.2 5.5 C 4 5.5 4.8 5.2 5.2 4.6 L 5.4 2.6 C 5 1.6 4.2 0.8 3.2 0.3 Z" fill="#a93226" opacity="0.6"/>
-          <ellipse cx="3.2" cy="5" rx="1.6" ry="2.2" fill="#0f0f18" opacity="0.8"/>
-          <ellipse cx="3.2" cy="3.6" rx="1.2" ry="0.7" fill="rgba(56,189,248,0.1)" stroke="rgba(56,189,248,0.15)" stroke-width="0.1"/>
-          <ellipse cx="3.2" cy="7" rx="1" ry="0.5" fill="rgba(56,189,248,0.06)"/>
-          <ellipse cx="0.5" cy="2.8" rx="0.55" ry="0.95" fill="#080810"/>
-          <ellipse cx="5.9" cy="2.8" rx="0.55" ry="0.95" fill="#080810"/>
-          <ellipse cx="0.35" cy="8.2" rx="0.6" ry="1.05" fill="#080810"/>
-          <ellipse cx="6.05" cy="8.2" rx="0.6" ry="1.05" fill="#080810"/>
-          <circle cx="2.2" cy="0.6" r="0.25" fill="#fbbf24" opacity="0.65"/>
-          <circle cx="4.2" cy="0.6" r="0.25" fill="#fbbf24" opacity="0.65"/>
-          <rect x="1.2" y="10.3" width="0.8" height="0.3" rx="0.1" fill="#dc2626" opacity="0.8"/>
-          <rect x="4.4" y="10.3" width="0.8" height="0.3" rx="0.1" fill="#dc2626" opacity="0.8"/>
-        </g>
-      </g>
+    <div class="scroll-buddy-track">
+      <div id="scroll-progress-bar" class="scroll-buddy-progress"></div>
+    </div>
+    <svg id="scroll-car" class="scroll-buddy-car" viewBox="0 0 26 46" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M 13 1 C 8 2.5 5 6 4.5 11 L 4 24 C 4.2 33 6.5 39 13 42 C 19.5 39 21.8 33 22 24 L 21.5 11 C 21 6 18 2.5 13 1 Z" fill="#c0392b"/>
+      <path d="M 13 1.5 C 9.5 3 7 5.5 6 9 L 6.5 16 C 8 18 10.5 19 13 19 C 15.5 19 18 18 19.5 16 L 20 9 C 19 5.5 16.5 3 13 1.5 Z" fill="#a93226" opacity="0.55"/>
+      <ellipse cx="13" cy="20" rx="6" ry="9" fill="#0f0f18" opacity="0.85"/>
+      <ellipse cx="13" cy="13.5" rx="5" ry="3" fill="rgba(56,189,248,0.1)" stroke="rgba(56,189,248,0.18)" stroke-width="0.5"/>
+      <ellipse cx="13" cy="28" rx="4" ry="2.2" fill="rgba(56,189,248,0.06)"/>
+      <ellipse cx="3.2" cy="10" rx="2.2" ry="4" fill="#080810"/>
+      <ellipse cx="22.8" cy="10" rx="2.2" ry="4" fill="#080810"/>
+      <ellipse cx="2.5" cy="32" rx="2.5" ry="4.5" fill="#080810"/>
+      <ellipse cx="23.5" cy="32" rx="2.5" ry="4.5" fill="#080810"/>
+      <circle cx="9" cy="2.5" r="1.2" fill="#fbbf24" opacity="0.7"/>
+      <circle cx="17" cy="2.5" r="1.2" fill="#fbbf24" opacity="0.7"/>
+      <rect x="5" y="40" width="4" height="1.5" rx="0.5" fill="#dc2626" opacity="0.9"/>
+      <rect x="17" y="40" width="4" height="1.5" rx="0.5" fill="#dc2626" opacity="0.9"/>
     </svg>
   </div>
   
@@ -643,7 +654,6 @@
   <script src="js/firebase-config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollTrigger.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/MotionPathPlugin.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.1/dist/lenis.min.js"></script>
   <script src="js/termine.js"></script>
   <script>
@@ -651,7 +661,7 @@
       const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       const isMobile = window.matchMedia('(max-width: 767px)').matches;
 
-      gsap.registerPlugin(ScrollTrigger, MotionPathPlugin);
+      gsap.registerPlugin(ScrollTrigger);
 
       /** Lenis + ScrollTrigger */
       let lenis = null;
@@ -922,42 +932,34 @@
         },
       });
 
-      /** Scroll-Begleiter: Porsche auf kurvigem Pfad */
-      const buddyMq = window.matchMedia('(min-width: 1024px)');
-      if (!prefersReducedMotion && buddyMq.matches && document.getElementById('scroll-car') && document.getElementById('buddy-route-path')) {
-        var buddyEl = document.getElementById('scroll-buddy');
-        gsap.set(buddyEl, { opacity: 0 });
-        gsap.to(buddyEl, {
-          opacity: 1, duration: 0.6, delay: 1.2, ease: 'power2.out',
-        });
-        gsap.to('#scroll-car', {
-          motionPath: {
-            path: '#buddy-route-path',
-            align: '#buddy-route-path',
-            alignOrigin: [0.5, 0.5],
-            autoRotate: 90,
+      /** Scroll-Begleiter: kleines Porsche-Auto faehrt am rechten Rand mit */
+      var buddyMq = window.matchMedia('(min-width: 1024px)');
+      var scrollCar = document.getElementById('scroll-car');
+      var scrollBuddy = document.getElementById('scroll-buddy');
+      var progressBar = document.getElementById('scroll-progress-bar');
+      if (!prefersReducedMotion && buddyMq.matches && scrollCar && scrollBuddy) {
+        gsap.to(scrollBuddy, { opacity: 1, duration: 0.8, delay: 1.5, ease: 'power2.out' });
+
+        var trackTop = 8;
+        var trackBottom = 92;
+        var trackRange = trackBottom - trackTop;
+
+        ScrollTrigger.create({
+          trigger: document.body,
+          start: 'top top',
+          end: 'bottom bottom',
+          scrub: 0,
+          onUpdate: function (self) {
+            var p = self.progress;
+            var yPercent = trackTop + p * trackRange;
+            var xWobble = Math.sin(p * Math.PI * 4) * 8;
+            var rotate = Math.cos(p * Math.PI * 4) * 6;
+            scrollCar.style.top = yPercent + '%';
+            scrollCar.style.transform = 'translateX(' + xWobble + 'px) rotate(' + rotate + 'deg)';
+            if (progressBar) {
+              progressBar.style.height = (p * 100) + '%';
+            }
           },
-          ease: 'none',
-          scrollTrigger: {
-            trigger: document.body,
-            start: 'top top',
-            end: 'bottom bottom',
-            scrub: 1.2,
-          },
-        });
-        var buddyDots = document.querySelectorAll('#scroll-buddy circle[fill="#dc2626"]');
-        var sectionAnchors = ['#ueber-uns', '#events', '#kontakt'];
-        sectionAnchors.forEach(function (sel, i) {
-          if (!buddyDots[i]) return;
-          ScrollTrigger.create({
-            trigger: sel,
-            start: 'top 60%',
-            end: 'bottom 40%',
-            onEnter: function () { gsap.to(buddyDots[i], { opacity: 1, scale: 1.8, duration: 0.4, transformOrigin: 'center center' }); },
-            onLeave: function () { gsap.to(buddyDots[i], { opacity: 0.35, scale: 1, duration: 0.4 }); },
-            onEnterBack: function () { gsap.to(buddyDots[i], { opacity: 1, scale: 1.8, duration: 0.4, transformOrigin: 'center center' }); },
-            onLeaveBack: function () { gsap.to(buddyDots[i], { opacity: 0.35, scale: 1, duration: 0.4 }); },
-          });
         });
       }
 
