@@ -1,0 +1,33 @@
+﻿:root {
+  --rally-bg: #0a0a0f;
+  --rally-accent: #dc2626;
+  --rally-orange: #f97316;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+main section[id].scroll-mt-20 {
+  scroll-margin-top: calc(5rem + var(--safe-top));
+}
+#termine-kalender.scroll-mt-24 {
+  scroll-margin-top: calc(6rem + var(--safe-top));
+}
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

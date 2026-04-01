@@ -1,0 +1,23 @@
+﻿.cursor-dot {
+  pointer-events: none;
+  position: fixed;
+  width: 16px;
+  height: 16px;
+  box-sizing: border-box;
+  border-radius: 50%;
+  background: #dc2626;
+  border: 2px solid #ffffff;
+  box-shadow: 0 1px 10px rgba(0, 0, 0, 0.35);
+  z-index: 9998;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.cursor-dot.is-visible {
+  opacity: 1;
+}
+@media (max-width: 1023px), (prefers-reduced-motion: reduce) {
+  .cursor-dot {
+    display: none !important;
+  }
+}
