@@ -295,6 +295,146 @@
       color: rgba(255, 255, 255, 0.06);
       user-select: none;
     }
+    /* Club / Über uns: Story-Timeline + Pull-Quote */
+    .club-zone {
+      position: relative;
+      overflow: hidden;
+    }
+    .club-zone__mesh {
+      pointer-events: none;
+      position: absolute;
+      inset: 0;
+      opacity: 0.4;
+      background: radial-gradient(ellipse 100% 80% at 0% 20%, rgba(220, 38, 38, 0.12) 0%, transparent 50%),
+        radial-gradient(ellipse 80% 60% at 100% 80%, rgba(249, 115, 22, 0.08) 0%, transparent 45%),
+        linear-gradient(165deg, transparent 40%, rgba(220, 38, 38, 0.04) 100%);
+    }
+    .club-pullquote {
+      position: relative;
+      border-left: 3px solid rgba(249, 115, 22, 0.85);
+      padding: 1rem 0 1rem 1.5rem;
+    }
+    .club-pullquote p {
+      font-size: clamp(1.25rem, 3.5vw, 1.85rem);
+      font-weight: 600;
+      line-height: 1.35;
+      color: rgba(255, 255, 255, 0.95);
+    }
+    #club-main-grid {
+      perspective: 1800px;
+    }
+    #club-timeline {
+      position: relative;
+    }
+    .club-timeline__line {
+      position: absolute;
+      left: 0.6rem;
+      top: 0.5rem;
+      bottom: 0.5rem;
+      width: 3px;
+      border-radius: 3px;
+      background: linear-gradient(to bottom, rgba(220, 38, 38, 0.85), rgba(249, 115, 22, 0.35), rgba(255, 255, 255, 0.08));
+      transform-origin: top center;
+    }
+    @media (min-width: 768px) {
+      .club-timeline__line {
+        left: 0.75rem;
+      }
+    }
+    .club-step {
+      position: relative;
+      padding-left: 2.5rem;
+      padding-bottom: 2.25rem;
+    }
+    .club-step:last-child {
+      padding-bottom: 0;
+    }
+    .club-step__dot {
+      position: absolute;
+      left: 0.15rem;
+      top: 0.35rem;
+      z-index: 1;
+      height: 14px;
+      width: 14px;
+      border-radius: 50%;
+      border: 2px solid rgba(10, 10, 15, 0.95);
+      background: linear-gradient(135deg, #f97316, #dc2626);
+      box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.35), 0 0 18px rgba(249, 115, 22, 0.45);
+    }
+    @media (min-width: 768px) {
+      .club-step__dot {
+        left: 0.25rem;
+      }
+    }
+    .club-step__year {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 9999px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.04);
+      padding: 0.2rem 0.65rem;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(249, 115, 22, 0.95);
+    }
+    .club-step__title {
+      margin-top: 0.65rem;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    @media (min-width: 640px) {
+      .club-step__title {
+        font-size: 1.25rem;
+      }
+    }
+    .club-step p {
+      margin-top: 0.5rem;
+      font-size: 0.95rem;
+      line-height: 1.65;
+      color: #94a3b8;
+    }
+    @media (min-width: 640px) {
+      .club-step p {
+        font-size: 1rem;
+      }
+    }
+    #ueber-img-wrap {
+      transform-style: preserve-3d;
+    }
+    .club-img-badge {
+      position: absolute;
+      right: 1rem;
+      bottom: 1rem;
+      z-index: 2;
+      border-radius: 9999px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: rgba(10, 10, 15, 0.75);
+      padding: 0.45rem 0.85rem;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(8px);
+    }
+    .club-org-card {
+      transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.35s ease, box-shadow 0.35s ease;
+    }
+    .club-org-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(249, 115, 22, 0.35);
+      box-shadow: 0 20px 40px -24px rgba(220, 38, 38, 0.35);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .club-org-card:hover {
+        transform: none;
+      }
+    }
     /* Sharper photo presentation: less “digital zoom” blur from aggressive scaling */
     .photo img,
     .hero-bg {
@@ -361,21 +501,80 @@
       </div>
     </section>
 
-    <!-- 2. ÜBER UNS -->
-    <section id="ueber-uns" class="relative scroll-mt-20 py-20 sm:py-24 lg:py-28">
-      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <h2 id="headline-ueber" class="font-display clip-reveal text-4xl font-bold text-white sm:text-5xl md:text-6xl">Der Club</h2>
-        <div class="mt-12 grid gap-12 lg:grid-cols-2 lg:items-center">
-          <div id="ueber-text" class="space-y-5 text-lg leading-relaxed">
-            <p>Wir sind Motorsportbegeisterte aus dem <strong class="font-semibold text-white">Klostertal</strong> — gegründet aus purer Leidenschaft am Fahren und am sportlichen Wettkampf.</p>
-            <p>Wir organisieren <strong class="font-semibold text-white">Autoslaloms</strong>, Events und Treffen für alle, die das Adrenalin lieben. Ob Slalom, Gala oder Jahreshauptversammlung: beim Rallyeclub Klostertal geht es um Gemeinschaft und Tempo.</p>
-            <p class="text-white/95">Vorarlbergs heißester Rallye-Club — <span class="text-rally-orange">willkommen in der Familie.</span></p>
+    <!-- 2. ÜBER UNS — Story-Timeline + Bild + Stats -->
+    <section id="ueber-uns" class="club-zone relative scroll-mt-20 border-t border-white/[0.07] py-20 sm:py-24 lg:py-32">
+      <div class="club-zone__mesh" aria-hidden="true"></div>
+      <div class="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-wrap items-end justify-between gap-4">
+          <h2 id="headline-ueber" class="font-display clip-reveal text-4xl font-bold text-white sm:text-5xl md:text-6xl">Der Club</h2>
+          <p class="font-display text-[10px] font-bold uppercase tracking-[0.4em] text-rally-orange/90 sm:text-xs">Story · Klostertal</p>
+        </div>
+        <p class="mt-4 max-w-2xl text-base leading-relaxed text-rally-muted sm:text-lg">
+          Von der ersten Idee bis zur Startaufstellung: unsere Geschichte in vier Takten — und warum sich’s lohnt, reinzuschauen.
+        </p>
+
+        <blockquote id="club-pullquote" class="club-pullquote relative z-10 mt-10 max-w-4xl">
+          <p>
+            Asphalt, Schotter, Adrenalin — und ein Team, das zusammenhält.
+            <span class="text-rally-orange">Das ist Rallyeclub Klostertal.</span>
+          </p>
+        </blockquote>
+
+        <div id="club-main-grid" class="mt-14 grid gap-12 lg:grid-cols-2 lg:items-start lg:gap-16">
+          <div id="club-timeline" class="relative pl-1">
+            <div class="club-timeline__line" aria-hidden="true"></div>
+
+            <article class="club-step" data-club-step>
+              <span class="club-step__dot" aria-hidden="true"></span>
+              <span class="club-step__year">2008</span>
+              <h3 class="club-step__title">Die Zündung</h3>
+              <p>
+                Eine Handvoll Motorsportfans im <strong class="font-semibold text-white">Klostertal</strong> — keine großen Budgets, sondern echte Leidenschaft fürs Fahren und fairen Wettkampf. So entstand der Verein: klein, aber mit Vollgas.
+              </p>
+            </article>
+
+            <article class="club-step" data-club-step>
+              <span class="club-step__dot" aria-hidden="true"></span>
+              <span class="club-step__year">Wachstum</span>
+              <h3 class="club-step__title">Slalom &amp; Publikum</h3>
+              <p>
+                <strong class="font-semibold text-white">Autoslaloms</strong>, erste feste Termine, volle Startfelder — der Club wächst mit jeder Saison. Wer aufs Gas steht, findet hier seine Bühne.
+              </p>
+            </article>
+
+            <article class="club-step" data-club-step>
+              <span class="club-step__dot" aria-hidden="true"></span>
+              <span class="club-step__year">Heute</span>
+              <h3 class="club-step__title">Mehr als Zeiten</h3>
+              <p>
+                Gala, Jahreshauptversammlung, gemeinsame Abende — neben der Strecke zählt die <strong class="font-semibold text-white">Gemeinschaft</strong>. Wir feiern Erfolge, packen Rückschläge an und freuen uns auf jede neue Session.
+              </p>
+            </article>
+
+            <article class="club-step" data-club-step>
+              <span class="club-step__dot" aria-hidden="true"></span>
+              <span class="club-step__year">Morgen</span>
+              <h3 class="club-step__title">Vollgas voraus</h3>
+              <p>
+                Egal ob Einsteiger oder alte Hasen: <span class="text-white/95">Vorarlbergs heißester Rallye-Club</span> sucht Menschen mit Herz für Motorsport —
+                <span class="text-rally-orange">willkommen in der Familie.</span>
+              </p>
+            </article>
           </div>
-          <div id="ueber-img-wrap" class="relative overflow-hidden rounded-2xl border border-white/10 shadow-2xl shadow-black/50">
-            <img src="images/headers/2.png" alt="Rallye-Impression aus dem Klostertal" class="h-full w-full object-cover" width="800" height="600" loading="lazy" />
+
+          <div id="ueber-img-wrap" class="lg:sticky lg:top-28">
+            <div class="relative overflow-hidden rounded-2xl border border-white/10 shadow-[0_32px_80px_-40px_rgba(220,38,38,0.35)] ring-1 ring-white/[0.06]">
+              <img src="images/headers/2.png" alt="Rallye-Impression aus dem Klostertal" class="h-full w-full object-cover transition duration-700 ease-out hover:scale-[1.03]" width="800" height="600" loading="lazy" />
+              <div class="pointer-events-none absolute inset-0 bg-gradient-to-br from-rally-bg/25 via-transparent to-rally-accent/30"></div>
+              <span class="club-img-badge">Vorarlberg</span>
+            </div>
+            <p class="mt-4 text-center text-xs text-rally-muted/90 sm:text-sm">
+              Echte Strecken, echte Emotionen — kein Showroom, kein Filter.
+            </p>
           </div>
         </div>
-        <div id="stats-row" class="mt-16 grid gap-4 sm:grid-cols-3">
+
+        <div id="stats-row" class="relative z-10 mt-20 grid gap-4 sm:grid-cols-3">
           <article class="stat-card glass rounded-2xl p-6 text-center">
             <p class="font-display text-4xl font-bold text-white"><span class="stat-num" data-target="2015" data-start="2008">2008</span></p>
             <p class="mt-2 text-sm font-medium uppercase tracking-wider text-rally-muted">Gegründet</p>
@@ -390,19 +589,22 @@
           </article>
         </div>
 
-        <div class="mt-16 border-t border-white/10 pt-16">
+        <div class="relative z-10 mt-20 border-t border-white/10 pt-16">
           <h3 class="font-display text-2xl font-bold text-white sm:text-3xl">Verein &amp; Organisation</h3>
           <p class="mt-3 max-w-3xl text-rally-muted">Mitglieder, aktive Fahrerinnen und Fahrer sowie das sportliche Reglement — hier die Kurzfassung; ausführliche Texte und Dokumente könnt ihr bei Bedarf als PDF nachreichen.</p>
-          <div class="mt-8 grid gap-4 md:grid-cols-3">
-            <article class="glass rounded-2xl p-6">
+          <div id="club-org-grid" class="mt-8 grid gap-4 md:grid-cols-3">
+            <article class="club-org-card glass rounded-2xl border border-white/[0.08] p-6" data-club-org>
+              <p class="font-display text-3xl font-bold tabular-nums text-white/15">01</p>
               <h4 class="font-display text-lg font-bold text-white">Mitglieder</h4>
               <p class="mt-2 text-sm leading-relaxed text-rally-muted">Der Verein lebt von seinen Mitgliedern. Interesse an einer Aufnahme? Schreibt uns über das Kontaktformular.</p>
             </article>
-            <article class="glass rounded-2xl p-6">
+            <article class="club-org-card glass rounded-2xl border border-white/[0.08] p-6" data-club-org>
+              <p class="font-display text-3xl font-bold tabular-nums text-white/15">02</p>
               <h4 class="font-display text-lg font-bold text-white">Aktive Fahrer</h4>
               <p class="mt-2 text-sm leading-relaxed text-rally-muted">Infos zu Startklassen und Meldungen zu euren Events werden hier ergänzt, sobald die Saison terminiert ist.</p>
             </article>
-            <article class="glass rounded-2xl p-6">
+            <article class="club-org-card glass rounded-2xl border border-white/[0.08] p-6" data-club-org>
+              <p class="font-display text-3xl font-bold tabular-nums text-white/15">03</p>
               <h4 class="font-display text-lg font-bold text-white">Reglement</h4>
               <p class="mt-2 text-sm leading-relaxed text-rally-muted">Gültige Ausschreibungen und Regeln stellt der Vorstand auf Anfrage bereit — gleiches Kontaktformular.</p>
             </article>
@@ -973,22 +1175,60 @@
         '#headline-kontakt',
       ].forEach(clipReveal);
 
-      /** Über uns */
+      /** Über uns — Pull-Quote, Timeline, Bild, Org-Karten */
       if (!prefersReducedMotion) {
-        gsap.from('#ueber-text', {
-          x: -60,
+        gsap.from('#club-pullquote', {
           opacity: 0,
-          duration: 0.9,
+          y: 48,
+          scale: 0.96,
+          filter: 'blur(12px)',
+          duration: 1,
           ease: 'power3.out',
-          scrollTrigger: { trigger: '#ueber-uns', start: 'top 78%' },
+          scrollTrigger: { trigger: '#club-pullquote', start: 'top 82%', once: true },
+          onComplete: function () {
+            var pq = document.getElementById('club-pullquote');
+            if (pq) pq.style.filter = 'none';
+          },
+        });
+        gsap.from('.club-timeline__line', {
+          scaleY: 0,
+          transformOrigin: 'top center',
+          duration: 1.15,
+          ease: 'power2.inOut',
+          scrollTrigger: { trigger: '#club-timeline', start: 'top 80%', once: true },
+        });
+        gsap.from('[data-club-step]', {
+          x: -56,
+          opacity: 0,
+          stagger: 0.2,
+          duration: 0.8,
+          ease: 'power3.out',
+          scrollTrigger: { trigger: '#club-timeline', start: 'top 78%', once: true },
         });
         gsap.from('#ueber-img-wrap', {
-          x: 60,
+          x: 80,
           opacity: 0,
-          duration: 0.9,
+          rotationY: -12,
+          transformPerspective: 1600,
+          duration: 1.05,
           ease: 'power3.out',
-          scrollTrigger: { trigger: '#ueber-uns', start: 'top 78%' },
+          scrollTrigger: { trigger: '#club-main-grid', start: 'top 72%', once: true },
         });
+        gsap.from('[data-club-org]', {
+          y: 56,
+          opacity: 0,
+          rotationX: 14,
+          transformPerspective: 900,
+          stagger: 0.14,
+          duration: 0.75,
+          ease: 'power3.out',
+          scrollTrigger: { trigger: '#club-org-grid', start: 'top 88%', once: true },
+        });
+      } else {
+        gsap.set('#club-pullquote', { opacity: 1, filter: 'none' });
+        gsap.set('[data-club-step]', { opacity: 1 });
+        gsap.set('#ueber-img-wrap', { opacity: 1, rotationY: 0 });
+        gsap.set('[data-club-org]', { opacity: 1, rotationX: 0 });
       }
 
       /** Stats count */
