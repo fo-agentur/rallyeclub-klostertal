@@ -2,7 +2,8 @@
 <html lang="de" class="scroll-smooth">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0A0A0F" />
   <meta name="description" content="Rallyeclub Klostertal — Motorsport, Leidenschaft, Events im Klostertal, Vorarlberg." />
   <title>Rallyeclub Klostertal</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -35,6 +36,18 @@
       --rally-bg: #0a0a0f;
       --rally-accent: #dc2626;
       --rally-orange: #f97316;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    html {
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
+    main section[id].scroll-mt-20 {
+      scroll-margin-top: calc(5rem + var(--safe-top));
+    }
+    #termine-kalender.scroll-mt-24 {
+      scroll-margin-top: calc(6rem + var(--safe-top));
     }
     html.lenis,
     html.lenis body {
@@ -85,6 +98,22 @@
       background: transparent;
       transition: background 0.35s ease, border-color 0.35s ease;
     }
+    #site-header > .mx-auto {
+      padding-left: max(1rem, env(safe-area-inset-left, 0px));
+      padding-right: max(1rem, env(safe-area-inset-right, 0px));
+    }
+    @media (min-width: 640px) {
+      #site-header > .mx-auto {
+        padding-left: max(1.5rem, env(safe-area-inset-left, 0px));
+        padding-right: max(1.5rem, env(safe-area-inset-right, 0px));
+      }
+    }
+    @media (min-width: 1024px) {
+      #site-header > .mx-auto {
+        padding-left: max(2rem, env(safe-area-inset-left, 0px));
+        padding-right: max(2rem, env(safe-area-inset-right, 0px));
+      }
+    }
     .nav-glass.is-scrolled {
       background: rgba(10, 10, 15, 0.85);
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
@@ -133,6 +162,11 @@
       background-position: center;
       opacity: 0;
       z-index: 0;
+    }
+    @media (max-width: 639px) {
+      .hero-slide {
+        background-position: center 28%;
+      }
     }
     .hero-slide.is-active {
       opacity: 1;
@@ -342,6 +376,7 @@
     }
     .events-highlight-hero {
       position: relative;
+      overflow: hidden;
     }
     .events-highlight-hero__mega {
       pointer-events: none;
@@ -733,13 +768,22 @@
       color: #fff;
     }
     .termine-cal-nav__label {
-      min-width: 12rem;
+      min-width: 0;
+      flex: 1 1 9rem;
       text-align: center;
       font-family: 'Orbitron', sans-serif;
-      font-size: 0.95rem;
+      font-size: 0.85rem;
       font-weight: 700;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.06em;
       color: rgba(255, 255, 255, 0.95);
+    }
+    @media (min-width: 480px) {
+      .termine-cal-nav__label {
+        flex: 0 1 auto;
+        min-width: 12rem;
+        font-size: 0.95rem;
+        letter-spacing: 0.08em;
+      }
     }
     #termine-cal-grid {
       margin-top: 1.25rem;
@@ -1507,8 +1551,8 @@
     <p id="scroll-journey-chapter" class="scroll-journey__chapter is-active">Start</p>
   </div>
 
-  <header id="site-header" class="nav-glass fixed left-0 right-0 top-0 z-[900] border-b border-transparent">
-    <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
+  <header id="site-header" class="nav-glass fixed left-0 right-0 top-0 z-[900] overflow-visible border-b border-transparent pt-[env(safe-area-inset-top,0px)]">
+    <div class="mx-auto flex max-w-7xl items-center justify-between gap-3 py-3 sm:gap-4">
       <a href="#hero" class="flex min-h-[44px] min-w-[44px] items-center" data-lenis-scroll>
         <img src="images/schriftzug_transparent_kl.png" alt="Rallyeclub Klostertal Logo" class="h-9 w-auto max-w-[200px] object-contain sm:h-10" width="200" height="40" loading="eager" />
       </a>
@@ -1526,8 +1570,8 @@
         <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
       </button>
     </div>
-    <div id="mobile-menu" class="fixed inset-x-0 top-[57px] z-[899] hidden border-b border-white/10 glass lg:hidden" hidden>
-      <nav class="flex flex-col gap-1 px-4 py-4" aria-label="Mobile Navigation">
+    <div id="mobile-menu" class="absolute left-0 right-0 top-full z-[899] hidden max-h-[min(75dvh,28rem)] overflow-y-auto overscroll-contain border-b border-white/10 glass lg:hidden" hidden>
+      <nav class="flex flex-col gap-1 px-4 py-4 pb-[max(1rem,env(safe-area-inset-bottom,0px))]" aria-label="Mobile Navigation">
         <a href="#ueber-uns" class="min-h-[44px] rounded-lg px-3 py-3 text-base font-medium text-white" data-lenis-scroll>Club</a>
         <a href="#team" class="min-h-[44px] rounded-lg px-3 py-3 text-base font-medium text-white" data-lenis-scroll>Team</a>
         <a href="#termine" class="min-h-[44px] rounded-lg px-3 py-3 text-base font-medium text-white" data-lenis-scroll>Termine</a>
@@ -1550,9 +1594,9 @@
       <div class="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/88 via-black/42 to-black/[0.93]" aria-hidden="true"></div>
       <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_95%_65%_at_50%_22%,rgba(220,38,38,0.14),transparent_58%)]" aria-hidden="true"></div>
       <div class="hero-noise pointer-events-none absolute inset-0 opacity-[0.045] mix-blend-soft-light" aria-hidden="true"></div>
-      <div class="hero-inner relative z-10 flex max-w-4xl flex-col items-center px-4 pt-24 text-center sm:px-6 sm:pt-28">
+      <div class="hero-inner relative z-10 flex max-w-4xl flex-col items-center px-4 pb-[env(safe-area-inset-bottom,0px)] pt-[max(5.5rem,calc(4.5rem+env(safe-area-inset-top,0px)))] text-center sm:px-6 sm:pt-28">
         <img src="images/schriftzug_transparent_kl.png" alt="" class="mb-8 w-full max-w-[min(400px,90vw)] object-contain drop-shadow-[0_8px_40px_rgba(0,0,0,0.65)]" width="400" height="120" loading="eager" />
-        <h1 class="hero-glow-text font-display text-4xl font-extrabold tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl">
+        <h1 class="hero-glow-text font-display text-[clamp(1.65rem,6.5vw+0.5rem,6rem)] font-extrabold leading-[1.08] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl">
           <span id="hero-split" class="inline-block"></span>
         </h1>
         <p id="hero-sub" class="mt-6 max-w-xl text-base font-medium text-white/85 sm:text-lg md:text-xl">Motorsport · Leidenschaft · Klostertal</p>
@@ -1564,7 +1608,7 @@
           </a>
         </div>
       </div>
-      <div class="scroll-indicator absolute bottom-8 left-1/2 z-10 -translate-x-1/2" aria-hidden="true">
+      <div class="scroll-indicator absolute bottom-[max(1.5rem,env(safe-area-inset-bottom,0px))] left-1/2 z-10 -translate-x-1/2 sm:bottom-8" aria-hidden="true">
         <div class="scroll-arrow flex flex-col items-center gap-1 text-white/70">
           <span class="text-xs uppercase tracking-widest">Scroll</span>
           <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
@@ -1763,7 +1807,7 @@
           class="team-showcase mx-auto mt-12 flex w-full max-w-5xl flex-col items-start gap-8 px-0 py-4 font-sans md:mt-14 md:flex-row md:gap-10 lg:gap-14"
           data-team-showcase
         >
-          <div class="team-showcase__photos flex gap-2 overflow-x-auto pb-1 md:gap-3 md:pb-0">
+          <div class="team-showcase__photos flex touch-pan-x gap-2 overflow-x-auto pb-1 [-webkit-overflow-scrolling:touch] md:gap-3 md:pb-0">
             <div class="flex flex-col gap-2 md:gap-3">
               <button type="button" class="team-photo-card team-photo-card--initials h-[120px] w-[110px] sm:h-[140px] sm:w-[130px] md:h-[165px] md:w-[155px]" data-team-id="1" aria-label="Christoph Schuler, Obmann">
                 <span class="team-photo-card__face">CS</span>
@@ -2419,12 +2463,13 @@
     (function () {
       const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       const isMobile = window.matchMedia('(max-width: 767px)').matches;
+      const isTouchPrimary = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
 
       gsap.registerPlugin(ScrollTrigger);
 
-      /** Lenis + ScrollTrigger */
+      /** Lenis + ScrollTrigger — auf Touch-Geräten aus: natives Momentum-Scrolling */
       let lenis = null;
-      if (!prefersReducedMotion && typeof Lenis !== 'undefined') {
+      if (!prefersReducedMotion && !isTouchPrimary && typeof Lenis !== 'undefined') {
         lenis = new Lenis({
           duration: isMobile ? 0.6 : 1.05,
           smoothWheel: true,
@@ -2451,15 +2496,22 @@
         window.__lenis = null;
       }
 
+      function getHeaderScrollOffset() {
+        const headerEl = document.getElementById('site-header');
+        if (!headerEl) return 88;
+        return Math.round(headerEl.getBoundingClientRect().height) + 6;
+      }
+
       function scrollToHash(el) {
         const href = el.getAttribute('href');
         if (!href || href.charAt(0) !== '#') return;
         const target = document.querySelector(href);
         if (!target) return;
+        const off = -getHeaderScrollOffset();
         if (lenis) {
-          lenis.scrollTo(target, { offset: -80, duration: 1.15 });
+          lenis.scrollTo(target, { offset: off, duration: 1.15 });
         } else {
-          const top = target.getBoundingClientRect().top + window.scrollY - 80;
+          const top = target.getBoundingClientRect().top + window.scrollY + off;
           window.scrollTo({ top, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
         }
       }
