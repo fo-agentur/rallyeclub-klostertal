@@ -65,18 +65,18 @@
         transition-duration: 0.01ms !important;
       }
     }
-    /* Custom-Cursor: Zielkreis + Mittelpunkt (statt weicher Glow-Blob) */
+    /* Custom-Cursor: schlanker Zielkreis + kleiner Punkt */
     .cursor-rally {
       pointer-events: none;
       position: fixed;
       z-index: 9998;
-      width: 44px;
-      height: 44px;
+      width: 28px;
+      height: 28px;
       margin: 0;
       padding: 0;
       transform: translate(-50%, -50%);
       opacity: 0;
-      transition: opacity 0.35s ease, transform 0.2s ease;
+      transition: opacity 0.35s ease, transform 0.15s ease;
     }
     .cursor-rally.is-visible {
       opacity: 1;
@@ -85,41 +85,35 @@
       position: absolute;
       inset: 0;
       border-radius: 50%;
-      border: 1.5px solid rgba(255, 255, 255, 0.35);
-      box-shadow:
-        0 0 0 1px rgba(249, 115, 22, 0.45) inset,
-        0 0 24px rgba(220, 38, 38, 0.35),
-        0 0 8px rgba(249, 115, 22, 0.25);
-      background: radial-gradient(circle at 30% 28%, rgba(255, 255, 255, 0.08) 0%, transparent 42%);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      box-shadow: 0 0 0 0.5px rgba(249, 115, 22, 0.35) inset;
+      background: transparent;
     }
     .cursor-rally__ring::after {
       content: '';
       position: absolute;
-      inset: 5px;
+      inset: 4px;
       border-radius: 50%;
-      border: 1px dashed rgba(249, 115, 22, 0.45);
-      opacity: 0.9;
+      border: 1px dashed rgba(249, 115, 22, 0.28);
+      opacity: 0.75;
     }
     .cursor-rally__core {
       position: absolute;
       left: 50%;
       top: 50%;
-      width: 5px;
-      height: 5px;
-      margin: -2.5px 0 0 -2.5px;
+      width: 3px;
+      height: 3px;
+      margin: -1.5px 0 0 -1.5px;
       border-radius: 50%;
-      background: #fff;
-      box-shadow: 0 0 10px rgba(220, 38, 38, 0.95), 0 0 4px rgba(249, 115, 22, 0.9);
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: 0 0 6px rgba(220, 38, 38, 0.45);
     }
     .cursor-rally.is-interactive {
-      transform: translate(-50%, -50%) scale(1.12);
+      transform: translate(-50%, -50%) scale(1.06);
     }
     .cursor-rally.is-interactive .cursor-rally__ring {
-      border-color: rgba(249, 115, 22, 0.75);
-      box-shadow:
-        0 0 0 1px rgba(249, 115, 22, 0.55) inset,
-        0 0 32px rgba(220, 38, 38, 0.55),
-        0 0 14px rgba(249, 115, 22, 0.45);
+      border-color: rgba(249, 115, 22, 0.55);
+      box-shadow: 0 0 0 0.5px rgba(249, 115, 22, 0.4) inset;
     }
     @media (max-width: 1023px), (prefers-reduced-motion: reduce) {
       .cursor-rally {
