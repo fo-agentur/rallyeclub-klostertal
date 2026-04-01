@@ -649,23 +649,35 @@
       cursor: pointer;
       overflow: hidden;
       border-radius: 0.75rem;
-      transition: opacity 0.35s ease;
+      transition: opacity 0.35s ease, box-shadow 0.35s ease;
     }
-    .team-photo-card img {
-      height: 100%;
-      width: 100%;
-      object-fit: cover;
-      transition: filter 0.45s ease;
-      filter: grayscale(1) brightness(0.85);
+    .team-photo-card--initials {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: linear-gradient(155deg, rgba(220, 38, 38, 0.22), rgba(18, 18, 26, 0.98));
     }
-    .team-showcase.team-showcase--hover .team-photo-card.is-active img {
+    .team-photo-card__face {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(1.35rem, 4vw, 1.85rem);
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      color: rgba(255, 255, 255, 0.92);
+      transition: filter 0.45s ease, opacity 0.35s ease;
+      filter: grayscale(1) brightness(0.88);
+    }
+    .team-showcase.team-showcase--hover .team-photo-card.is-active .team-photo-card__face {
       filter: grayscale(0) brightness(1);
     }
     .team-showcase.team-showcase--hover .team-photo-card:not(.is-active) {
       opacity: 0.58;
     }
-    .team-showcase.team-showcase--hover .team-photo-card:not(.is-active) img {
+    .team-showcase.team-showcase--hover .team-photo-card:not(.is-active) .team-photo-card__face {
       filter: grayscale(1) brightness(0.72);
+    }
+    .team-showcase.team-showcase--hover .team-photo-card.is-active.team-photo-card--initials {
+      box-shadow: 0 0 0 1px rgba(249, 115, 22, 0.45), 0 12px 32px -16px rgba(220, 38, 38, 0.35);
     }
     .team-member-row {
       cursor: pointer;
@@ -739,15 +751,15 @@
       transform: scale(1.08);
     }
     @media (prefers-reduced-motion: reduce) {
-      .team-photo-card img,
       .team-photo-card,
+      .team-photo-card__face,
       .team-member-row,
       .team-row-indicator,
       .team-member-name,
       .team-social {
         transition: none;
       }
-      .team-photo-card img {
+      .team-photo-card__face {
         filter: none;
       }
       .team-showcase.team-showcase--hover .team-photo-card:not(.is-active) {
@@ -756,6 +768,12 @@
       .team-showcase.team-showcase--hover .team-member-row:not(.is-active) {
         opacity: 1;
       }
+    }
+    .team-roster h3 {
+      font-family: 'Orbitron', sans-serif;
+    }
+    .team-roster dd {
+      margin: 0;
     }
     /* Scroll-Journey: globaler Fortschritt + Kapitel (alle Sections) */
     .scroll-journey {
@@ -1078,13 +1096,15 @@
       </div>
     </section>
 
-    <!-- Team / Vorstand (Showcase-Layout wie shadcn-Beispiel, Vanilla) -->
+    <!-- Team / Vorstand — Inhalte aus bisheriger Website rallyeclub-klostertal.at (Mitglieder) -->
     <section id="team" class="relative scroll-mt-20 border-t border-white/10 py-20 sm:py-24 lg:py-28">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <p class="font-display text-[10px] font-bold uppercase tracking-[0.4em] text-rally-orange/90">Vorstand</p>
         <h2 id="headline-team" class="font-display clip-reveal mt-2 text-4xl font-bold text-white sm:text-5xl md:text-6xl">Team</h2>
-        <p class="mt-5 max-w-2xl text-base leading-relaxed text-rally-muted sm:text-lg">
-          Ansprechpartner im Verein — Namen und Rollen sind Platzhalter; Fotos: lizenzfreie Portraits (Unsplash). Bitte durch eure Vorstandsliste und eigene Bilder ersetzen.
+        <p class="mt-5 max-w-3xl text-base leading-relaxed text-rally-muted sm:text-lg">
+          Namen und Funktionen entsprechen der öffentlichen Mitglieder-Übersicht der bisherigen Website
+          <a class="text-rally-orange underline decoration-white/20 underline-offset-4 hover:text-white" href="http://www.rallyeclub-klostertal.at/index.php/mitglieder" target="_blank" rel="noopener noreferrer">rallyeclub-klostertal.at</a>.
+          Dort waren für viele Personen noch keine Fotos hinterlegt — hier zeigen wir daher <strong class="text-white/90">Initialen</strong> statt fremder Stock-Bilder. Gerne später durch Vereinsfotos ersetzen.
         </p>
 
         <div
@@ -1094,27 +1114,27 @@
         >
           <div class="team-showcase__photos flex gap-2 overflow-x-auto pb-1 md:gap-3 md:pb-0">
             <div class="flex flex-col gap-2 md:gap-3">
-              <button type="button" class="team-photo-card h-[120px] w-[110px] sm:h-[140px] sm:w-[130px] md:h-[165px] md:w-[155px]" data-team-id="1" aria-label="Andreas H.">
-                <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&amp;h=480&amp;fit=crop&amp;q=80" alt="" width="200" height="240" loading="lazy" />
+              <button type="button" class="team-photo-card team-photo-card--initials h-[120px] w-[110px] sm:h-[140px] sm:w-[130px] md:h-[165px] md:w-[155px]" data-team-id="1" aria-label="Christoph Schuler, Obmann">
+                <span class="team-photo-card__face">CS</span>
               </button>
-              <button type="button" class="team-photo-card h-[120px] w-[110px] sm:h-[140px] sm:w-[130px] md:h-[165px] md:w-[155px]" data-team-id="4" aria-label="Julia W.">
-                <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=400&amp;h=480&amp;fit=crop&amp;q=80" alt="" width="200" height="240" loading="lazy" />
+              <button type="button" class="team-photo-card team-photo-card--initials h-[120px] w-[110px] sm:h-[140px] sm:w-[130px] md:h-[165px] md:w-[155px]" data-team-id="4" aria-label="Manuel Schuler, Vorstand">
+                <span class="team-photo-card__face">MS</span>
               </button>
             </div>
             <div class="mt-[48px] flex flex-col gap-2 sm:mt-[56px] md:mt-[68px] md:gap-3">
-              <button type="button" class="team-photo-card h-[132px] w-[122px] sm:h-[155px] sm:w-[145px] md:h-[182px] md:w-[172px]" data-team-id="2" aria-label="Sarah M.">
-                <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&amp;h=480&amp;fit=crop&amp;q=80" alt="" width="200" height="240" loading="lazy" />
+              <button type="button" class="team-photo-card team-photo-card--initials h-[132px] w-[122px] sm:h-[155px] sm:w-[145px] md:h-[182px] md:w-[172px]" data-team-id="2" aria-label="Christian Breuss, Vizeobmann">
+                <span class="team-photo-card__face">CB</span>
               </button>
-              <button type="button" class="team-photo-card h-[132px] w-[122px] sm:h-[155px] sm:w-[145px] md:h-[182px] md:w-[172px]" data-team-id="5" aria-label="Michael R.">
-                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&amp;h=480&amp;fit=crop&amp;q=80" alt="" width="200" height="240" loading="lazy" />
+              <button type="button" class="team-photo-card team-photo-card--initials h-[132px] w-[122px] sm:h-[155px] sm:w-[145px] md:h-[182px] md:w-[172px]" data-team-id="5" aria-label="Herbert Schuler, Vorstand">
+                <span class="team-photo-card__face">HS</span>
               </button>
             </div>
             <div class="mt-[22px] flex flex-col gap-2 sm:mt-[26px] md:mt-[32px] md:gap-3">
-              <button type="button" class="team-photo-card h-[125px] w-[115px] sm:h-[146px] sm:w-[136px] md:h-[172px] md:w-[162px]" data-team-id="3" aria-label="Thomas K.">
-                <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&amp;h=480&amp;fit=crop&amp;q=80" alt="" width="200" height="240" loading="lazy" />
+              <button type="button" class="team-photo-card team-photo-card--initials h-[125px] w-[115px] sm:h-[146px] sm:w-[136px] md:h-[172px] md:w-[162px]" data-team-id="3" aria-label="Martina Zögernitz, Schriftführerin und Kassierin">
+                <span class="team-photo-card__face">MZ</span>
               </button>
-              <button type="button" class="team-photo-card h-[125px] w-[115px] sm:h-[146px] sm:w-[136px] md:h-[172px] md:w-[162px]" data-team-id="6" aria-label="Eva L.">
-                <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&amp;h=480&amp;fit=crop&amp;q=80" alt="" width="200" height="240" loading="lazy" />
+              <button type="button" class="team-photo-card team-photo-card--initials h-[125px] w-[115px] sm:h-[146px] sm:w-[136px] md:h-[172px] md:w-[162px]" data-team-id="6" aria-label="Alex Schmöllerl, Fahrervertreter">
+                <span class="team-photo-card__face">AS</span>
               </button>
             </div>
           </div>
@@ -1123,76 +1143,124 @@
             <div class="team-member-row" data-team-id="1" tabindex="0" role="button">
               <div class="flex items-center gap-2.5">
                 <span class="team-row-indicator" aria-hidden="true"></span>
-                <span class="team-member-name md:text-[18px]">Andreas H.</span>
+                <span class="team-member-name md:text-[18px]">Christoph Schuler</span>
                 <div class="team-social">
-                  <a href="https://www.facebook.com/132632750148150" target="_blank" rel="noopener noreferrer" title="Facebook" class="inline-flex">
+                  <a href="https://www.facebook.com/132632750148150" target="_blank" rel="noopener noreferrer" title="Facebook Rallyeclub Klostertal" class="inline-flex">
                     <svg class="h-3 w-3" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
                   </a>
                 </div>
               </div>
-              <p class="team-member-role">1. Vorsitzender</p>
+              <p class="team-member-role">Obmann</p>
             </div>
             <div class="team-member-row" data-team-id="2" tabindex="0" role="button">
               <div class="flex items-center gap-2.5">
                 <span class="team-row-indicator" aria-hidden="true"></span>
-                <span class="team-member-name md:text-[18px]">Sarah M.</span>
+                <span class="team-member-name md:text-[18px]">Christian Breuss</span>
                 <div class="team-social">
-                  <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" title="Instagram" class="inline-flex">
-                    <svg class="h-3 w-3" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                  <a href="https://www.facebook.com/132632750148150" target="_blank" rel="noopener noreferrer" title="Facebook Rallyeclub Klostertal" class="inline-flex">
+                    <svg class="h-3 w-3" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
                   </a>
                 </div>
               </div>
-              <p class="team-member-role">Sportwart</p>
+              <p class="team-member-role">Vizeobmann</p>
             </div>
             <div class="team-member-row" data-team-id="3" tabindex="0" role="button">
               <div class="flex items-center gap-2.5">
                 <span class="team-row-indicator" aria-hidden="true"></span>
-                <span class="team-member-name md:text-[18px]">Thomas K.</span>
+                <span class="team-member-name md:text-[18px]">Martina Zögernitz</span>
                 <div class="team-social">
-                  <a href="https://www.facebook.com/132632750148150" target="_blank" rel="noopener noreferrer" title="Facebook" class="inline-flex">
+                  <a href="https://www.facebook.com/132632750148150" target="_blank" rel="noopener noreferrer" title="Facebook Rallyeclub Klostertal" class="inline-flex">
                     <svg class="h-3 w-3" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
                   </a>
                 </div>
               </div>
-              <p class="team-member-role">Kassenwart</p>
+              <p class="team-member-role">Schriftführerin &amp; Kassierin</p>
             </div>
             <div class="team-member-row" data-team-id="4" tabindex="0" role="button">
               <div class="flex items-center gap-2.5">
                 <span class="team-row-indicator" aria-hidden="true"></span>
-                <span class="team-member-name md:text-[18px]">Julia W.</span>
+                <span class="team-member-name md:text-[18px]">Manuel Schuler</span>
                 <div class="team-social">
-                  <a href="https://www.facebook.com/132632750148150" target="_blank" rel="noopener noreferrer" title="Facebook" class="inline-flex">
+                  <a href="https://www.facebook.com/132632750148150" target="_blank" rel="noopener noreferrer" title="Facebook Rallyeclub Klostertal" class="inline-flex">
                     <svg class="h-3 w-3" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
                   </a>
                 </div>
               </div>
-              <p class="team-member-role">Schriftführung</p>
+              <p class="team-member-role">Vorstand</p>
             </div>
             <div class="team-member-row" data-team-id="5" tabindex="0" role="button">
               <div class="flex items-center gap-2.5">
                 <span class="team-row-indicator" aria-hidden="true"></span>
-                <span class="team-member-name md:text-[18px]">Michael R.</span>
+                <span class="team-member-name md:text-[18px]">Herbert Schuler</span>
                 <div class="team-social">
-                  <a href="https://www.facebook.com/132632750148150" target="_blank" rel="noopener noreferrer" title="Facebook" class="inline-flex">
+                  <a href="https://www.facebook.com/132632750148150" target="_blank" rel="noopener noreferrer" title="Facebook Rallyeclub Klostertal" class="inline-flex">
                     <svg class="h-3 w-3" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
                   </a>
                 </div>
               </div>
-              <p class="team-member-role">Beisitz</p>
+              <p class="team-member-role">Vorstand</p>
             </div>
             <div class="team-member-row" data-team-id="6" tabindex="0" role="button">
               <div class="flex items-center gap-2.5">
                 <span class="team-row-indicator" aria-hidden="true"></span>
-                <span class="team-member-name md:text-[18px]">Eva L.</span>
+                <span class="team-member-name md:text-[18px]">Alex Schmöllerl</span>
                 <div class="team-social">
-                  <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" title="Instagram" class="inline-flex">
-                    <svg class="h-3 w-3" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                  <a href="https://www.facebook.com/132632750148150" target="_blank" rel="noopener noreferrer" title="Facebook Rallyeclub Klostertal" class="inline-flex">
+                    <svg class="h-3 w-3" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
                   </a>
                 </div>
               </div>
-              <p class="team-member-role">Mitgliedschaft</p>
+              <p class="team-member-role">Fahrervertreter</p>
             </div>
           </div>
+        </div>
+
+        <div class="team-roster mt-16 max-w-4xl border-t border-white/10 pt-12">
+          <h3 class="text-xl font-bold text-white sm:text-2xl">Ehrenamt &amp; Gremien</h3>
+          <p class="mt-2 text-sm text-rally-muted">Wie auf der bisherigen Mitglieder-Seite ausgewiesen.</p>
+          <dl class="mt-8 grid gap-8 sm:grid-cols-2">
+            <div>
+              <dt class="font-display text-[10px] font-bold uppercase tracking-[0.35em] text-rally-orange/90">Ehrenobmann</dt>
+              <dd class="mt-2 text-white">Armin Gassner</dd>
+              <dt class="mt-6 font-display text-[10px] font-bold uppercase tracking-[0.35em] text-rally-orange/90">Ehrenvizeobmann</dt>
+              <dd class="mt-2 text-white">Fritz Kogler</dd>
+              <dt class="mt-6 font-display text-[10px] font-bold uppercase tracking-[0.35em] text-rally-orange/90">Ehrenmitglieder</dt>
+              <dd class="mt-2 text-rally-muted">Adrian Imthurn, Gerd Lampert</dd>
+            </div>
+            <div>
+              <dt class="font-display text-[10px] font-bold uppercase tracking-[0.35em] text-rally-orange/90">Sportrat</dt>
+              <dd class="mt-2 text-white">Elias Schnetzer, Gernot Kogler</dd>
+              <dt class="mt-6 font-display text-[10px] font-bold uppercase tracking-[0.35em] text-rally-orange/90">Kassaprüfer</dt>
+              <dd class="mt-2 text-white">Andrea Schuler, Marion Neusiedler</dd>
+            </div>
+          </dl>
+
+          <h3 class="mt-14 text-lg font-bold text-white sm:text-xl">Weitere Mitglieder</h3>
+          <p class="mt-2 text-sm text-rally-muted">Auszug von der bisherigen Website (u. a. mit Fotos); weitere ohne Foto dort separat gelistet.</p>
+          <ul class="mt-6 columns-1 gap-x-10 text-sm leading-relaxed text-rally-muted sm:columns-2">
+            <li class="mb-1 break-inside-avoid">Dorner Joe</li>
+            <li class="mb-1 break-inside-avoid">Dieter Bettinazzi</li>
+            <li class="mb-1 break-inside-avoid">Günter Matt</li>
+            <li class="mb-1 break-inside-avoid">Johanna Matt</li>
+            <li class="mb-1 break-inside-avoid">Manfred Fischer</li>
+            <li class="mb-1 break-inside-avoid">Marco Schmid</li>
+            <li class="mb-1 break-inside-avoid">Mike Korpics</li>
+            <li class="mb-1 break-inside-avoid">Norbert Matt</li>
+            <li class="mb-1 break-inside-avoid">Sarah Matt</li>
+            <li class="mb-1 break-inside-avoid">Wolfgang Ospelt</li>
+            <li class="mb-1 break-inside-avoid">Rainer Neusiedler</li>
+            <li class="mb-1 break-inside-avoid">Melanie Schnetzer</li>
+            <li class="mb-1 break-inside-avoid">Tobias Sohler</li>
+            <li class="mb-1 break-inside-avoid">Daniel Zimmermann</li>
+            <li class="mb-1 break-inside-avoid">Thomas Ammann</li>
+            <li class="mb-1 break-inside-avoid">Rene Bargehr</li>
+            <li class="mb-1 break-inside-avoid">Michael Bargehr</li>
+            <li class="mb-1 break-inside-avoid">Anja Dorner</li>
+            <li class="mb-1 break-inside-avoid">Michael Gassner</li>
+            <li class="mb-1 break-inside-avoid">Martin Taumberger</li>
+            <li class="mb-1 break-inside-avoid">David Wiederin</li>
+            <li class="mb-1 break-inside-avoid">Peter Füchsl</li>
+          </ul>
         </div>
       </div>
     </section>

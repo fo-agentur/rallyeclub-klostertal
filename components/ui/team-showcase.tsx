@@ -15,55 +15,49 @@ export interface TeamMember {
   };
 }
 
-/** Platzhalter mit stabilen Unsplash-Portraits — im Verein durch echte Vorstands-Daten ersetzen. */
+/** Vorstand laut bisheriger Website rallyeclub-klostertal.at (Mitglieder). Bilder: Initialen-Placeholders. */
 const DEFAULT_MEMBERS: TeamMember[] = [
   {
     id: '1',
-    name: 'Andreas H.',
-    role: '1. Vorsitzender',
-    image:
-      'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=480&fit=crop&q=80',
+    name: 'Christoph Schuler',
+    role: 'Obmann',
+    image: 'https://placehold.co/400x480/12121a/f97316?text=CS',
     social: { linkedin: 'https://www.facebook.com/132632750148150' },
   },
   {
     id: '2',
-    name: 'Sarah M.',
-    role: 'Sportwart',
-    image:
-      'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=480&fit=crop&q=80',
-    social: { instagram: 'https://www.instagram.com' },
+    name: 'Christian Breuss',
+    role: 'Vizeobmann',
+    image: 'https://placehold.co/400x480/12121a/f97316?text=CB',
+    social: { linkedin: 'https://www.facebook.com/132632750148150' },
   },
   {
     id: '3',
-    name: 'Thomas K.',
-    role: 'Kassenwart',
-    image:
-      'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&h=480&fit=crop&q=80',
-    social: { twitter: 'https://www.facebook.com/132632750148150' },
+    name: 'Martina Zögernitz',
+    role: 'Schriftführerin & Kassierin',
+    image: 'https://placehold.co/400x480/12121a/f97316?text=MZ',
+    social: { linkedin: 'https://www.facebook.com/132632750148150' },
   },
   {
     id: '4',
-    name: 'Julia W.',
-    role: 'Schriftführung',
-    image:
-      'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=400&h=480&fit=crop&q=80',
+    name: 'Manuel Schuler',
+    role: 'Vorstand',
+    image: 'https://placehold.co/400x480/12121a/f97316?text=MS',
     social: { linkedin: 'https://www.facebook.com/132632750148150' },
   },
   {
     id: '5',
-    name: 'Michael R.',
-    role: 'Beisitz',
-    image:
-      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=480&fit=crop&q=80',
-    social: { twitter: 'https://www.facebook.com/132632750148150' },
+    name: 'Herbert Schuler',
+    role: 'Vorstand',
+    image: 'https://placehold.co/400x480/12121a/f97316?text=HS',
+    social: { linkedin: 'https://www.facebook.com/132632750148150' },
   },
   {
     id: '6',
-    name: 'Eva L.',
-    role: 'Mitgliedschaft',
-    image:
-      'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=480&fit=crop&q=80',
-    social: { instagram: 'https://www.instagram.com' },
+    name: 'Alex Schmöllerl',
+    role: 'Fahrervertreter',
+    image: 'https://placehold.co/400x480/12121a/f97316?text=AS',
+    social: { linkedin: 'https://www.facebook.com/132632750148150' },
   },
 ];
 
@@ -238,7 +232,7 @@ function MemberRow({
                 rel="noopener noreferrer"
                 onClick={(e) => e.stopPropagation()}
                 className="text-muted-foreground hover:bg-foreground/10 hover:text-foreground rounded p-1 transition-all duration-150 hover:scale-110"
-                title="LinkedIn"
+                title="Facebook"
               >
                 <FaLinkedinIn size={10} />
               </a>
