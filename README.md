@@ -13,7 +13,9 @@ npm run dev
 
 ## Umgebungsvariablen
 
-Kopiere `.env.example` zu `.env.local` und fülle die Werte aus (Firebase Web-App + optional Service Account für SSR und Revalidate-API).
+Kopiere `.env.example` zu `.env.local` und fülle die Werte aus. Namen sind bewusst lesbar (`NEXT_PUBLIC_FIREBASE_WEB_*`, `FIREBASE_ADMIN_SERVICE_ACCOUNT_JSON`); ältere Kurznamen aus `.env.example` funktionieren weiterhin als Fallback.
+
+**Wichtig:** Service-Account-JSON nur in `.env.local` oder sicherem Secret-Store — nie ins Git. Wurde ein Schlüssel geleakt (Chat, Screenshot), in der Google Cloud Console unter dem Dienstkonto den **Schlüssel widerrufen** und einen **neuen** erzeugen.
 
 ## Admin (nicht verlinkt)
 
@@ -25,7 +27,7 @@ Kopiere `.env.example` zu `.env.local` und fülle die Werte aus (Firebase Web-Ap
 npm run set-admin-claim -- <USER_UID>
 ```
 
-Optional dritter Parameter: Pfad zur Service-Account-JSON-Datei, falls `FIREBASE_SERVICE_ACCOUNT_JSON` nicht gesetzt ist.
+Optional dritter Parameter: Pfad zur Service-Account-JSON-Datei, falls weder `FIREBASE_ADMIN_SERVICE_ACCOUNT_JSON` noch `FIREBASE_SERVICE_ACCOUNT_JSON` gesetzt ist.
 
 ## Firebase Rules
 

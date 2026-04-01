@@ -6,7 +6,10 @@ import { getFirebaseAdminApp } from '@/lib/firebase/admin-app'
 export async function POST(req: NextRequest) {
   const app = getFirebaseAdminApp()
   if (!app) {
-    return NextResponse.json({ error: 'FIREBASE_SERVICE_ACCOUNT_JSON not configured' }, { status: 500 })
+    return NextResponse.json(
+      { error: 'FIREBASE_ADMIN_SERVICE_ACCOUNT_JSON (or FIREBASE_SERVICE_ACCOUNT_JSON) not configured' },
+      { status: 500 }
+    )
   }
   const authz = req.headers.get('authorization')
   const token = authz?.startsWith('Bearer ') ? authz.slice(7) : null

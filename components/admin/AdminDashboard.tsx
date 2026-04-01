@@ -101,7 +101,7 @@ export function AdminDashboard() {
     e.preventDefault()
     setAuthError(null)
     if (!clients) {
-      setAuthError('Firebase Client nicht konfiguriert (NEXT_PUBLIC_* Variablen).')
+      setAuthError('Firebase Client nicht konfiguriert — Web-Env in .env.local setzen (siehe .env.example).')
       return
     }
     try {
@@ -143,7 +143,9 @@ export function AdminDashboard() {
             <CardTitle>Admin nicht verfügbar</CardTitle>
           </CardHeader>
           <CardContent className="text-sm text-rally-muted">
-            Bitte <code className="text-white">NEXT_PUBLIC_FIREBASE_*</code> in <code className="text-white">.env.local</code> setzen
+            Bitte Firebase-Web-Variablen in <code className="text-white">.env.local</code> setzen (siehe{' '}
+            <code className="text-white">.env.example</code>: z. B.{' '}
+            <code className="text-white">NEXT_PUBLIC_FIREBASE_WEB_API_KEY</code>)
             (siehe <code className="text-white">.env.example</code>).
           </CardContent>
         </Card>

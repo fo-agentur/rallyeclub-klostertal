@@ -2,7 +2,7 @@
  * One-time bootstrap: grant Firebase Auth custom claim admin=true.
  *
  * Usage:
- *   set FIREBASE_SERVICE_ACCOUNT_JSON to the JSON string of your service account key, then:
+ *   set FIREBASE_ADMIN_SERVICE_ACCOUNT_JSON (or FIREBASE_SERVICE_ACCOUNT_JSON) to the JSON string of your service account key, then:
  *   npm run set-admin-claim -- <USER_UID>
  *
  * Or pass path to key file as second argument (reads file as UTF-8 JSON):
@@ -20,12 +20,15 @@ if (!uid) {
   process.exit(1)
 }
 
-let jsonRaw = process.env.FIREBASE_SERVICE_ACCOUNT_JSON
+let jsonRaw =
+  process.env.FIREBASE_ADMIN_SERVICE_ACCOUNT_JSON || process.env.FIREBASE_SERVICE_ACCOUNT_JSON
 if (!jsonRaw && keyPath) {
   jsonRaw = readFileSync(keyPath, 'utf8')
 }
 if (!jsonRaw) {
-  console.error('Set FIREBASE_SERVICE_ACCOUNT_JSON or pass path to service account JSON as third argument.')
+  console.error(
+    'Set FIREBASE_ADMIN_SERVICE_ACCOUNT_JSON (or FIREBASE_SERVICE_ACCOUNT_JSON) or pass path to service account JSON as third argument.'
+  )
   process.exit(1)
 }
 
