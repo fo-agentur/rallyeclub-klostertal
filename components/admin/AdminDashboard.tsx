@@ -26,6 +26,13 @@ import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import Image from 'next/image'
+import { AdminSitePreview } from '@/components/admin/AdminSitePreview'
+import {
+  HighlightsEditor,
+  SimpleImageRows,
+  TermineOverviewEditor,
+  normalizeHighlightVariants,
+} from '@/components/admin/AdminSimpleEditors'
 
 function forFirestore(data: Record<string, unknown>) {
   return Object.fromEntries(Object.entries(data).filter(([, v]) => v !== undefined))
@@ -88,7 +95,11 @@ export function AdminDashboard() {
         return
       }
       const parsed = siteContentSchema.safeParse(snap.data())
-      setSite(parsed.success ? parsed.data : defaultSiteContent)
+      setSite(
+        parsed.success
+          ? { ...parsed.data, highlights: normalizeHighlightVariants(parsed.data.highlights) }
+          : defaultSiteContent
+      )
     })
     return () => unsub()
   }, [clients, user, isAdmin])
@@ -133,7 +144,8 @@ export function AdminDashboard() {
         setSaveMsg(limitErr)
         return
       }
-      const parsed = siteContentSchema.parse(site)
+      const toSave = { ...site, highlights: normalizeHighlightVariants(site.highlights) }
+      const parsed = siteContentSchema.parse(toSave)
       await setDoc(doc(clients.db, 'site', 'content'), parsed)
       await revalidateSiteCache(user)
       setSaveMsg('Gespeichert und Cache aktualisiert.')
@@ -213,634 +225,550 @@ export function AdminDashboard() {
   }
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8">
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-        <h1 className="font-display text-2xl font-bold">Inhalte verwalten</h1>
-        <Button type="button" variant="secondary" onClick={() => signOut(clients.auth)}>
-          Abmelden
-        </Button>
-      </div>
+    <div className="min-h-screen bg-rally-bg pb-20">
+      <header className="sticky top-0 z-40 border-b border-white/10 bg-black/90 px-4 py-3 backdrop-blur-md">
+        <div className="mx-auto flex max-w-[1600px] flex-wrap items-center justify-between gap-3">
+          <div>
+            <h1 className="font-display text-lg font-bold text-white md:text-xl">Website bearbeiten</h1>
+            <p className="text-xs text-rally-muted">Rechts siehst du die Vorschau — „Website speichern“ übernimmt alles für die Startseite.</p>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            {saveMsg ? <span className="max-w-[220px] text-xs text-rally-orange md:max-w-sm">{saveMsg}</span> : null}
+            <Button type="button" disabled={busy} onClick={() => void saveSite()}>
+              Website speichern
+            </Button>
+            <Button type="button" variant="secondary" onClick={() => signOut(clients.auth)}>
+              Abmelden
+            </Button>
+          </div>
+        </div>
+      </header>
 
-      <Card className="mb-6 border-white/15 bg-white/[0.03]">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-base">Speicher- &amp; Upload-Limits</CardTitle>
-        </CardHeader>
-        <CardContent className="text-xs leading-relaxed text-rally-muted">
-          <p>
-            Uploads sind begrenzt, damit Firebase Storage und Traffic klein bleiben (Vereinsseite, Free-Tier).
-            Pro Bild max. <strong className="text-white">{formatMaxImageSizeLabel()}</strong>, nur Bilder. Zusätzlich:
-            Hero bis <strong className="text-white">{CMS_LIMITS.maxHeroSlides}</strong> Slides, Team bis{' '}
+      <div className="mx-auto max-w-[1600px] px-4 pt-6">
+        <details className="mb-6 rounded-lg border border-white/10 bg-white/[0.02] px-4 py-2 text-xs text-rally-muted">
+          <summary className="cursor-pointer font-medium text-white/90">Speicher-Limits (optional lesen)</summary>
+          <p className="mt-2 leading-relaxed">
+            Pro Bild max. <strong className="text-white">{formatMaxImageSizeLabel()}</strong>. Hero bis{' '}
+            <strong className="text-white">{CMS_LIMITS.maxHeroSlides}</strong> Slides, Team{' '}
             <strong className="text-white">{CMS_LIMITS.maxTeamMembers}</strong>, Club-Streifen{' '}
             <strong className="text-white">{CMS_LIMITS.maxClubStripImages}</strong>, Galerie{' '}
             <strong className="text-white">{CMS_LIMITS.maxGalleryImages}</strong>, Highlights{' '}
-            <strong className="text-white">{CMS_LIMITS.maxHighlightCards}</strong>, Termine{' '}
-            <strong className="text-white">{CMS_LIMITS.maxTermineDocuments}</strong>. Überschüssige Einträge werden auf
-            der öffentlichen Seite nicht angezeigt, bis du sie im CMS reduzierst.
+            <strong className="text-white">{CMS_LIMITS.maxHighlightCards}</strong>, Termine in der Datenbank{' '}
+            <strong className="text-white">{CMS_LIMITS.maxTermineDocuments}</strong>.
           </p>
-        </CardContent>
-      </Card>
+        </details>
 
-      <Tabs defaultValue="hero">
-        <TabsList className="flex flex-wrap gap-1">
-          <TabsTrigger value="hero">Hero</TabsTrigger>
-          <TabsTrigger value="social">Links</TabsTrigger>
-          <TabsTrigger value="team">Team</TabsTrigger>
-          <TabsTrigger value="media">Bilder</TabsTrigger>
-          <TabsTrigger value="termine">Termine</TabsTrigger>
-          <TabsTrigger value="kontakt">Kontakt</TabsTrigger>
-        </TabsList>
+        <div className="grid gap-8 xl:grid-cols-[minmax(300px,380px)_1fr] xl:items-start">
+          <div className="min-w-0 space-y-1 xl:max-h-[calc(100vh-9rem)] xl:overflow-y-auto xl:pr-2">
+            <Tabs defaultValue="start" className="w-full">
+              <TabsList className="flex h-auto min-h-11 flex-wrap justify-start gap-1 bg-white/5 p-1">
+                <TabsTrigger value="start" className="text-xs sm:text-sm">
+                  Start
+                </TabsTrigger>
+                <TabsTrigger value="social" className="text-xs sm:text-sm">
+                  Facebook
+                </TabsTrigger>
+                <TabsTrigger value="team" className="text-xs sm:text-sm">
+                  Team
+                </TabsTrigger>
+                <TabsTrigger value="bilder" className="text-xs sm:text-sm">
+                  Bilder
+                </TabsTrigger>
+                <TabsTrigger value="termine" className="text-xs sm:text-sm">
+                  Termine
+                </TabsTrigger>
+                <TabsTrigger value="kontakt" className="text-xs sm:text-sm">
+                  Kontakt
+                </TabsTrigger>
+                <TabsTrigger value="vorschau" className="text-xs sm:text-sm xl:hidden">
+                  Vorschau
+                </TabsTrigger>
+              </TabsList>
 
-        <TabsContent value="hero" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Hero — Slideshow</CardTitle>
-            </CardHeader>
-            <CardContent className="grid gap-4">
-              <div className="grid gap-2">
-                <Label>Tagline</Label>
-                <Input value={site.heroTagline} onChange={(e) => setSite({ ...site, heroTagline: e.target.value })} />
-              </div>
-              {site.heroSlides.map((slide, i) => (
-                <div key={i} className="flex flex-wrap items-end gap-3 rounded-lg border border-white/10 p-3">
-                  <div className="min-w-[200px] flex-1">
-                    <Label>Bild-URL {i + 1}</Label>
-                    <Input value={slide.imageSrc} onChange={(e) => {
-                      const next = [...site.heroSlides]
-                      next[i] = { ...next[i], imageSrc: e.target.value }
-                      setSite({ ...site, heroSlides: next })
-                    }} />
-                  </div>
-                  <div className="h-20 w-32 overflow-hidden rounded border border-white/10">
-                    <Image src={slide.imageSrc} alt="" width={128} height={80} className="h-full w-full object-cover" unoptimized />
-                  </div>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    className="max-w-xs text-xs"
-                    onChange={async (e) => {
-                      const f = e.target.files?.[0]
-                      if (!f) return
-                      setSaveMsg(null)
-                      setBusy(true)
-                      try {
-                        const url = await uploadToCms(f, 'hero')
-                        const next = [...site.heroSlides]
-                        next[i] = { ...next[i], imageSrc: url }
-                        setSite({ ...site, heroSlides: next })
-                      } catch (err) {
-                        setSaveMsg(err instanceof Error ? err.message : 'Upload fehlgeschlagen')
-                      } finally {
-                        setBusy(false)
-                      }
-                    }}
-                  />
-                </div>
-              ))}
-              <div className="flex gap-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  disabled={site.heroSlides.length >= CMS_LIMITS.maxHeroSlides}
-                  onClick={() => {
-                    if (site.heroSlides.length >= CMS_LIMITS.maxHeroSlides) {
-                      setSaveMsg(`Maximal ${CMS_LIMITS.maxHeroSlides} Hero-Slides.`)
-                      return
-                    }
-                    setSaveMsg(null)
-                    setSite({ ...site, heroSlides: [...site.heroSlides, { imageSrc: '/images/headers/hero-hq-1.png' }] })
-                  }}
-                >
-                  Slide hinzufügen
-                </Button>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  onClick={() => setSite({ ...site, heroSlides: site.heroSlides.slice(0, -1) })}
-                  disabled={site.heroSlides.length <= 1}
-                >
-                  Letzten entfernen
-                </Button>
-              </div>
-              <PreviewHero site={site} />
-              <Button type="button" disabled={busy} onClick={() => void saveSite()}>
-                Speichern
-              </Button>
-            </CardContent>
-          </Card>
-        </TabsContent>
+              <TabsContent value="start" className="mt-4 space-y-4">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-base">Startseite — großes Bild oben</CardTitle>
+                  </CardHeader>
+                  <CardContent className="grid gap-4">
+                    <div className="grid gap-2">
+                      <Label>Überschrift über dem Bild</Label>
+                      <Input value={site.heroTagline} onChange={(e) => setSite({ ...site, heroTagline: e.target.value })} />
+                    </div>
+                    {site.heroSlides.map((slide, i) => (
+                      <div key={i} className="space-y-2 rounded-lg border border-white/10 bg-white/[0.02] p-3">
+                        <p className="text-xs font-semibold text-rally-orange">Bild {i + 1}</p>
+                        <div className="flex flex-wrap items-end gap-3">
+                          <div className="h-24 w-40 overflow-hidden rounded-md border border-white/10">
+                            <Image src={slide.imageSrc} alt="" width={160} height={96} className="h-full w-full object-cover" unoptimized />
+                          </div>
+                          <div>
+                            <Label className="text-xs">Neues Bild hochladen</Label>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              className="mt-1 block max-w-[220px] text-xs file:mr-2 file:rounded file:border-0 file:bg-rally-orange/25 file:px-2 file:py-1 file:text-white"
+                              onChange={async (e) => {
+                                const f = e.target.files?.[0]
+                                if (!f) return
+                                setSaveMsg(null)
+                                setBusy(true)
+                                try {
+                                  const url = await uploadToCms(f, 'hero')
+                                  const next = [...site.heroSlides]
+                                  next[i] = { ...next[i], imageSrc: url }
+                                  setSite({ ...site, heroSlides: next })
+                                } catch (err) {
+                                  setSaveMsg(err instanceof Error ? err.message : 'Upload fehlgeschlagen')
+                                } finally {
+                                  setBusy(false)
+                                }
+                              }}
+                            />
+                          </div>
+                        </div>
+                        <details className="text-xs">
+                          <summary className="cursor-pointer text-rally-muted">Bild-Link manuell (nur wenn nötig)</summary>
+                          <Input
+                            className="mt-2"
+                            value={slide.imageSrc}
+                            onChange={(e) => {
+                              const next = [...site.heroSlides]
+                              next[i] = { ...next[i], imageSrc: e.target.value }
+                              setSite({ ...site, heroSlides: next })
+                            }}
+                          />
+                        </details>
+                      </div>
+                    ))}
+                    <div className="flex flex-wrap gap-2">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        disabled={site.heroSlides.length >= CMS_LIMITS.maxHeroSlides}
+                        onClick={() => {
+                          if (site.heroSlides.length >= CMS_LIMITS.maxHeroSlides) {
+                            setSaveMsg(`Maximal ${CMS_LIMITS.maxHeroSlides} Bilder.`)
+                            return
+                          }
+                          setSaveMsg(null)
+                          setSite({ ...site, heroSlides: [...site.heroSlides, { imageSrc: '/images/headers/hero-hq-1.png' }] })
+                        }}
+                      >
+                        Weiteres Bild
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setSite({ ...site, heroSlides: site.heroSlides.slice(0, -1) })}
+                        disabled={site.heroSlides.length <= 1}
+                      >
+                        Letztes entfernen
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
 
-        <TabsContent value="social" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Social &amp; Hero-Button</CardTitle>
-            </CardHeader>
-            <CardContent className="grid gap-3">
-              <div>
-                <Label>Facebook URL</Label>
-                <Input
-                  value={site.social.facebookUrl}
-                  onChange={(e) => setSite({ ...site, social: { ...site.social, facebookUrl: e.target.value } })}
-                />
-              </div>
-              <div>
-                <Label>Instagram URL</Label>
-                <Input
-                  value={site.social.instagramUrl}
-                  onChange={(e) => setSite({ ...site, social: { ...site.social, instagramUrl: e.target.value } })}
-                />
-              </div>
-              <div>
-                <Label>YouTube URL</Label>
-                <Input
-                  value={site.social.youtubeUrl}
-                  onChange={(e) => setSite({ ...site, social: { ...site.social, youtubeUrl: e.target.value } })}
-                />
-              </div>
-              <div>
-                <Label>Hero Facebook Button Text</Label>
-                <Input
-                  value={site.social.heroFacebookButtonLabel ?? ''}
-                  onChange={(e) => setSite({ ...site, social: { ...site.social, heroFacebookButtonLabel: e.target.value } })}
-                />
-              </div>
-              <PreviewSocial site={site} />
-              <Button type="button" disabled={busy} onClick={() => void saveSite()}>
-                Speichern
-              </Button>
-            </CardContent>
-          </Card>
-        </TabsContent>
+              <TabsContent value="social" className="mt-4 space-y-4">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-base">Facebook &amp; andere Links</CardTitle>
+                  </CardHeader>
+                  <CardContent className="grid gap-3">
+                    <div>
+                      <Label>Facebook (Link zur Seite)</Label>
+                      <Input
+                        value={site.social.facebookUrl}
+                        onChange={(e) => setSite({ ...site, social: { ...site.social, facebookUrl: e.target.value } })}
+                      />
+                    </div>
+                    <div>
+                      <Label>Instagram</Label>
+                      <Input
+                        value={site.social.instagramUrl}
+                        onChange={(e) => setSite({ ...site, social: { ...site.social, instagramUrl: e.target.value } })}
+                      />
+                    </div>
+                    <div>
+                      <Label>YouTube</Label>
+                      <Input
+                        value={site.social.youtubeUrl}
+                        onChange={(e) => setSite({ ...site, social: { ...site.social, youtubeUrl: e.target.value } })}
+                      />
+                    </div>
+                    <div>
+                      <Label>Text auf dem Facebook-Button (Startseite)</Label>
+                      <Input
+                        value={site.social.heroFacebookButtonLabel ?? ''}
+                        onChange={(e) => setSite({ ...site, social: { ...site.social, heroFacebookButtonLabel: e.target.value } })}
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
 
-        <TabsContent value="team" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Vorstand</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {site.teamMembers.map((m, i) => (
-                <div key={m.id} className="grid gap-2 rounded-lg border border-white/10 p-3 sm:grid-cols-2">
-                  <div>
-                    <Label>Name</Label>
-                    <Input
-                      value={m.name}
-                      onChange={(e) => {
-                        const next = [...site.teamMembers]
-                        next[i] = { ...next[i], name: e.target.value }
-                        setSite({ ...site, teamMembers: next })
-                      }}
+              <TabsContent value="team" className="mt-4 space-y-4">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-base">Vorstand — Fotos &amp; Namen</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    {site.teamMembers.map((m, i) => (
+                      <div key={m.id} className="space-y-3 rounded-lg border border-white/10 bg-white/[0.02] p-3">
+                        <div className="grid gap-2 sm:grid-cols-2">
+                          <div>
+                            <Label>Name</Label>
+                            <Input
+                              value={m.name}
+                              onChange={(e) => {
+                                const next = [...site.teamMembers]
+                                next[i] = { ...next[i], name: e.target.value }
+                                setSite({ ...site, teamMembers: next })
+                              }}
+                            />
+                          </div>
+                          <div>
+                            <Label>Funktion</Label>
+                            <Input
+                              value={m.role}
+                              onChange={(e) => {
+                                const next = [...site.teamMembers]
+                                next[i] = { ...next[i], role: e.target.value }
+                                setSite({ ...site, teamMembers: next })
+                              }}
+                            />
+                          </div>
+                        </div>
+                        <div className="flex flex-wrap items-end gap-3">
+                          <div className="h-28 w-24 overflow-hidden rounded-md border border-white/10">
+                            <Image src={m.imageSrc} alt="" width={96} height={112} className="h-full w-full object-cover" unoptimized />
+                          </div>
+                          <div>
+                            <Label className="text-xs">Foto ersetzen</Label>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              className="mt-1 block text-xs file:mr-2 file:rounded file:border-0 file:bg-rally-orange/25 file:px-2 file:py-1 file:text-white"
+                              onChange={async (e) => {
+                                const f = e.target.files?.[0]
+                                if (!f) return
+                                setSaveMsg(null)
+                                setBusy(true)
+                                try {
+                                  const url = await uploadToCms(f, 'team')
+                                  const next = [...site.teamMembers]
+                                  next[i] = { ...next[i], imageSrc: url }
+                                  setSite({ ...site, teamMembers: next })
+                                } catch (err) {
+                                  setSaveMsg(err instanceof Error ? err.message : 'Upload fehlgeschlagen')
+                                } finally {
+                                  setBusy(false)
+                                }
+                              }}
+                            />
+                          </div>
+                        </div>
+                        <details className="text-xs">
+                          <summary className="cursor-pointer text-rally-muted">Foto-Link manuell (optional)</summary>
+                          <Input
+                            className="mt-2"
+                            value={m.imageSrc}
+                            onChange={(e) => {
+                              const next = [...site.teamMembers]
+                              next[i] = { ...next[i], imageSrc: e.target.value }
+                              setSite({ ...site, teamMembers: next })
+                            }}
+                          />
+                        </details>
+                      </div>
+                    ))}
+                    <div className="flex flex-wrap gap-2">
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        disabled={site.teamMembers.length >= CMS_LIMITS.maxTeamMembers}
+                        onClick={() => {
+                          if (site.teamMembers.length >= CMS_LIMITS.maxTeamMembers) {
+                            setSaveMsg(`Maximal ${CMS_LIMITS.maxTeamMembers} Personen.`)
+                            return
+                          }
+                          setSaveMsg(null)
+                          setSite({
+                            ...site,
+                            teamMembers: [
+                              ...site.teamMembers,
+                              {
+                                id: `m-${Date.now()}`,
+                                name: 'Neues Mitglied',
+                                role: 'Funktion',
+                                imageSrc: '/images/team/christoph-schuler.jpg',
+                              },
+                            ],
+                          })
+                        }}
+                      >
+                        Person hinzufügen
+                      </Button>
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="ghost"
+                        disabled={site.teamMembers.length <= 1}
+                        onClick={() => setSite({ ...site, teamMembers: site.teamMembers.slice(0, -1) })}
+                      >
+                        Letzte entfernen
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              <TabsContent value="bilder" className="mt-4 space-y-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-base">Bilder &amp; Events</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-8">
+                    <SimpleImageRows
+                      title="Streifen beim Club-Bereich"
+                      hint="Die kleinen Bilder in der langen Leiste im Abschnitt „Club“."
+                      items={site.clubStripImages}
+                      onChange={(clubStripImages) => setSite({ ...site, clubStripImages })}
+                      folder="club"
+                      upload={uploadToCms}
+                      setBusy={setBusy}
+                      maxItems={CMS_LIMITS.maxClubStripImages}
+                      onMessage={setSaveMsg}
                     />
-                  </div>
-                  <div>
-                    <Label>Rolle</Label>
-                    <Input
-                      value={m.role}
-                      onChange={(e) => {
-                        const next = [...site.teamMembers]
-                        next[i] = { ...next[i], role: e.target.value }
-                        setSite({ ...site, teamMembers: next })
-                      }}
+                    <HighlightsEditor
+                      highlights={site.highlights}
+                      onChange={(highlights) => setSite({ ...site, highlights })}
+                      upload={uploadToCms}
+                      setBusy={setBusy}
+                      onMessage={setSaveMsg}
                     />
-                  </div>
-                  <div className="sm:col-span-2">
-                    <Label>Bild-URL</Label>
-                    <Input
-                      value={m.imageSrc}
-                      onChange={(e) => {
-                        const next = [...site.teamMembers]
-                        next[i] = { ...next[i], imageSrc: e.target.value }
-                        setSite({ ...site, teamMembers: next })
-                      }}
+                    <SimpleImageRows
+                      title="Galerie"
+                      hint="Bilder für den großen Galerie-Bereich."
+                      items={site.galleryImages}
+                      onChange={(galleryImages) => setSite({ ...site, galleryImages })}
+                      folder="gallery"
+                      upload={uploadToCms}
+                      setBusy={setBusy}
+                      maxItems={CMS_LIMITS.maxGalleryImages}
+                      onMessage={setSaveMsg}
                     />
-                  </div>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={async (e) => {
-                      const f = e.target.files?.[0]
-                      if (!f) return
-                      setSaveMsg(null)
-                      setBusy(true)
-                      try {
-                        const url = await uploadToCms(f, 'team')
-                        const next = [...site.teamMembers]
-                        next[i] = { ...next[i], imageSrc: url }
-                        setSite({ ...site, teamMembers: next })
-                      } catch (err) {
-                        setSaveMsg(err instanceof Error ? err.message : 'Upload fehlgeschlagen')
-                      } finally {
-                        setBusy(false)
-                      }
-                    }}
-                  />
-                  <div className="h-24 w-20 overflow-hidden rounded border border-white/10 sm:col-span-2">
-                    <Image src={m.imageSrc} alt="" width={80} height={96} className="h-full w-full object-cover" unoptimized />
-                  </div>
-                </div>
-              ))}
-              <div className="flex gap-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  disabled={site.teamMembers.length >= CMS_LIMITS.maxTeamMembers}
-                  onClick={() => {
-                    if (site.teamMembers.length >= CMS_LIMITS.maxTeamMembers) {
-                      setSaveMsg(`Maximal ${CMS_LIMITS.maxTeamMembers} Team-Einträge.`)
-                      return
-                    }
-                    setSaveMsg(null)
-                    setSite({
-                      ...site,
-                      teamMembers: [
-                        ...site.teamMembers,
-                        {
-                          id: `m-${Date.now()}`,
-                          name: 'Neues Mitglied',
-                          role: 'Rolle',
-                          imageSrc: '/images/team/christoph-schuler.jpg',
-                        },
-                      ],
-                    })
-                  }}
-                >
-                  Mitglied hinzufügen
-                </Button>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  disabled={site.teamMembers.length <= 1}
-                  onClick={() => setSite({ ...site, teamMembers: site.teamMembers.slice(0, -1) })}
-                >
-                  Letztes entfernen
-                </Button>
-              </div>
-              <Button type="button" disabled={busy} onClick={() => void saveSite()}>
-                Speichern
-              </Button>
-            </CardContent>
-          </Card>
-        </TabsContent>
+                  </CardContent>
+                </Card>
+              </TabsContent>
 
-        <TabsContent value="media" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Club-Streifen, Highlights (JSON), Galerie</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <FieldList
-                title="Club-Streifen"
-                items={site.clubStripImages}
-                onChange={(clubStripImages) => setSite({ ...site, clubStripImages })}
-                upload={uploadToCms}
-                folder="club"
-                setBusy={setBusy}
-                maxItems={CMS_LIMITS.maxClubStripImages}
-                onUploadMessage={setSaveMsg}
-              />
-              <div>
-                <Label>Highlights (JSON — erste = Feature)</Label>
-                <Textarea
-                  className="mt-2 font-mono text-xs"
-                  rows={14}
-                  value={JSON.stringify(site.highlights, null, 2)}
-                  onChange={(e) => {
-                    try {
-                      const highlights = JSON.parse(e.target.value) as SiteContent['highlights']
-                      setSite({ ...site, highlights })
-                    } catch {
-                      /* ignore while typing */
-                    }
-                  }}
-                />
-              </div>
-              <FieldList
-                title="Galerie"
-                items={site.galleryImages}
-                onChange={(galleryImages) => setSite({ ...site, galleryImages })}
-                upload={uploadToCms}
-                folder="gallery"
-                setBusy={setBusy}
-                maxItems={CMS_LIMITS.maxGalleryImages}
-                onUploadMessage={setSaveMsg}
-              />
-              <Button type="button" disabled={busy} onClick={() => void saveSite()}>
-                Speichern
-              </Button>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="termine" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Termine</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {termine.map((t) => (
-                <div key={t.id} className="grid gap-2 rounded-lg border border-white/10 p-3">
-                  <div className="grid gap-2 sm:grid-cols-2">
-                    <div>
-                      <Label>Titel</Label>
-                      <Input
-                        value={t.title}
-                        onChange={(e) => setTermine(termine.map((x) => (x.id === t.id ? { ...x, title: e.target.value } : x)))}
-                      />
-                    </div>
-                    <div>
-                      <Label>Zeitfenster / Datumstext</Label>
-                      <Input
-                        value={t.dateStr}
-                        onChange={(e) => setTermine(termine.map((x) => (x.id === t.id ? { ...x, dateStr: e.target.value } : x)))}
-                      />
-                    </div>
-                    <div>
-                      <Label>Ort</Label>
-                      <Input
-                        value={t.location}
-                        onChange={(e) => setTermine(termine.map((x) => (x.id === t.id ? { ...x, location: e.target.value } : x)))}
-                      />
-                    </div>
-                    <div>
-                      <Label>Kategorie</Label>
-                      <Input
-                        value={t.category ?? ''}
-                        onChange={(e) => setTermine(termine.map((x) => (x.id === t.id ? { ...x, category: e.target.value } : x)))}
-                      />
-                    </div>
-                    <div>
-                      <Label>Kalenderdatum (YYYY-MM-DD)</Label>
-                      <Input
-                        value={t.calendarDate ?? ''}
-                        onChange={(e) => setTermine(termine.map((x) => (x.id === t.id ? { ...x, calendarDate: e.target.value } : x)))}
-                      />
-                    </div>
-                    <div>
-                      <Label>Sortierung (Zahl)</Label>
-                      <Input
-                        type="number"
-                        value={t.sortOrder ?? ''}
-                        onChange={(e) =>
-                          setTermine(
-                            termine.map((x) =>
-                              x.id === t.id ? { ...x, sortOrder: Number(e.target.value) || undefined } : x
-                            )
-                          )
-                        }
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <Label>Beschreibung</Label>
-                    <Textarea
-                      value={t.description ?? ''}
-                      onChange={(e) => setTermine(termine.map((x) => (x.id === t.id ? { ...x, description: e.target.value } : x)))}
-                    />
-                  </div>
-                  <div className="flex flex-wrap gap-2">
+              <TabsContent value="termine" className="mt-4 space-y-4">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-base">Termine (Kalender &amp; Liste)</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <p className="text-xs text-rally-muted">
+                      Jeder Termin wird einzeln gespeichert. Die Vorschau rechts zeigt sofort, wie er auf der Website wirkt.
+                    </p>
+                    {termine.map((t) => (
+                      <div key={t.id} className="space-y-3 rounded-lg border border-white/10 bg-white/[0.02] p-3">
+                        <div className="grid gap-2 sm:grid-cols-2">
+                          <div>
+                            <Label>Titel</Label>
+                            <Input
+                              value={t.title}
+                              onChange={(e) => setTermine(termine.map((x) => (x.id === t.id ? { ...x, title: e.target.value } : x)))}
+                            />
+                          </div>
+                          <div>
+                            <Label>Anzeige-Datum / Zeitfenster</Label>
+                            <Input
+                              value={t.dateStr}
+                              onChange={(e) => setTermine(termine.map((x) => (x.id === t.id ? { ...x, dateStr: e.target.value } : x)))}
+                            />
+                          </div>
+                          <div className="sm:col-span-2">
+                            <Label>Ort</Label>
+                            <Input
+                              value={t.location}
+                              onChange={(e) => setTermine(termine.map((x) => (x.id === t.id ? { ...x, location: e.target.value } : x)))}
+                            />
+                          </div>
+                          <div>
+                            <Label>Art (z. B. Slalom, Club)</Label>
+                            <Input
+                              value={t.category ?? ''}
+                              onChange={(e) => setTermine(termine.map((x) => (x.id === t.id ? { ...x, category: e.target.value } : x)))}
+                            />
+                          </div>
+                          <div>
+                            <Label>Tag im Kalender</Label>
+                            <Input
+                              type="date"
+                              value={t.calendarDate ?? ''}
+                              onChange={(e) =>
+                                setTermine(
+                                  termine.map((x) =>
+                                    x.id === t.id ? { ...x, calendarDate: e.target.value || undefined } : x
+                                  )
+                                )
+                              }
+                            />
+                          </div>
+                          <div>
+                            <Label>Reihenfolge (kleine Zahl = weiter oben)</Label>
+                            <Input
+                              type="number"
+                              value={t.sortOrder ?? ''}
+                              onChange={(e) =>
+                                setTermine(
+                                  termine.map((x) =>
+                                    x.id === t.id ? { ...x, sortOrder: Number(e.target.value) || undefined } : x
+                                  )
+                                )
+                              }
+                            />
+                          </div>
+                        </div>
+                        <div>
+                          <Label>Zusatztext</Label>
+                          <Textarea
+                            value={t.description ?? ''}
+                            onChange={(e) => setTermine(termine.map((x) => (x.id === t.id ? { ...x, description: e.target.value } : x)))}
+                            rows={2}
+                          />
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                          <Button
+                            type="button"
+                            size="sm"
+                            onClick={async () => {
+                              if (!clients) return
+                              setBusy(true)
+                              try {
+                                const { id, ...rest } = t
+                                const parsed = termineItemSchema.parse(rest)
+                                await updateDoc(doc(clients.db, 'termine', id), forFirestore(parsed as Record<string, unknown>))
+                                await revalidateSiteCache(user)
+                                setSaveMsg('Termin gespeichert.')
+                              } finally {
+                                setBusy(false)
+                              }
+                            }}
+                          >
+                            Diesen Termin speichern
+                          </Button>
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="ghost"
+                            onClick={async () => {
+                              if (!clients) return
+                              setBusy(true)
+                              try {
+                                await deleteDoc(doc(clients.db, 'termine', t.id))
+                                await loadTermine()
+                                await revalidateSiteCache(user)
+                                setSaveMsg('Termin gelöscht.')
+                              } finally {
+                                setBusy(false)
+                              }
+                            }}
+                          >
+                            Löschen
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
                     <Button
                       type="button"
-                      size="sm"
+                      variant="outline"
+                      disabled={termine.length >= CMS_LIMITS.maxTermineDocuments}
                       onClick={async () => {
                         if (!clients) return
-                        setBusy(true)
-                        try {
-                          const { id, ...rest } = t
-                          const parsed = termineItemSchema.parse(rest)
-                          await updateDoc(doc(clients.db, 'termine', id), forFirestore(parsed as Record<string, unknown>))
-                          await revalidateSiteCache(user)
-                        } finally {
-                          setBusy(false)
+                        if (termine.length >= CMS_LIMITS.maxTermineDocuments) {
+                          setSaveMsg(`Maximal ${CMS_LIMITS.maxTermineDocuments} Termine.`)
+                          return
                         }
-                      }}
-                    >
-                      Termin speichern
-                    </Button>
-                    <Button
-                      type="button"
-                      size="sm"
-                      variant="ghost"
-                      onClick={async () => {
-                        if (!clients) return
+                        setSaveMsg(null)
                         setBusy(true)
                         try {
-                          await deleteDoc(doc(clients.db, 'termine', t.id))
+                          const draft = termineItemSchema.parse({
+                            title: 'Neuer Termin',
+                            dateStr: '2026',
+                            location: 'Ort',
+                            category: 'Event',
+                            description: '',
+                            calendarDate: '2026-06-01',
+                            sortOrder: termine.length + 1,
+                          })
+                          await addDoc(collection(clients.db, 'termine'), forFirestore(draft as Record<string, unknown>))
                           await loadTermine()
                           await revalidateSiteCache(user)
+                          setSaveMsg('Neuer Termin angelegt.')
                         } finally {
                           setBusy(false)
                         }
                       }}
                     >
-                      Löschen
+                      Neuen Termin anlegen
                     </Button>
-                  </div>
-                </div>
-              ))}
-              <Button
-                type="button"
-                variant="outline"
-                disabled={termine.length >= CMS_LIMITS.maxTermineDocuments}
-                onClick={async () => {
-                  if (!clients) return
-                  if (termine.length >= CMS_LIMITS.maxTermineDocuments) {
-                    setSaveMsg(`Maximal ${CMS_LIMITS.maxTermineDocuments} Termine. Bitte bestehende löschen oder zusammenführen.`)
-                    return
-                  }
-                  setSaveMsg(null)
-                  setBusy(true)
-                  try {
-                    const draft = termineItemSchema.parse({
-                      title: 'Neuer Termin',
-                      dateStr: '2026',
-                      location: 'Ort',
-                      category: 'Event',
-                      description: '',
-                      calendarDate: '2026-06-01',
-                      sortOrder: termine.length + 1,
-                    })
-                    await addDoc(collection(clients.db, 'termine'), forFirestore(draft as Record<string, unknown>))
-                    await loadTermine()
-                    await revalidateSiteCache(user)
-                  } finally {
-                    setBusy(false)
-                  }
-                }}
-              >
-                Neuer Termin
-              </Button>
-            </CardContent>
-          </Card>
-        </TabsContent>
+                  </CardContent>
+                </Card>
+              </TabsContent>
 
-        <TabsContent value="kontakt" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Kontakt &amp; Saison</CardTitle>
-            </CardHeader>
-            <CardContent className="grid gap-3">
-              <div>
-                <Label>E-Mail</Label>
-                <Input value={site.contactEmail} onChange={(e) => setSite({ ...site, contactEmail: e.target.value })} />
-              </div>
-              <div>
-                <Label>Google Maps Such-URL</Label>
-                <Input value={site.mapSearchUrl} onChange={(e) => setSite({ ...site, mapSearchUrl: e.target.value })} />
-              </div>
-              <div>
-                <Label>Saison-Label (z.B. Saison 2026)</Label>
-                <Input value={site.seasonLabel} onChange={(e) => setSite({ ...site, seasonLabel: e.target.value })} />
-              </div>
-              <div>
-                <Label>Termine-Einleitungstext</Label>
-                <Textarea value={site.termineIntro} onChange={(e) => setSite({ ...site, termineIntro: e.target.value })} rows={3} />
-              </div>
-              <div>
-                <Label>Übersichtskarten (JSON)</Label>
-                <Textarea
-                  className="mt-2 font-mono text-xs"
-                  rows={8}
-                  value={JSON.stringify(site.termineOverviewCards, null, 2)}
-                  onChange={(e) => {
-                    try {
-                      const v = JSON.parse(e.target.value) as SiteContent['termineOverviewCards']
-                      setSite({ ...site, termineOverviewCards: v })
-                    } catch {
-                      /* ignore */
-                    }
-                  }}
-                />
-              </div>
-              <Button type="button" disabled={busy} onClick={() => void saveSite()}>
-                Speichern
-              </Button>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+              <TabsContent value="kontakt" className="mt-4 space-y-4">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-base">Kontakt, Saison &amp; kleine Termin-Karten</CardTitle>
+                  </CardHeader>
+                  <CardContent className="grid gap-4">
+                    <div>
+                      <Label>Kontakt-E-Mail</Label>
+                      <Input type="email" value={site.contactEmail} onChange={(e) => setSite({ ...site, contactEmail: e.target.value })} />
+                    </div>
+                    <div>
+                      <Label>Google Maps (Suchlink)</Label>
+                      <Input value={site.mapSearchUrl} onChange={(e) => setSite({ ...site, mapSearchUrl: e.target.value })} />
+                    </div>
+                    <div>
+                      <Label>Saison (z. B. Saison 2026)</Label>
+                      <Input value={site.seasonLabel} onChange={(e) => setSite({ ...site, seasonLabel: e.target.value })} />
+                    </div>
+                    <div>
+                      <Label>Text über den Terminen</Label>
+                      <Textarea value={site.termineIntro} onChange={(e) => setSite({ ...site, termineIntro: e.target.value })} rows={3} />
+                    </div>
+                    <div>
+                      <Label>Teaser-Link Galerie (Facebook, optional)</Label>
+                      <Input
+                        value={site.galleryFacebookTeaser ?? ''}
+                        onChange={(e) => setSite({ ...site, galleryFacebookTeaser: e.target.value })}
+                      />
+                    </div>
+                    <TermineOverviewEditor
+                      cards={site.termineOverviewCards}
+                      onChange={(termineOverviewCards) => setSite({ ...site, termineOverviewCards })}
+                    />
+                  </CardContent>
+                </Card>
+              </TabsContent>
 
-      {saveMsg ? <p className="mt-4 text-sm text-rally-muted">{saveMsg}</p> : null}
-    </div>
-  )
-}
-
-function PreviewHero({ site }: { site: SiteContent }) {
-  return (
-    <div className="rounded-lg border border-dashed border-white/20 p-3">
-      <p className="mb-2 text-xs font-semibold text-rally-orange">Vorschau</p>
-      <div className="flex gap-2 overflow-x-auto">
-        {site.heroSlides.map((s, i) => (
-          <div key={i} className="h-24 w-40 shrink-0 overflow-hidden rounded border border-white/10">
-            <Image src={s.imageSrc} alt="" width={160} height={96} className="h-full w-full object-cover" unoptimized />
+              <TabsContent value="vorschau" className="mt-4 xl:hidden">
+                <AdminSitePreview site={site} termine={termine} />
+              </TabsContent>
+            </Tabs>
           </div>
-        ))}
-      </div>
-    </div>
-  )
-}
 
-function PreviewSocial({ site }: { site: SiteContent }) {
-  return (
-    <div className="rounded-lg border border-dashed border-white/20 p-3 text-xs">
-      <p className="mb-2 font-semibold text-rally-orange">Vorschau Links</p>
-      <ul className="list-inside list-disc space-y-1 text-rally-muted">
-        <li>Facebook: {site.social.facebookUrl}</li>
-        <li>Instagram: {site.social.instagramUrl || '—'}</li>
-        <li>YouTube: {site.social.youtubeUrl || '—'}</li>
-      </ul>
-    </div>
-  )
-}
-
-type StripItem = { src: string; alt: string }
-
-function FieldList({
-  title,
-  items,
-  onChange,
-  upload,
-  folder,
-  setBusy,
-  maxItems,
-  onUploadMessage,
-}: {
-  title: string
-  items: StripItem[]
-  onChange: (next: StripItem[]) => void
-  upload: (file: File, folder: string) => Promise<string>
-  folder: string
-  setBusy: (v: boolean) => void
-  maxItems: number
-  onUploadMessage: (msg: string | null) => void
-}) {
-  const rows = items.length ? items : [{ src: '', alt: '' }]
-
-  return (
-    <div className="space-y-2">
-      <p className="font-display text-sm font-bold text-white">{title}</p>
-      {rows.map((row, i) => (
-        <div key={i} className="flex flex-wrap items-end gap-2 rounded border border-white/10 p-2">
-          <Input
-            className="max-w-[220px]"
-            placeholder="URL"
-            value={row.src}
-            onChange={(e) => {
-              const next = [...rows]
-              next[i] = { ...next[i], src: e.target.value }
-              onChange(next)
-            }}
-          />
-          <Input
-            className="max-w-[180px]"
-            placeholder="Alt"
-            value={row.alt}
-            onChange={(e) => {
-              const next = [...rows]
-              next[i] = { ...next[i], alt: e.target.value }
-              onChange(next)
-            }}
-          />
-          <input
-            type="file"
-            accept="image/*"
-            className="max-w-[200px] text-[10px]"
-            onChange={async (e) => {
-              const f = e.target.files?.[0]
-              if (!f) return
-              onUploadMessage(null)
-              setBusy(true)
-              try {
-                const url = await upload(f, folder)
-                const next = [...rows]
-                next[i] = { ...next[i], src: url }
-                onChange(next)
-              } catch (err) {
-                onUploadMessage(err instanceof Error ? err.message : 'Upload fehlgeschlagen')
-              } finally {
-                setBusy(false)
-              }
-            }}
-          />
+          <div className="hidden min-w-0 xl:block xl:sticky xl:top-24">
+            <AdminSitePreview site={site} termine={termine} />
+          </div>
         </div>
-      ))}
-      <div className="flex gap-2">
-        <Button
-          type="button"
-          size="sm"
-          variant="outline"
-          disabled={items.length >= maxItems}
-          onClick={() => {
-            if (items.length >= maxItems) {
-              onUploadMessage(`Limit: maximal ${maxItems} Bilder bei „${title}".`)
-              return
-            }
-            onUploadMessage(null)
-            onChange([...rows, { src: '', alt: '' }])
-          }}
-        >
-          Zeile +
-        </Button>
-        <Button type="button" size="sm" variant="ghost" disabled={rows.length <= 1} onClick={() => onChange(rows.slice(0, -1))}>
-          Zeile −
-        </Button>
       </div>
     </div>
   )
