@@ -39,5 +39,8 @@ next-env.d.ts
 .vscode/
 .idea/
 
-# Cursor
-# (alle Cursor-Dateien werden jetzt getrackt)
+# Cursor MCP config (contains secrets/tokens)
+.cursor/mcp.json
+
+# Local env
+.env.local
