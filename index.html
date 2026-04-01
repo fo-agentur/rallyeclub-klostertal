@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="de" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Rallyeclub Klostertal — Motorsport, Leidenschaft, Events im Klostertal, Vorarlberg." />
+  <title>Rallyeclub Klostertal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            rally: {
+              bg: '#0A0A0F',
+              card: '#12121A',
+              accent: '#DC2626',
+              orange: '#F97316',
+              muted: '#94A3B8',
+            },
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            display: ['Orbitron', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    :root {
+      --rally-bg: #0a0a0f;
+      --rally-accent: #dc2626;
+      --rally-orange: #f97316;
+    }
+    html.lenis,
+    html.lenis body {
+      height: auto;
+    }
+    .lenis.lenis-smooth {
+      scroll-behavior: auto !important;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+    .cursor-dot {
+      pointer-events: none;
+      position: fixed;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(220, 38, 38, 0.25) 0%, rgba(249, 115, 22, 0.08) 55%, transparent 70%);
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .cursor-dot.is-visible {
+      opacity: 1;
+    }
+    @media (max-width: 1023px), (prefers-reduced-motion: reduce) {
+      .cursor-dot {
+        display: none !important;
+      }
+    }
+    .clip-reveal {
+      clip-path: inset(0 100% 0 0);
+    }
+    .glass {
+      background: rgba(18, 18, 26, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .nav-glass {
+      background: transparent;
+      transition: background 0.35s ease, border-color 0.35s ease;
+    }
+    .nav-glass.is-scrolled {
+      background: rgba(10, 10, 15, 0.85);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+    .glow-pulse {
+      animation: glowPulse 2.4s ease-in-out infinite;
+    }
+    @keyframes glowPulse {
+      0%, 100% {
+        box-shadow: 0 0 20px rgba(220, 38, 38, 0.35), 0 0 40px rgba(249, 115, 22, 0.15);
+      }
+      50% {
+        box-shadow: 0 0 32px rgba(220, 38, 38, 0.55), 0 0 56px rgba(249, 115, 22, 0.28);
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .glow-pulse {
+        animation: none;
+        box-shadow: 0 0 20px rgba(220, 38, 38, 0.35);
+      }
+    }
+    .scroll-arrow {
+      animation: bounceY 2s ease-in-out infinite;
+    }
+    @keyframes bounceY {
+      0%, 100% { transform: translateY(0); opacity: 0.7; }
+      50% { transform: translateY(8px); opacity: 1; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .scroll-arrow { animation: none; }
+    }
+    .hero-bg {
+      will-change: transform;
+    }
+    .map-embed {
+      min-height: 280px;
+      filter: grayscale(0.2) contrast(1.05);
+    }
+    @media (min-width: 1024px) {
+      body.has-custom-cursor {
+        cursor: none;
+      }
+    }
+    .event-card {
+      transform-style: preserve-3d;
+    }
+  </style>
+</head>
+<body class="bg-rally-bg text-rally-muted antialiased overflow-x-hidden selection:bg-rally-accent/40 selection:text-white">
+  <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[10001] focus:rounded-lg focus:bg-rally-accent focus:px-4 focus:py-3 focus:text-white focus:outline-none">Zum Inhalt springen</a>
+
+  <div id="page-overlay" class="pointer-events-none fixed inset-0 z-[10000] bg-black translate-y-0" aria-hidden="true"></div>
+  <div id="custom-cursor" class="cursor-dot hidden lg:block" aria-hidden="true"></div>
+
+  <header id="site-header" class="nav-glass fixed left-0 right-0 top-0 z-[900] border-b border-transparent">
+    <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
+      <a href="#hero" class="flex min-h-[44px] min-w-[44px] items-center" data-lenis-scroll>
+        <img src="images/schriftzug_transparent_kl.png" alt="Rallyeclub Klostertal Logo" class="h-9 w-auto max-w-[200px] object-contain sm:h-10" width="200" height="40" loading="eager" />
+      </a>
+      <nav class="hidden items-center gap-1 lg:flex" aria-label="Hauptnavigation">
+        <a href="#ueber-uns" class="min-h-[44px] min-w-[44px] px-3 py-2 text-sm font-medium text-white/90 transition hover:text-rally-orange" data-lenis-scroll>Über Uns</a>
+        <a href="#events" class="min-h-[44px] min-w-[44px] px-3 py-2 text-sm font-medium text-white/90 transition hover:text-rally-orange" data-lenis-scroll>Events</a>
+        <a href="#galerie" class="min-h-[44px] min-w-[44px] px-3 py-2 text-sm font-medium text-white/90 transition hover:text-rally-orange" data-lenis-scroll>Galerie</a>
+        <a href="#mitmachen" class="min-h-[44px] min-w-[44px] px-3 py-2 text-sm font-medium text-white/90 transition hover:text-rally-orange" data-lenis-scroll>Mitmachen</a>
+        <a href="#kontakt" class="min-h-[44px] min-w-[44px] px-3 py-2 text-sm font-medium text-white/90 transition hover:text-rally-orange" data-lenis-scroll>Kontakt</a>
+        <a href="#mitmachen" class="ml-2 inline-flex min-h-[44px] items-center justify-center rounded-full bg-gradient-to-r from-rally-accent to-rally-orange px-5 py-2.5 text-sm font-semibold text-white shadow-lg transition hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rally-orange" data-lenis-scroll>Mitglied werden</a>
+      </nav>
+      <button type="button" id="menu-toggle" class="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg border border-white/10 bg-white/5 text-white lg:hidden" aria-expanded="false" aria-controls="mobile-menu">
+        <span class="sr-only">Menü öffnen</span>
+        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+    </div>
+    <div id="mobile-menu" class="fixed inset-x-0 top-[57px] z-[899] hidden border-b border-white/10 glass lg:hidden" hidden>
+      <nav class="flex flex-col gap-1 px-4 py-4" aria-label="Mobile Navigation">
+        <a href="#ueber-uns" class="min-h-[44px] rounded-lg px-3 py-3 text-base font-medium text-white" data-lenis-scroll>Über Uns</a>
+        <a href="#events" class="min-h-[44px] rounded-lg px-3 py-3 text-base font-medium text-white" data-lenis-scroll>Events</a>
+        <a href="#galerie" class="min-h-[44px] rounded-lg px-3 py-3 text-base font-medium text-white" data-lenis-scroll>Galerie</a>
+        <a href="#mitmachen" class="min-h-[44px] rounded-lg px-3 py-3 text-base font-medium text-white" data-lenis-scroll>Mitmachen</a>
+        <a href="#kontakt" class="min-h-[44px] rounded-lg px-3 py-3 text-base font-medium text-white" data-lenis-scroll>Kontakt</a>
+        <a href="#mitmachen" class="mt-2 inline-flex min-h-[44px] items-center justify-center rounded-full bg-gradient-to-r from-rally-accent to-rally-orange px-5 py-3 text-center font-semibold text-white" data-lenis-scroll>Mitglied werden</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- 1. HERO -->
+    <section id="hero" class="relative flex min-h-[100dvh] flex-col items-center justify-center overflow-hidden">
+      <div class="hero-bg absolute inset-0 scale-[1.15] bg-cover bg-center" style="background-image: url('images/headers/1.png');" role="img" aria-label="Rallye-Auto im Einsatz"></div>
+      <div class="absolute inset-0 bg-gradient-to-b from-black/75 via-black/45 to-black/85" aria-hidden="true"></div>
+      <div class="hero-inner relative z-10 flex max-w-4xl flex-col items-center px-4 pt-24 text-center sm:px-6">
+        <img src="images/schriftzug_transparent_kl.png" alt="" class="mb-8 w-full max-w-[min(400px,90vw)] object-contain" width="400" height="120" loading="eager" />
+        <h1 class="font-display text-4xl font-extrabold tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl">
+          <span id="hero-split" class="inline-block"></span>
+        </h1>
+        <p id="hero-sub" class="mt-6 max-w-xl text-base font-medium text-rally-muted sm:text-lg md:text-xl">Motorsport · Leidenschaft · Klostertal</p>
+        <a href="#events" class="glow-pulse mt-10 inline-flex min-h-[48px] min-w-[44px] items-center justify-center rounded-full bg-gradient-to-r from-rally-accent to-rally-orange px-8 py-3 text-base font-semibold text-white transition hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white" data-lenis-scroll>Events entdecken</a>
+      </div>
+      <div class="scroll-indicator absolute bottom-8 left-1/2 z-10 -translate-x-1/2" aria-hidden="true">
+        <div class="scroll-arrow flex flex-col items-center gap-1 text-white/70">
+          <span class="text-xs uppercase tracking-widest">Scroll</span>
+          <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. ÜBER UNS -->
+    <section id="ueber-uns" class="relative scroll-mt-20 py-20 sm:py-24 lg:py-28">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <h2 id="headline-ueber" class="font-display clip-reveal text-4xl font-bold text-white sm:text-5xl md:text-6xl">Der Club</h2>
+        <div class="mt-12 grid gap-12 lg:grid-cols-2 lg:items-center">
+          <div id="ueber-text" class="space-y-5 text-lg leading-relaxed">
+            <p>Wir sind Motorsportbegeisterte aus dem <strong class="font-semibold text-white">Klostertal</strong> — gegründet aus purer Leidenschaft am Fahren und am sportlichen Wettkampf.</p>
+            <p>Wir organisieren <strong class="font-semibold text-white">Autoslaloms</strong>, Events und Treffen für alle, die das Adrenalin lieben. Ob Slalom, Gala oder Jahreshauptversammlung: beim Rallyeclub Klostertal geht es um Gemeinschaft und Tempo.</p>
+            <p class="text-white/95">Vorarlbergs heißester Rallye-Club — <span class="text-rally-orange">willkommen in der Familie.</span></p>
+          </div>
+          <div id="ueber-img-wrap" class="relative overflow-hidden rounded-2xl border border-white/10 shadow-2xl shadow-black/50">
+            <img src="images/headers/2.png" alt="Rallye-Impression aus dem Klostertal" class="h-full w-full object-cover" width="800" height="600" loading="lazy" />
+          </div>
+        </div>
+        <div id="stats-row" class="mt-16 grid gap-4 sm:grid-cols-3">
+          <article class="stat-card glass rounded-2xl p-6 text-center">
+            <p class="font-display text-4xl font-bold text-white"><span class="stat-num" data-target="2015" data-start="2008">2008</span></p>
+            <p class="mt-2 text-sm font-medium uppercase tracking-wider text-rally-muted">Gegründet</p>
+          </article>
+          <article class="stat-card glass rounded-2xl p-6 text-center">
+            <p class="font-display text-4xl font-bold text-white"><span class="stat-num" data-target="50" data-suffix="+">0</span></p>
+            <p class="mt-2 text-sm font-medium uppercase tracking-wider text-rally-muted">Mitglieder</p>
+          </article>
+          <article class="stat-card glass rounded-2xl p-6 text-center">
+            <p class="font-display text-4xl font-bold text-white"><span class="stat-num" data-target="10" data-suffix="+">0</span></p>
+            <p class="mt-2 text-sm font-medium uppercase tracking-wider text-rally-muted">Events pro Jahr</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. EVENTS — horizontal (desktop) -->
+    <section id="events" class="relative scroll-mt-20 py-20 sm:py-24 lg:py-28">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <h2 id="headline-events" class="font-display clip-reveal text-4xl font-bold text-white sm:text-5xl md:text-6xl">Events</h2>
+        <p class="mt-4 max-w-2xl text-lg text-rally-muted">Unsere Highlights — live und voller Action.</p>
+      </div>
+
+      <div id="events-horizontal-wrap" class="relative mt-14 hidden overflow-hidden md:block">
+        <div id="events-pin" class="relative h-screen">
+          <div id="events-track" class="flex h-full w-max items-center gap-8 px-8 pl-12 lg:pl-24">
+            <article class="event-card group relative h-[70vh] w-[85vw] max-w-3xl flex-shrink-0 overflow-hidden rounded-2xl border border-white/10 shadow-xl md:w-[70vw]">
+              <img src="images/headers/1.png" alt="Autoslalom St. Gallenkirch" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" width="1200" height="800" />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent"></div>
+              <h3 class="absolute bottom-0 left-0 right-0 p-8 font-display text-2xl font-bold text-white md:text-3xl">Autoslalom St. Gallenkirch</h3>
+            </article>
+            <article class="event-card group relative h-[70vh] w-[85vw] max-w-3xl flex-shrink-0 overflow-hidden rounded-2xl border border-white/10 shadow-xl md:w-[70vw]">
+              <img src="images/headers/2.png" alt="Bergrennen und Rallye-Action" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" width="1200" height="800" />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent"></div>
+              <h3 class="absolute bottom-0 left-0 right-0 p-8 font-display text-2xl font-bold text-white md:text-3xl">Bergrennen</h3>
+            </article>
+            <article class="event-card group relative h-[70vh] w-[85vw] max-w-3xl flex-shrink-0 overflow-hidden rounded-2xl border border-white/10 shadow-xl md:w-[70vw]">
+              <img src="images/headers/3.png" alt="Gala Abend des Rallyeclubs" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" width="1200" height="800" />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent"></div>
+              <h3 class="absolute bottom-0 left-0 right-0 p-8 font-display text-2xl font-bold text-white md:text-3xl">Gala Abend</h3>
+            </article>
+            <article class="event-card group relative h-[70vh] w-[85vw] max-w-3xl flex-shrink-0 overflow-hidden rounded-2xl border border-white/10 shadow-xl md:w-[70vw]">
+              <img src="images/headers/4.png" alt="Jahreshauptversammlung" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" width="1200" height="800" />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent"></div>
+              <h3 class="absolute bottom-0 left-0 right-0 p-8 font-display text-2xl font-bold text-white md:text-3xl">Jahreshauptversammlung</h3>
+            </article>
+            <article class="event-card group relative h-[70vh] w-[85vw] max-w-3xl flex-shrink-0 overflow-hidden rounded-2xl border border-white/10 shadow-xl md:w-[70vw]">
+              <img src="images/Autoslalom.jpg" alt="Autoslalom Event" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" width="1200" height="800" />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent"></div>
+              <h3 class="absolute bottom-0 left-0 right-0 p-8 font-display text-2xl font-bold text-white md:text-3xl">Autoslalom</h3>
+            </article>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile: vertical stack -->
+      <div class="mx-auto mt-10 grid max-w-7xl gap-6 px-4 sm:px-6 md:hidden lg:px-8">
+        <article class="overflow-hidden rounded-2xl border border-white/10">
+          <img src="images/headers/1.png" alt="Autoslalom St. Gallenkirch" class="aspect-[4/3] w-full object-cover" loading="lazy" />
+          <div class="glass p-4">
+            <h3 class="font-display text-xl font-bold text-white">Autoslalom St. Gallenkirch</h3>
+          </div>
+        </article>
+        <article class="overflow-hidden rounded-2xl border border-white/10">
+          <img src="images/headers/2.png" alt="Bergrennen" class="aspect-[4/3] w-full object-cover" loading="lazy" />
+          <div class="glass p-4"><h3 class="font-display text-xl font-bold text-white">Bergrennen</h3></div>
+        </article>
+        <article class="overflow-hidden rounded-2xl border border-white/10">
+          <img src="images/headers/3.png" alt="Gala Abend" class="aspect-[4/3] w-full object-cover" loading="lazy" />
+          <div class="glass p-4"><h3 class="font-display text-xl font-bold text-white">Gala Abend</h3></div>
+        </article>
+        <article class="overflow-hidden rounded-2xl border border-white/10">
+          <img src="images/headers/4.png" alt="Jahreshauptversammlung" class="aspect-[4/3] w-full object-cover" loading="lazy" />
+          <div class="glass p-4"><h3 class="font-display text-xl font-bold text-white">Jahreshauptversammlung</h3></div>
+        </article>
+        <article class="overflow-hidden rounded-2xl border border-white/10">
+          <img src="images/Autoslalom.jpg" alt="Autoslalom" class="aspect-[4/3] w-full object-cover" loading="lazy" />
+          <div class="glass p-4"><h3 class="font-display text-xl font-bold text-white">Autoslalom</h3></div>
+        </article>
+      </div>
+
+      <div class="mx-auto mt-16 max-w-3xl px-4 text-center sm:px-6 lg:px-8">
+        <p class="text-xl font-medium leading-relaxed text-white md:text-2xl">Vom Autoslalom bis zur Gala — <span class="text-rally-orange">wir leben Motorsport.</span></p>
+      </div>
+    </section>
+
+    <!-- 4. GALERIE -->
+    <section id="galerie" class="relative scroll-mt-20 py-20 sm:py-24 lg:py-28">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <h2 id="headline-galerie" class="font-display clip-reveal text-4xl font-bold text-white sm:text-5xl md:text-6xl">Impressionen</h2>
+        <p class="mt-4 max-w-2xl text-lg text-rally-muted">Ein Blick auf unsere Momente am Limit.</p>
+        <div id="masonry-grid" class="mt-14 columns-1 gap-4 sm:columns-2 lg:columns-3">
+          <figure class="gallery-item mb-4 break-inside-avoid overflow-hidden rounded-xl border border-white/10">
+            <div class="group relative">
+              <img src="images/headers/1.png" alt="Rallye-Impression 1" class="w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" />
+              <div class="pointer-events-none absolute inset-0 bg-rally-accent/0 transition duration-300 group-hover:bg-rally-accent/25"></div>
+            </div>
+          </figure>
+          <figure class="gallery-item mb-4 break-inside-avoid overflow-hidden rounded-xl border border-white/10">
+            <div class="group relative">
+              <img src="images/Autoslalom.jpg" alt="Autoslalom Impression" class="w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" />
+              <div class="pointer-events-none absolute inset-0 bg-rally-accent/0 transition duration-300 group-hover:bg-rally-accent/25"></div>
+            </div>
+          </figure>
+          <figure class="gallery-item mb-4 break-inside-avoid overflow-hidden rounded-xl border border-white/10">
+            <div class="group relative">
+              <img src="images/headers/2.png" alt="Rallye-Impression 2" class="w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" />
+              <div class="pointer-events-none absolute inset-0 bg-rally-accent/0 transition duration-300 group-hover:bg-rally-accent/25"></div>
+            </div>
+          </figure>
+          <figure class="gallery-item mb-4 break-inside-avoid overflow-hidden rounded-xl border border-white/10">
+            <div class="group relative">
+              <img src="images/headers/3.png" alt="Rallye-Impression 3" class="h-64 w-full object-cover transition duration-500 group-hover:scale-105 sm:h-80" loading="lazy" />
+              <div class="pointer-events-none absolute inset-0 bg-rally-accent/0 transition duration-300 group-hover:bg-rally-accent/25"></div>
+            </div>
+          </figure>
+          <figure class="gallery-item mb-4 break-inside-avoid overflow-hidden rounded-xl border border-white/10">
+            <div class="group relative">
+              <img src="images/headers/4.png" alt="Rallye-Impression 4" class="w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" />
+              <div class="pointer-events-none absolute inset-0 bg-rally-accent/0 transition duration-300 group-hover:bg-rally-accent/25"></div>
+            </div>
+          </figure>
+          <figure class="gallery-item mb-4 break-inside-avoid overflow-hidden rounded-xl border border-white/10">
+            <div class="group relative">
+              <img src="images/headers/1.png" alt="Rallye-Impression Detail" class="h-56 w-full object-cover object-top transition duration-500 group-hover:scale-105" loading="lazy" />
+              <div class="pointer-events-none absolute inset-0 bg-rally-accent/0 transition duration-300 group-hover:bg-rally-accent/25"></div>
+            </div>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. MITMACHEN -->
+    <section id="mitmachen" class="relative scroll-mt-20 py-20 sm:py-24 lg:py-28">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <h2 id="headline-mitmachen" class="font-display clip-reveal text-4xl font-bold text-white sm:text-5xl md:text-6xl">Werde Teil des Clubs</h2>
+        <p class="mt-6 max-w-2xl text-lg leading-relaxed">Du liebst Motorsport? Du willst dabei sein? Werde Mitglied im Rallyeclub Klostertal.</p>
+        <div id="feature-cards" class="mt-14 grid gap-6 md:grid-cols-3">
+          <article class="feature-card glass rounded-2xl p-8">
+            <div class="text-3xl" aria-hidden="true">🏁</div>
+            <h3 class="mt-4 font-display text-xl font-bold text-white">Events</h3>
+            <p class="mt-2 text-rally-muted">Autoslaloms, Bergrennen und mehr — immer nah am Geschehen.</p>
+          </article>
+          <article class="feature-card glass rounded-2xl p-8">
+            <div class="text-3xl" aria-hidden="true">🏆</div>
+            <h3 class="mt-4 font-display text-xl font-bold text-white">Community</h3>
+            <p class="mt-2 text-rally-muted">50+ Gleichgesinnte aus dem Klostertal.</p>
+          </article>
+          <article class="feature-card glass rounded-2xl p-8">
+            <div class="text-3xl" aria-hidden="true">🎉</div>
+            <h3 class="mt-4 font-display text-xl font-bold text-white">Gala Abend</h3>
+            <p class="mt-2 text-rally-muted">Jährliche Feier mit Preisverleihung.</p>
+          </article>
+        </div>
+        <div class="mt-14 flex justify-center">
+          <a href="#kontakt" class="glow-pulse inline-flex min-h-[48px] min-w-[44px] items-center justify-center rounded-full bg-gradient-to-r from-rally-accent to-rally-orange px-10 py-4 text-lg font-semibold text-white transition hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white" data-lenis-scroll>Mitglied werden</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. KONTAKT -->
+    <section id="kontakt" class="relative scroll-mt-20 py-20 sm:py-24 lg:py-28">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <h2 id="headline-kontakt" class="font-display clip-reveal text-4xl font-bold text-white sm:text-5xl md:text-6xl">Kontakt</h2>
+        <div class="mt-14 grid gap-12 lg:grid-cols-2 lg:gap-16">
+          <div id="kontakt-map-block" class="flex flex-col gap-6">
+            <div class="space-y-4 text-lg">
+              <p><span class="text-rally-muted">E-Mail:</span><br /><a class="min-h-[44px] inline-flex items-center font-medium text-white underline decoration-rally-accent/50 underline-offset-4 hover:text-rally-orange" href="mailto:info@rallyeclub-klostertal.at">info@rallyeclub-klostertal.at</a></p>
+              <p><span class="text-rally-muted">Facebook:</span><br /><a class="min-h-[44px] inline-flex items-center break-all font-medium text-white underline decoration-rally-accent/50 underline-offset-4 hover:text-rally-orange" href="https://www.facebook.com/pages/Rallyeclub-Klostertal/132632750148150" target="_blank" rel="noopener noreferrer">facebook.com/pages/Rallyeclub-Klostertal/132632750148150</a></p>
+              <p><span class="text-rally-muted">YouTube:</span><br /><a class="min-h-[44px] inline-flex items-center break-all font-medium text-white underline decoration-rally-accent/50 underline-offset-4 hover:text-rally-orange" href="https://www.youtube.com/channel/UCHPppqKhDYMghHbsmEOQw3Q" target="_blank" rel="noopener noreferrer">youtube.com/channel/UCHPppqKhDYMghHbsmEOQw3Q</a></p>
+            </div>
+            <div class="map-embed overflow-hidden rounded-2xl border border-white/10">
+              <iframe title="Karte Klostertal Vorarlberg" class="h-72 w-full border-0" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.openstreetmap.org/export/embed.html?bbox=9.85%2C46.95%2C10.25%2C47.15&amp;layer=mapnik&amp;marker=47.05%2C10.05"></iframe>
+            </div>
+          </div>
+          <form id="kontakt-form" class="glass rounded-2xl p-6 sm:p-8" action="#" method="post">
+            <div class="grid gap-5">
+              <label class="block">
+                <span class="mb-2 block text-sm font-medium text-white">Name</span>
+                <input name="name" type="text" autocomplete="name" required class="min-h-[48px] w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-white placeholder:text-rally-muted/60 outline-none transition focus:border-rally-orange focus:ring-2 focus:ring-rally-orange/40" placeholder="Vor- und Nachname" />
+              </label>
+              <label class="block">
+                <span class="mb-2 block text-sm font-medium text-white">E-Mail</span>
+                <input name="email" type="email" autocomplete="email" required class="min-h-[48px] w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-white placeholder:text-rally-muted/60 outline-none transition focus:border-rally-orange focus:ring-2 focus:ring-rally-orange/40" placeholder="name@beispiel.at" />
+              </label>
+              <label class="block">
+                <span class="mb-2 block text-sm font-medium text-white">Telefon</span>
+                <input name="phone" type="tel" autocomplete="tel" class="min-h-[48px] w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-white placeholder:text-rally-muted/60 outline-none transition focus:border-rally-orange focus:ring-2 focus:ring-rally-orange/40" placeholder="+43 …" />
+              </label>
+              <label class="block">
+                <span class="mb-2 block text-sm font-medium text-white">Nachricht</span>
+                <textarea name="message" rows="5" required class="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-white placeholder:text-rally-muted/60 outline-none transition focus:border-rally-orange focus:ring-2 focus:ring-rally-orange/40" placeholder="Deine Nachricht an uns …"></textarea>
+              </label>
+              <button type="submit" class="min-h-[48px] w-full rounded-full bg-gradient-to-r from-rally-accent to-rally-orange py-3 text-base font-semibold text-white transition hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">Senden</button>
+            </div>
+            <p class="mt-4 text-xs text-rally-muted">Mit dem Absenden stimmst du der Verarbeitung deiner Angaben zum Zweck der Kontaktaufnahme zu (Hinweis: Formular ist ein Platzhalter bis zur Anbindung).</p>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- Impressum anchor -->
+    <section id="impressum" class="border-t border-white/10 py-16">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <h2 class="font-display text-2xl font-bold text-white">Impressum</h2>
+        <p class="mt-4 max-w-2xl text-sm leading-relaxed text-rally-muted">
+          <strong class="text-white">Rallyeclub Klostertal</strong><br />
+          Vorarlberg, Österreich<br />
+          Kontakt: <a class="text-rally-orange underline" href="mailto:info@rallyeclub-klostertal.at">info@rallyeclub-klostertal.at</a><br />
+          <span class="text-rally-muted/80">Vollständige Impressumsangaben folgen nach redaktioneller Freigabe.</span>
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t border-white/10 bg-rally-card/50 py-12">
+    <div class="mx-auto flex max-w-7xl flex-col gap-10 px-4 sm:px-6 lg:flex-row lg:items-start lg:justify-between lg:px-8">
+      <div class="flex flex-col gap-4">
+        <img src="images/schriftzug_transparent_kl.png" alt="Rallyeclub Klostertal" class="h-8 w-auto max-w-[180px] object-contain opacity-90" width="180" height="36" loading="lazy" />
+        <p class="text-sm text-rally-muted">© 2026 Rallyeclub Klostertal. Alle Rechte vorbehalten.</p>
+        <p class="text-sm text-rally-muted">Made with <span class="text-rally-accent">♥</span> in Vorarlberg</p>
+      </div>
+      <nav aria-label="Footer Navigation" class="flex flex-wrap gap-x-6 gap-y-2">
+        <a href="#ueber-uns" class="min-h-[44px] inline-flex items-center text-sm font-medium text-white/90 hover:text-rally-orange" data-lenis-scroll>Über Uns</a>
+        <a href="#events" class="min-h-[44px] inline-flex items-center text-sm font-medium text-white/90 hover:text-rally-orange" data-lenis-scroll>Events</a>
+        <a href="#galerie" class="min-h-[44px] inline-flex items-center text-sm font-medium text-white/90 hover:text-rally-orange" data-lenis-scroll>Galerie</a>
+        <a href="#kontakt" class="min-h-[44px] inline-flex items-center text-sm font-medium text-white/90 hover:text-rally-orange" data-lenis-scroll>Kontakt</a>
+        <a href="#impressum" class="min-h-[44px] inline-flex items-center text-sm font-medium text-white/90 hover:text-rally-orange" data-lenis-scroll>Impressum</a>
+      </nav>
+      <div class="flex items-center gap-4">
+        <a href="https://www.facebook.com/pages/Rallyeclub-Klostertal/132632750148150" target="_blank" rel="noopener noreferrer" class="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full border border-white/15 bg-white/5 text-white transition hover:border-rally-orange hover:text-rally-orange" aria-label="Facebook">
+          <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 12a10 10 0 10-11.5 9.95v-7.05h-2v-3h2v-2.3c0-2 1.2-3.1 3-3.1.9 0 1.8.1 1.8.1v2.5h-1c-1 0-1.3.6-1.3 1.2V12h2.3l-.4 3h-1.9v7.05A10 10 0 0022 12z"/></svg>
+        </a>
+        <a href="https://www.youtube.com/channel/UCHPppqKhDYMghHbsmEOQw3Q" target="_blank" rel="noopener noreferrer" class="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full border border-white/15 bg-white/5 text-white transition hover:border-rally-orange hover:text-rally-orange" aria-label="YouTube">
+          <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M23.5 6.2a3 3 0 00-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 00.5 6.2 30 30 0 000 12a30 30 0 00.5 5.8 3 3 0 002.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 002.1-2.1 30 30 0 00.5-5.8 30 30 0 00-.5-5.8zM9.75 15.02V8.98L15.5 12l-5.75 3.02z"/></svg>
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.1/dist/lenis.min.js"></script>
+  <script>
+    (function () {
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const isMobile = window.matchMedia('(max-width: 767px)').matches;
+
+      gsap.registerPlugin(ScrollTrigger);
+
+      /** Lenis + ScrollTrigger */
+      let lenis = null;
+      if (!prefersReducedMotion && typeof Lenis !== 'undefined') {
+        lenis = new Lenis({
+          duration: isMobile ? 0.6 : 1.05,
+          smoothWheel: true,
+          touchMultiplier: 1.5,
+        });
+        lenis.on('scroll', ScrollTrigger.update);
+        gsap.ticker.add(function (time) {
+          lenis.raf(time * 1000);
+        });
+        gsap.ticker.lagSmoothing(0);
+        ScrollTrigger.scrollerProxy(document.documentElement, {
+          scrollTop(value) {
+            if (arguments.length && lenis) {
+              lenis.scrollTo(value, { immediate: true });
+            }
+            return lenis ? lenis.scroll : window.scrollY || document.documentElement.scrollTop;
+          },
+          getBoundingClientRect() {
+            return { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight };
+          },
+        });
+      }
+
+      function scrollToHash(el) {
+        const href = el.getAttribute('href');
+        if (!href || href.charAt(0) !== '#') return;
+        const target = document.querySelector(href);
+        if (!target) return;
+        if (lenis) {
+          lenis.scrollTo(target, { offset: -80, duration: 1.15 });
+        } else {
+          const top = target.getBoundingClientRect().top + window.scrollY - 80;
+          window.scrollTo({ top, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
+        }
+      }
+
+      document.querySelectorAll('a[data-lenis-scroll]').forEach(function (a) {
+        a.addEventListener('click', function (e) {
+          const href = a.getAttribute('href');
+          if (href && href.startsWith('#')) {
+            e.preventDefault();
+            scrollToHash(a);
+            closeMobileMenu();
+          }
+        });
+      });
+
+      const header = document.getElementById('site-header');
+      const menuToggle = document.getElementById('menu-toggle');
+      const mobileMenu = document.getElementById('mobile-menu');
+
+      function closeMobileMenu() {
+        if (!mobileMenu || !menuToggle) return;
+        mobileMenu.classList.add('hidden');
+        mobileMenu.hidden = true;
+        menuToggle.setAttribute('aria-expanded', 'false');
+      }
+
+      function openMobileMenu() {
+        if (!mobileMenu || !menuToggle) return;
+        mobileMenu.classList.remove('hidden');
+        mobileMenu.hidden = false;
+        menuToggle.setAttribute('aria-expanded', 'true');
+      }
+
+      if (menuToggle && mobileMenu) {
+        menuToggle.addEventListener('click', function () {
+          if (mobileMenu.hidden) openMobileMenu();
+          else closeMobileMenu();
+        });
+      }
+
+      ScrollTrigger.addEventListener('refresh', function () {
+        if (lenis) lenis.resize();
+      });
+
+      /** Page load overlay */
+      const overlay = document.getElementById('page-overlay');
+      if (overlay && !prefersReducedMotion) {
+        gsap.to(overlay, {
+          yPercent: -100,
+          duration: 0.8,
+          ease: 'power2.out',
+          delay: 0.05,
+          onComplete: function () {
+            overlay.style.display = 'none';
+            initHeroAnimations();
+          },
+        });
+      } else if (overlay) {
+        overlay.style.display = 'none';
+        initHeroAnimations();
+      }
+
+      /** Hero split + Ken Burns */
+      const heroTitle = 'RALLYECLUB KLOSTERTAL';
+      const splitContainer = document.getElementById('hero-split');
+      function initHeroAnimations() {
+        if (splitContainer) {
+          splitContainer.innerHTML = '';
+          heroTitle.split('').forEach(function (ch) {
+            const span = document.createElement('span');
+            span.className = 'inline-block';
+            span.style.willChange = 'transform, opacity';
+            span.textContent = ch === ' ' ? '\u00a0' : ch;
+            splitContainer.appendChild(span);
+          });
+        }
+        const heroBg = document.querySelector('.hero-bg');
+        const heroInner = document.querySelector('.hero-inner');
+        const scrollInd = document.querySelector('.scroll-indicator');
+
+        if (!prefersReducedMotion && heroBg) {
+          gsap.fromTo(heroBg, { scale: 1.15 }, { scale: 1, duration: 20, ease: 'power1.out' });
+        } else if (heroBg) {
+          gsap.set(heroBg, { scale: 1.05 });
+        }
+
+        if (splitContainer && splitContainer.children.length && !prefersReducedMotion) {
+          gsap.from(splitContainer.children, {
+            y: 80,
+            opacity: 0,
+            duration: 0.85,
+            stagger: 0.03,
+            ease: 'power3.out',
+            delay: 0.15,
+            onComplete: function () {
+              Array.prototype.forEach.call(splitContainer.children, function (c) {
+                c.style.willChange = 'auto';
+              });
+            },
+          });
+        }
+
+        const sub = document.getElementById('hero-sub');
+        if (sub && !prefersReducedMotion) {
+          gsap.fromTo(
+            sub,
+            { filter: 'blur(12px)', opacity: 0.2 },
+            { filter: 'blur(0px)', opacity: 1, duration: 1.1, delay: 0.5, ease: 'power2.out' }
+          );
+        }
+
+        if (heroInner && !prefersReducedMotion && !isMobile) {
+          gsap.to(heroInner, {
+            y: -120,
+            opacity: 0,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: '#hero',
+              start: 'top top',
+              end: 'bottom top',
+              scrub: 0.5,
+            },
+          });
+        }
+        if (heroBg && !prefersReducedMotion) {
+          gsap.to(heroBg, {
+            opacity: 0.35,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: '#hero',
+              start: 'top top',
+              end: 'bottom top',
+              scrub: 0.5,
+            },
+          });
+        }
+        if (scrollInd && !prefersReducedMotion) {
+          gsap.to(scrollInd, {
+            opacity: 0,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: '#hero',
+              start: 'top top',
+              end: '30% top',
+              scrub: true,
+            },
+          });
+        }
+      }
+
+      /** Clip-path headlines */
+      function clipReveal(selector) {
+        const el = document.querySelector(selector);
+        if (!el) return;
+        if (prefersReducedMotion) {
+          gsap.set(el, { clipPath: 'inset(0 0% 0 0)' });
+          return;
+        }
+        gsap.fromTo(
+          el,
+          { clipPath: 'inset(0 100% 0 0)' },
+          {
+            clipPath: 'inset(0 0% 0 0)',
+            duration: 1.1,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: el,
+              start: 'top 85%',
+              toggleActions: 'play none none none',
+            },
+            onComplete: function () {
+              el.style.willChange = 'auto';
+            },
+          }
+        );
+        el.style.willChange = 'clip-path';
+      }
+      ['#headline-ueber', '#headline-events', '#headline-galerie', '#headline-mitmachen', '#headline-kontakt'].forEach(clipReveal);
+
+      /** Über uns */
+      if (!prefersReducedMotion) {
+        gsap.from('#ueber-text', {
+          x: -60,
+          opacity: 0,
+          duration: 0.9,
+          ease: 'power3.out',
+          scrollTrigger: { trigger: '#ueber-uns', start: 'top 78%' },
+        });
+        gsap.from('#ueber-img-wrap', {
+          x: 60,
+          opacity: 0,
+          duration: 0.9,
+          ease: 'power3.out',
+          scrollTrigger: { trigger: '#ueber-uns', start: 'top 78%' },
+        });
+      }
+
+      /** Stats count */
+      const statNums = document.querySelectorAll('.stat-num');
+      function runCount(el) {
+        const target = parseInt(el.getAttribute('data-target'), 10);
+        const startAttr = el.getAttribute('data-start');
+        const start = startAttr != null ? parseInt(startAttr, 10) : 0;
+        const suffix = el.getAttribute('data-suffix') || '';
+        const obj = { val: start };
+        el.textContent = start + suffix;
+        gsap.to(obj, {
+          val: target,
+          duration: prefersReducedMotion ? 0 : 2,
+          ease: 'power2.out',
+          onUpdate: function () {
+            el.textContent = Math.round(obj.val) + suffix;
+          },
+        });
+      }
+      ScrollTrigger.create({
+        trigger: '#stats-row',
+        start: 'top 80%',
+        once: true,
+        onEnter: function () {
+          statNums.forEach(runCount);
+        },
+      });
+
+      /** Horizontal events */
+      const track = document.getElementById('events-track');
+      const pin = document.getElementById('events-pin');
+      if (track && pin && !prefersReducedMotion && window.innerWidth >= 768) {
+        gsap.to(track, {
+          x: function () {
+            return -(track.scrollWidth - window.innerWidth);
+          },
+          ease: 'none',
+          scrollTrigger: {
+            trigger: '#events-horizontal-wrap',
+            start: 'top top',
+            end: function () {
+              return '+=' + Math.max(track.scrollWidth - window.innerWidth, 0);
+            },
+            pin: true,
+            scrub: 1,
+            invalidateOnRefresh: true,
+            anticipatePin: 1,
+          },
+        });
+      }
+
+      /** 3D tilt on event cards (desktop) */
+      if (!prefersReducedMotion && window.innerWidth >= 768) {
+        document.querySelectorAll('.event-card').forEach(function (card) {
+          card.addEventListener('mousemove', function (e) {
+            const r = card.getBoundingClientRect();
+            const x = e.clientX - r.left;
+            const y = e.clientY - r.top;
+            const midX = r.width / 2;
+            const midY = r.height / 2;
+            const rotX = ((y - midY) / midY) * -6;
+            const rotY = ((x - midX) / midX) * 6;
+            gsap.to(card, { rotateX: rotX, rotateY: rotY, transformPerspective: 900, duration: 0.35, ease: 'power2.out' });
+          });
+          card.addEventListener('mouseleave', function () {
+            gsap.to(card, { rotateX: 0, rotateY: 0, duration: 0.45, ease: 'power2.out' });
+          });
+        });
+      }
+
+      /** Gallery stagger */
+      if (!prefersReducedMotion) {
+        gsap.from('.gallery-item', {
+          x: function (i) {
+            return i % 2 === 0 ? -40 : 40;
+          },
+          opacity: 0,
+          duration: 0.65,
+          stagger: 0.08,
+          ease: 'power3.out',
+          scrollTrigger: { trigger: '#masonry-grid', start: 'top 85%' },
+        });
+      }
+
+      /** Feature cards */
+      if (!prefersReducedMotion) {
+        gsap.from('.feature-card', {
+          y: 56,
+          opacity: 0,
+          rotationX: 15,
+          transformPerspective: 600,
+          duration: 0.75,
+          stagger: 0.12,
+          ease: 'power3.out',
+          scrollTrigger: { trigger: '#feature-cards', start: 'top 85%' },
+        });
+      }
+
+      /** Kontakt slide */
+      if (!prefersReducedMotion) {
+        gsap.from('#kontakt-map-block', { x: -50, opacity: 0, duration: 0.85, ease: 'power3.out', scrollTrigger: { trigger: '#kontakt', start: 'top 78%' } });
+        gsap.from('#kontakt-form', { x: 50, opacity: 0, duration: 0.85, ease: 'power3.out', scrollTrigger: { trigger: '#kontakt', start: 'top 78%' } });
+      }
+
+      /** Header scroll state */
+      function updateHeaderScroll() {
+        const y = lenis ? lenis.scroll : window.scrollY || document.documentElement.scrollTop;
+        if (y > 40) header.classList.add('is-scrolled');
+        else header.classList.remove('is-scrolled');
+      }
+      if (lenis) {
+        lenis.on('scroll', updateHeaderScroll);
+      } else {
+        window.addEventListener('scroll', updateHeaderScroll, { passive: true });
+      }
+      updateHeaderScroll();
+
+      /** Custom cursor */
+      const cursorEl = document.getElementById('custom-cursor');
+      if (cursorEl && !prefersReducedMotion && window.matchMedia('(min-width: 1024px)').matches) {
+        document.body.classList.add('has-custom-cursor');
+        cursorEl.classList.add('is-visible');
+        let mx = window.innerWidth / 2;
+        let my = window.innerHeight / 2;
+        let cx = mx;
+        let cy = my;
+        const lerp = 0.18;
+        document.addEventListener('mousemove', function (e) {
+          mx = e.clientX;
+          my = e.clientY;
+        });
+        function loop() {
+          cx += (mx - cx) * lerp;
+          cy += (my - cy) * lerp;
+          cursorEl.style.left = cx + 'px';
+          cursorEl.style.top = cy + 'px';
+          requestAnimationFrame(loop);
+        }
+        requestAnimationFrame(loop);
+      }
+
+      window.addEventListener('load', function () {
+        ScrollTrigger.refresh();
+      });
+      ScrollTrigger.refresh();
+      window.addEventListener('resize', function () {
+        ScrollTrigger.refresh();
+      });
+    })();
+  </script>
+</body>
+</html>
