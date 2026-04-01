@@ -1,0 +1,17 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /termine/{docId} {
+      allow read: if true;
+      allow create: if request.resource.data.keys().hasAll(['title', 'dateStr', 'location'])
+        && request.resource.data.title is string
+        && request.resource.data.title.size() > 0
+        && request.resource.data.title.size() < 200
+        && request.resource.data.dateStr is string
+        && request.resource.data.dateStr.size() < 80
+        && request.resource.data.location is string
+        && request.resource.data.location.size() < 200;
+      allow update, delete: if false;
+    }
+  }
+}
