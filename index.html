@@ -133,6 +133,13 @@
     .event-card {
       transform-style: preserve-3d;
     }
+    /* Sharper photo presentation: less “digital zoom” blur from aggressive scaling */
+    .photo img,
+    .hero-bg {
+      image-rendering: auto;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+    }
   </style>
 </head>
 <body class="bg-rally-bg text-rally-muted antialiased overflow-x-hidden selection:bg-rally-accent/40 selection:text-white">
@@ -148,8 +155,11 @@
       </a>
       <nav class="hidden items-center gap-1 lg:flex" aria-label="Hauptnavigation">
         <a href="#ueber-uns" class="min-h-[44px] min-w-[44px] px-3 py-2 text-sm font-medium text-white/90 transition hover:text-rally-orange" data-lenis-scroll>Über Uns</a>
+        <a href="#termine" class="min-h-[44px] min-w-[44px] px-3 py-2 text-sm font-medium text-white/90 transition hover:text-rally-orange" data-lenis-scroll>Termine</a>
         <a href="#events" class="min-h-[44px] min-w-[44px] px-3 py-2 text-sm font-medium text-white/90 transition hover:text-rally-orange" data-lenis-scroll>Events</a>
+        <a href="#videos" class="min-h-[44px] min-w-[44px] px-3 py-2 text-sm font-medium text-white/90 transition hover:text-rally-orange" data-lenis-scroll>Videos</a>
         <a href="#galerie" class="min-h-[44px] min-w-[44px] px-3 py-2 text-sm font-medium text-white/90 transition hover:text-rally-orange" data-lenis-scroll>Galerie</a>
+        <a href="#verein" class="min-h-[44px] min-w-[44px] px-3 py-2 text-sm font-medium text-white/90 transition hover:text-rally-orange" data-lenis-scroll>Verein</a>
         <a href="#mitmachen" class="min-h-[44px] min-w-[44px] px-3 py-2 text-sm font-medium text-white/90 transition hover:text-rally-orange" data-lenis-scroll>Mitmachen</a>
         <a href="#kontakt" class="min-h-[44px] min-w-[44px] px-3 py-2 text-sm font-medium text-white/90 transition hover:text-rally-orange" data-lenis-scroll>Kontakt</a>
         <a href="#mitmachen" class="ml-2 inline-flex min-h-[44px] items-center justify-center rounded-full bg-gradient-to-r from-rally-accent to-rally-orange px-5 py-2.5 text-sm font-semibold text-white shadow-lg transition hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rally-orange" data-lenis-scroll>Mitglied werden</a>
@@ -162,8 +172,11 @@
     <div id="mobile-menu" class="fixed inset-x-0 top-[57px] z-[899] hidden border-b border-white/10 glass lg:hidden" hidden>
       <nav class="flex flex-col gap-1 px-4 py-4" aria-label="Mobile Navigation">
         <a href="#ueber-uns" class="min-h-[44px] rounded-lg px-3 py-3 text-base font-medium text-white" data-lenis-scroll>Über Uns</a>
+        <a href="#termine" class="min-h-[44px] rounded-lg px-3 py-3 text-base font-medium text-white" data-lenis-scroll>Termine</a>
         <a href="#events" class="min-h-[44px] rounded-lg px-3 py-3 text-base font-medium text-white" data-lenis-scroll>Events</a>
+        <a href="#videos" class="min-h-[44px] rounded-lg px-3 py-3 text-base font-medium text-white" data-lenis-scroll>Videos</a>
         <a href="#galerie" class="min-h-[44px] rounded-lg px-3 py-3 text-base font-medium text-white" data-lenis-scroll>Galerie</a>
+        <a href="#verein" class="min-h-[44px] rounded-lg px-3 py-3 text-base font-medium text-white" data-lenis-scroll>Verein</a>
         <a href="#mitmachen" class="min-h-[44px] rounded-lg px-3 py-3 text-base font-medium text-white" data-lenis-scroll>Mitmachen</a>
         <a href="#kontakt" class="min-h-[44px] rounded-lg px-3 py-3 text-base font-medium text-white" data-lenis-scroll>Kontakt</a>
         <a href="#mitmachen" class="mt-2 inline-flex min-h-[44px] items-center justify-center rounded-full bg-gradient-to-r from-rally-accent to-rally-orange px-5 py-3 text-center font-semibold text-white" data-lenis-scroll>Mitglied werden</a>
@@ -174,7 +187,7 @@
   <main id="main">
     <!-- 1. HERO -->
     <section id="hero" class="relative flex min-h-[100dvh] flex-col items-center justify-center overflow-hidden">
-      <div class="hero-bg absolute inset-0 scale-[1.15] bg-cover bg-center" style="background-image: url('images/headers/hero.png');" role="img" aria-label="Rallye-Auto im Einsatz"></div>
+      <div class="hero-bg photo absolute inset-0 scale-[1.06] bg-cover bg-center" style="background-image: url('images/headers/hero.png');" role="img" aria-label="Rallye-Auto im Einsatz"></div>
       <div class="absolute inset-0 bg-gradient-to-b from-black/75 via-black/45 to-black/85" aria-hidden="true"></div>
       <div class="hero-inner relative z-10 flex max-w-4xl flex-col items-center px-4 pt-24 text-center sm:px-6">
         <img src="images/schriftzug_transparent_kl.png" alt="" class="mb-8 w-full max-w-[min(400px,90vw)] object-contain" width="400" height="120" loading="eager" />
@@ -223,6 +236,41 @@
       </div>
     </section>
 
+    <!-- Termine (Kalender wie alte Joomla-Seite) -->
+    <section id="termine" class="relative scroll-mt-20 border-t border-white/10 py-20 sm:py-24 lg:py-28">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <h2 id="headline-termine" class="font-display clip-reveal text-4xl font-bold text-white sm:text-5xl md:text-6xl">Termine</h2>
+        <p class="mt-4 max-w-3xl text-lg leading-relaxed text-rally-muted">
+          Auf der bisherigen Seite pflegt der Verein die Termine im <strong class="text-white">JEvents-Kalender</strong> (Jahr, Monat, Woche, Tag). In der Jahresansicht für 2026 sind dort aktuell <strong class="text-white">keine einzelnen Termineinträge</strong> sichtbar — der Kalender bleibt die offizielle Quelle, bis neue Events eingetragen werden.
+        </p>
+        <div class="mt-10 grid gap-6 lg:grid-cols-2">
+          <div class="glass rounded-2xl p-6 sm:p-8">
+            <h3 class="font-display text-xl font-bold text-white">Kalender &amp; Übersicht</h3>
+            <p class="mt-3 text-rally-muted">Gleiche Funktion wie früher: nach Jahr, Monat, Woche oder Tag blättern.</p>
+            <a
+              href="http://www.rallyeclub-klostertal.at/index.php/termine/year.listevents/2026/04/01/-"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="mt-6 inline-flex min-h-[44px] items-center justify-center rounded-full border border-white/15 bg-white/5 px-6 py-3 text-sm font-semibold text-white transition hover:border-rally-orange hover:text-rally-orange"
+            >Zum Kalender (bisherige Seite)</a>
+          </div>
+          <div class="glass rounded-2xl p-6 sm:p-8">
+            <h3 class="font-display text-xl font-bold text-white">Feeds &amp; Abo</h3>
+            <p class="mt-3 text-rally-muted">RSS/Atom von der alten Seite — für Termine in einem Feed-Reader.</p>
+            <ul class="mt-4 space-y-2 text-sm">
+              <li>
+                <a class="text-rally-orange underline decoration-white/20 underline-offset-4 hover:text-white" href="http://www.rallyeclub-klostertal.at/index.php?option=com_jevents&amp;task=modlatest.rss&amp;format=feed&amp;type=rss&amp;Itemid=103&amp;modid=0" target="_blank" rel="noopener noreferrer">RSS 2.0 (Termine)</a>
+              </li>
+              <li>
+                <a class="text-rally-orange underline decoration-white/20 underline-offset-4 hover:text-white" href="http://www.rallyeclub-klostertal.at/index.php?option=com_jevents&amp;task=modlatest.rss&amp;format=feed&amp;type=atom&amp;Itemid=103&amp;modid=0" target="_blank" rel="noopener noreferrer">Atom 1.0 (Termine)</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <p class="mt-8 text-sm text-rally-muted/90">Hinweis: Sobald die neue Seite live mit Backend/CRM angebunden ist, können Termine hier direkt gepflegt werden.</p>
+      </div>
+    </section>
+
     <!-- 3. EVENTS — horizontal (desktop) -->
     <section id="events" class="relative scroll-mt-20 py-20 sm:py-24 lg:py-28">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -234,27 +282,27 @@
         <div id="events-pin" class="relative h-screen">
           <div id="events-track" class="flex h-full w-max items-center gap-8 px-8 pl-12 lg:pl-24">
             <article class="event-card group relative h-[70vh] w-[85vw] max-w-3xl flex-shrink-0 overflow-hidden rounded-2xl border border-white/10 shadow-xl md:w-[70vw]">
-              <img src="images/headers/1.png" alt="Autoslalom St. Gallenkirch" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" width="1200" height="800" />
+              <img src="images/headers/1.png" alt="Autoslalom St. Gallenkirch" class="h-full w-full object-cover transition duration-500 group-hover:scale-[1.02]" loading="lazy" width="1200" height="800" />
               <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent"></div>
               <h3 class="absolute bottom-0 left-0 right-0 p-8 font-display text-2xl font-bold text-white md:text-3xl">Autoslalom St. Gallenkirch</h3>
             </article>
             <article class="event-card group relative h-[70vh] w-[85vw] max-w-3xl flex-shrink-0 overflow-hidden rounded-2xl border border-white/10 shadow-xl md:w-[70vw]">
-              <img src="images/headers/2.png" alt="Bergrennen und Rallye-Action" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" width="1200" height="800" />
+              <img src="images/headers/2.png" alt="Bergrennen und Rallye-Action" class="h-full w-full object-cover transition duration-500 group-hover:scale-[1.02]" loading="lazy" width="1200" height="800" />
               <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent"></div>
               <h3 class="absolute bottom-0 left-0 right-0 p-8 font-display text-2xl font-bold text-white md:text-3xl">Bergrennen</h3>
             </article>
             <article class="event-card group relative h-[70vh] w-[85vw] max-w-3xl flex-shrink-0 overflow-hidden rounded-2xl border border-white/10 shadow-xl md:w-[70vw]">
-              <img src="images/headers/3.png" alt="Gala Abend des Rallyeclubs" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" width="1200" height="800" />
+              <img src="images/headers/3.png" alt="Gala Abend des Rallyeclubs" class="h-full w-full object-cover transition duration-500 group-hover:scale-[1.02]" loading="lazy" width="1200" height="800" />
               <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent"></div>
               <h3 class="absolute bottom-0 left-0 right-0 p-8 font-display text-2xl font-bold text-white md:text-3xl">Gala Abend</h3>
             </article>
             <article class="event-card group relative h-[70vh] w-[85vw] max-w-3xl flex-shrink-0 overflow-hidden rounded-2xl border border-white/10 shadow-xl md:w-[70vw]">
-              <img src="images/headers/4.png" alt="Jahreshauptversammlung" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" width="1200" height="800" />
+              <img src="images/headers/4.png" alt="Jahreshauptversammlung" class="h-full w-full object-cover transition duration-500 group-hover:scale-[1.02]" loading="lazy" width="1200" height="800" />
               <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent"></div>
               <h3 class="absolute bottom-0 left-0 right-0 p-8 font-display text-2xl font-bold text-white md:text-3xl">Jahreshauptversammlung</h3>
             </article>
             <article class="event-card group relative h-[70vh] w-[85vw] max-w-3xl flex-shrink-0 overflow-hidden rounded-2xl border border-white/10 shadow-xl md:w-[70vw]">
-              <img src="images/Autoslalom.jpg" alt="Autoslalom Event" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" width="1200" height="800" />
+              <img src="images/Autoslalom.jpg" alt="Autoslalom Event" class="h-full w-full object-cover transition duration-500 group-hover:scale-[1.02]" loading="lazy" width="1200" height="800" />
               <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent"></div>
               <h3 class="absolute bottom-0 left-0 right-0 p-8 font-display text-2xl font-bold text-white md:text-3xl">Autoslalom</h3>
             </article>
@@ -293,75 +341,147 @@
       </div>
     </section>
 
+    <!-- Videos (wie auf der alten Seite — YouTube + Links) -->
+    <section id="videos" class="relative scroll-mt-20 border-t border-white/10 py-20 sm:py-24 lg:py-28">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <h2 id="headline-videos" class="font-display clip-reveal text-4xl font-bold text-white sm:text-5xl md:text-6xl">Videos</h2>
+        <p class="mt-4 max-w-2xl text-lg text-rally-muted">Unser YouTube-Kanal und ausgewählte Beiträge von der bisherigen Seite.</p>
+        <div class="mt-12 grid gap-10 lg:grid-cols-2 lg:items-start">
+          <div class="overflow-hidden rounded-2xl border border-white/10 bg-black/40 shadow-xl">
+            <div class="aspect-video w-full">
+              <iframe
+                class="h-full w-full"
+                src="https://www.youtube.com/embed/videoseries?list=UUHPppqKhDYMghHbsmEOQw3Q"
+                title="Rallyeclub Klostertal auf YouTube"
+                loading="lazy"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin"
+                allowfullscreen
+              ></iframe>
+            </div>
+          </div>
+          <div class="glass rounded-2xl p-6 sm:p-8">
+            <h3 class="font-display text-lg font-bold text-white">Beiträge (Archiv)</h3>
+            <ul class="mt-4 space-y-3 text-sm sm:text-base">
+              <li>
+                <a class="text-white underline decoration-rally-accent/40 underline-offset-4 hover:text-rally-orange" href="http://www.rallyeclub-klostertal.at/index.php/videos/14-autoslalom-st-gallenkirch-2" target="_blank" rel="noopener noreferrer">Autoslalom St. Gallenkirch</a>
+              </li>
+              <li>
+                <a class="text-white underline decoration-rally-accent/40 underline-offset-4 hover:text-rally-orange" href="http://www.rallyeclub-klostertal.at/index.php/videos/8-fiat-850-fiat-126-prototype-austoslalom-st-gallenkirch-2015" target="_blank" rel="noopener noreferrer">Fiat 850 / Fiat 126 Prototype Austoslalom St. Gallenkirch 2015</a>
+              </li>
+              <li>
+                <a class="text-white underline decoration-rally-accent/40 underline-offset-4 hover:text-rally-orange" href="http://www.rallyeclub-klostertal.at/index.php/videos/6-autoslalom-st-gallenkirch" target="_blank" rel="noopener noreferrer">Autoslalom St. Gallenkirch (Archiv)</a>
+              </li>
+              <li>
+                <a class="text-white underline decoration-rally-accent/40 underline-offset-4 hover:text-rally-orange" href="http://www.rallyeclub-klostertal.at/index.php/videos/13-tribute-movie-latschau-2014" target="_blank" rel="noopener noreferrer">Tribute Movie Latschau 2014</a>
+              </li>
+            </ul>
+            <a
+              href="https://www.youtube.com/channel/UCHPppqKhDYMghHbsmEOQw3Q"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="mt-6 inline-flex min-h-[44px] items-center justify-center rounded-full bg-gradient-to-r from-rally-accent to-rally-orange px-6 py-3 text-sm font-semibold text-white transition hover:brightness-110"
+            >Kanal auf YouTube öffnen</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Verein: Mitglieder, Fahrer, Reglement (Sidebar der alten Seite) -->
+    <section id="verein" class="relative scroll-mt-20 py-16 sm:py-20">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <h2 id="headline-verein" class="font-display clip-reveal text-3xl font-bold text-white sm:text-4xl">Verein</h2>
+        <p class="mt-3 max-w-2xl text-rally-muted">Mitglieder, aktive Fahrer und Reglement — wie in der Sidebar der bisherigen Seite verlinkt.</p>
+        <div class="mt-10 grid gap-4 sm:grid-cols-3">
+          <a href="http://www.rallyeclub-klostertal.at/index.php/mitglieder" target="_blank" rel="noopener noreferrer" class="glass flex min-h-[120px] flex-col justify-center rounded-2xl p-6 transition hover:border-rally-orange/40">
+            <span class="font-display text-lg font-bold text-white">Mitglieder</span>
+            <span class="mt-1 text-sm text-rally-muted">Zur Seite auf rallyeclub-klostertal.at →</span>
+          </a>
+          <a href="http://www.rallyeclub-klostertal.at/index.php/neue-aktive-fahrer" target="_blank" rel="noopener noreferrer" class="glass flex min-h-[120px] flex-col justify-center rounded-2xl p-6 transition hover:border-rally-orange/40">
+            <span class="font-display text-lg font-bold text-white">Aktive Fahrer</span>
+            <span class="mt-1 text-sm text-rally-muted">Zur Seite auf rallyeclub-klostertal.at →</span>
+          </a>
+          <a href="http://www.rallyeclub-klostertal.at/index.php/reglement" target="_blank" rel="noopener noreferrer" class="glass flex min-h-[120px] flex-col justify-center rounded-2xl p-6 transition hover:border-rally-orange/40">
+            <span class="font-display text-lg font-bold text-white">Reglement</span>
+            <span class="mt-1 text-sm text-rally-muted">Zur Seite auf rallyeclub-klostertal.at →</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
     <!-- 4. GALERIE -->
     <section id="galerie" class="relative scroll-mt-20 py-20 sm:py-24 lg:py-28">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <h2 id="headline-galerie" class="font-display clip-reveal text-4xl font-bold text-white sm:text-5xl md:text-6xl">Impressionen</h2>
         <p class="mt-4 max-w-2xl text-lg text-rally-muted">Ein Blick auf unsere Momente am Limit.</p>
+        <p class="mt-2 text-sm text-rally-muted/90">
+          Vollständige Joomla-Galerie:
+          <a class="text-rally-orange underline decoration-white/20 underline-offset-4 hover:text-white" href="http://www.rallyeclub-klostertal.at/index.php/gallerie" target="_blank" rel="noopener noreferrer">rallyeclub-klostertal.at/gallerie</a>
+        </p>
         <div id="masonry-grid" class="mt-14 columns-1 gap-4 sm:columns-2 lg:columns-3">
           <figure class="gallery-item mb-4 break-inside-avoid overflow-hidden rounded-xl border border-white/10">
             <div class="group relative">
-              <img src="images/headers/1.png" alt="Rallye-Action Klostertal" class="w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" />
+              <img src="images/headers/1.png" alt="Rallye-Action Klostertal" class="w-full object-cover transition duration-500 group-hover:scale-[1.02]" loading="lazy" />
               <div class="pointer-events-none absolute inset-0 bg-rally-accent/0 transition duration-300 group-hover:bg-rally-accent/25"></div>
             </div>
           </figure>
           <figure class="gallery-item mb-4 break-inside-avoid overflow-hidden rounded-xl border border-white/10">
             <div class="group relative">
-              <img src="images/gallery/IMG-20150410-WA0001.jpg" alt="Autoslalom Röthis Impression" class="w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" />
+              <img src="images/gallery/IMG-20150410-WA0001.jpg" alt="Autoslalom Röthis Impression" class="w-full object-cover transition duration-500 group-hover:scale-[1.02]" loading="lazy" />
               <div class="pointer-events-none absolute inset-0 bg-rally-accent/0 transition duration-300 group-hover:bg-rally-accent/25"></div>
             </div>
           </figure>
           <figure class="gallery-item mb-4 break-inside-avoid overflow-hidden rounded-xl border border-white/10">
             <div class="group relative">
-              <img src="images/Autoslalom.jpg" alt="Autoslalom St. Gallenkirch" class="w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" />
+              <img src="images/Autoslalom.jpg" alt="Autoslalom St. Gallenkirch" class="w-full object-cover transition duration-500 group-hover:scale-[1.02]" loading="lazy" />
               <div class="pointer-events-none absolute inset-0 bg-rally-accent/0 transition duration-300 group-hover:bg-rally-accent/25"></div>
             </div>
           </figure>
           <figure class="gallery-item mb-4 break-inside-avoid overflow-hidden rounded-xl border border-white/10">
             <div class="group relative">
-              <img src="images/headers/2.png" alt="Rallye-Fahrzeug in Aktion" class="w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" />
+              <img src="images/headers/2.png" alt="Rallye-Fahrzeug in Aktion" class="w-full object-cover transition duration-500 group-hover:scale-[1.02]" loading="lazy" />
               <div class="pointer-events-none absolute inset-0 bg-rally-accent/0 transition duration-300 group-hover:bg-rally-accent/25"></div>
             </div>
           </figure>
           <figure class="gallery-item mb-4 break-inside-avoid overflow-hidden rounded-xl border border-white/10">
             <div class="group relative">
-              <img src="images/gallery/IMG-20150410-WA0000.jpg" alt="Autoslalom Röthis Fahrzeug" class="w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" />
+              <img src="images/gallery/IMG-20150410-WA0000.jpg" alt="Autoslalom Röthis Fahrzeug" class="w-full object-cover transition duration-500 group-hover:scale-[1.02]" loading="lazy" />
               <div class="pointer-events-none absolute inset-0 bg-rally-accent/0 transition duration-300 group-hover:bg-rally-accent/25"></div>
             </div>
           </figure>
           <figure class="gallery-item mb-4 break-inside-avoid overflow-hidden rounded-xl border border-white/10">
             <div class="group relative">
-              <img src="images/headers/3.png" alt="Rallye-Impression Berge" class="h-64 w-full object-cover transition duration-500 group-hover:scale-105 sm:h-80" loading="lazy" />
+              <img src="images/headers/3.png" alt="Rallye-Impression Berge" class="h-64 w-full object-cover transition duration-500 group-hover:scale-[1.02] sm:h-80" loading="lazy" />
               <div class="pointer-events-none absolute inset-0 bg-rally-accent/0 transition duration-300 group-hover:bg-rally-accent/25"></div>
             </div>
           </figure>
           <figure class="gallery-item mb-4 break-inside-avoid overflow-hidden rounded-xl border border-white/10">
             <div class="group relative">
-              <img src="images/Bericht-Kartfahren-Bild.png" alt="Kartfahren Event" class="w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" />
+              <img src="images/Bericht-Kartfahren-Bild.png" alt="Kartfahren Event" class="w-full object-cover transition duration-500 group-hover:scale-[1.02]" loading="lazy" />
               <div class="pointer-events-none absolute inset-0 bg-rally-accent/0 transition duration-300 group-hover:bg-rally-accent/25"></div>
             </div>
           </figure>
           <figure class="gallery-item mb-4 break-inside-avoid overflow-hidden rounded-xl border border-white/10">
             <div class="group relative">
-              <img src="images/gallery/IMG-20150407-WA0035.jpg" alt="Autoslalom Röthis Detail" class="w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" />
+              <img src="images/gallery/IMG-20150407-WA0035.jpg" alt="Autoslalom Röthis Detail" class="w-full object-cover transition duration-500 group-hover:scale-[1.02]" loading="lazy" />
               <div class="pointer-events-none absolute inset-0 bg-rally-accent/0 transition duration-300 group-hover:bg-rally-accent/25"></div>
             </div>
           </figure>
           <figure class="gallery-item mb-4 break-inside-avoid overflow-hidden rounded-xl border border-white/10">
             <div class="group relative">
-              <img src="images/headers/4.png" alt="Rallye-Impression Klostertal" class="w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" />
+              <img src="images/headers/4.png" alt="Rallye-Impression Klostertal" class="w-full object-cover transition duration-500 group-hover:scale-[1.02]" loading="lazy" />
               <div class="pointer-events-none absolute inset-0 bg-rally-accent/0 transition duration-300 group-hover:bg-rally-accent/25"></div>
             </div>
           </figure>
           <figure class="gallery-item mb-4 break-inside-avoid overflow-hidden rounded-xl border border-white/10">
             <div class="group relative">
-              <img src="images/gallery/IMG-20150407-WA0034.jpg" alt="Autoslalom Röthis Szene" class="w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" />
+              <img src="images/gallery/IMG-20150407-WA0034.jpg" alt="Autoslalom Röthis Szene" class="w-full object-cover transition duration-500 group-hover:scale-[1.02]" loading="lazy" />
               <div class="pointer-events-none absolute inset-0 bg-rally-accent/0 transition duration-300 group-hover:bg-rally-accent/25"></div>
             </div>
           </figure>
           <figure class="gallery-item mb-4 break-inside-avoid overflow-hidden rounded-xl border border-white/10">
             <div class="group relative">
-              <img src="images/Vorankuendigung.jpg" alt="Slalom Vorankündigung" class="w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" />
+              <img src="images/Vorankuendigung.jpg" alt="Slalom Vorankündigung" class="w-full object-cover transition duration-500 group-hover:scale-[1.02]" loading="lazy" />
               <div class="pointer-events-none absolute inset-0 bg-rally-accent/0 transition duration-300 group-hover:bg-rally-accent/25"></div>
             </div>
           </figure>
@@ -461,8 +581,11 @@
       </div>
       <nav aria-label="Footer Navigation" class="flex flex-wrap gap-x-6 gap-y-2">
         <a href="#ueber-uns" class="min-h-[44px] inline-flex items-center text-sm font-medium text-white/90 hover:text-rally-orange" data-lenis-scroll>Über Uns</a>
+        <a href="#termine" class="min-h-[44px] inline-flex items-center text-sm font-medium text-white/90 hover:text-rally-orange" data-lenis-scroll>Termine</a>
         <a href="#events" class="min-h-[44px] inline-flex items-center text-sm font-medium text-white/90 hover:text-rally-orange" data-lenis-scroll>Events</a>
+        <a href="#videos" class="min-h-[44px] inline-flex items-center text-sm font-medium text-white/90 hover:text-rally-orange" data-lenis-scroll>Videos</a>
         <a href="#galerie" class="min-h-[44px] inline-flex items-center text-sm font-medium text-white/90 hover:text-rally-orange" data-lenis-scroll>Galerie</a>
+        <a href="#verein" class="min-h-[44px] inline-flex items-center text-sm font-medium text-white/90 hover:text-rally-orange" data-lenis-scroll>Verein</a>
         <a href="#kontakt" class="min-h-[44px] inline-flex items-center text-sm font-medium text-white/90 hover:text-rally-orange" data-lenis-scroll>Kontakt</a>
         <a href="#impressum" class="min-h-[44px] inline-flex items-center text-sm font-medium text-white/90 hover:text-rally-orange" data-lenis-scroll>Impressum</a>
       </nav>
@@ -699,7 +822,16 @@
         );
         el.style.willChange = 'clip-path';
       }
-      ['#headline-ueber', '#headline-events', '#headline-galerie', '#headline-mitmachen', '#headline-kontakt'].forEach(clipReveal);
+      [
+        '#headline-ueber',
+        '#headline-termine',
+        '#headline-events',
+        '#headline-videos',
+        '#headline-verein',
+        '#headline-galerie',
+        '#headline-mitmachen',
+        '#headline-kontakt',
+      ].forEach(clipReveal);
 
       /** Über uns */
       if (!prefersReducedMotion) {
