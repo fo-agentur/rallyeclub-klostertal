@@ -216,6 +216,8 @@
       position: absolute;
       inset: 0;
       overflow: hidden;
+      transform: translateZ(0);
+      will-change: transform;
     }
     .highlight-card__img {
       position: absolute;
@@ -327,6 +329,50 @@
         flex-direction: row;
         justify-content: space-between;
         text-align: left;
+      }
+    }
+    .events-zone__aurora {
+      pointer-events: none;
+      position: absolute;
+      inset: 0;
+      opacity: 0.65;
+      background: radial-gradient(ellipse 75% 55% at 90% 0%, rgba(249, 115, 22, 0.22), transparent 52%),
+        radial-gradient(ellipse 55% 45% at 0% 100%, rgba(220, 38, 38, 0.16), transparent 48%);
+      filter: blur(48px);
+    }
+    .events-highlight-hero {
+      position: relative;
+    }
+    .events-highlight-hero__mega {
+      pointer-events: none;
+      position: absolute;
+      right: -2%;
+      top: -3rem;
+      z-index: 0;
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(3rem, 16vw, 11rem);
+      font-weight: 900;
+      line-height: 0.85;
+      letter-spacing: -0.05em;
+      color: rgba(249, 115, 22, 0.11);
+      -webkit-text-stroke: 1px rgba(249, 115, 22, 0.35);
+      opacity: 1;
+    }
+    .highlight-grid-wrap {
+      position: relative;
+      margin-left: -0.25rem;
+      border-left: 4px solid rgba(249, 115, 22, 0.75);
+      padding-left: 1.25rem;
+      padding-top: 0.5rem;
+    }
+    @media (min-width: 768px) {
+      .highlight-grid-wrap {
+        padding-left: 1.75rem;
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .highlight-card__media {
+        will-change: auto;
       }
     }
     /* Termine: „Race-Calendar“-Look + Animationen */
@@ -511,6 +557,271 @@
         radial-gradient(ellipse 80% 60% at 100% 80%, rgba(249, 115, 22, 0.08) 0%, transparent 45%),
         linear-gradient(165deg, transparent 40%, rgba(220, 38, 38, 0.04) 100%);
     }
+    .club-zone__aurora {
+      pointer-events: none;
+      position: absolute;
+      inset: -20% -10% 40%;
+      opacity: 0.55;
+      background: radial-gradient(ellipse 70% 50% at 20% 0%, rgba(249, 115, 22, 0.22), transparent 55%),
+        radial-gradient(ellipse 60% 45% at 85% 15%, rgba(220, 38, 38, 0.18), transparent 50%);
+      filter: blur(60px);
+    }
+    .club-zone__gridlines {
+      pointer-events: none;
+      position: absolute;
+      inset: 0;
+      opacity: 0.07;
+      background-image: linear-gradient(rgba(255, 255, 255, 0.35) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.35) 1px, transparent 1px);
+      background-size: 56px 56px;
+      mask-image: radial-gradient(ellipse 80% 70% at 50% 30%, black 15%, transparent 70%);
+    }
+    .club-hero {
+      position: relative;
+      padding-bottom: 0.5rem;
+    }
+    .club-hero__mega {
+      pointer-events: none;
+      position: absolute;
+      left: -4%;
+      top: -2.5rem;
+      z-index: 0;
+      font-size: clamp(4.5rem, 22vw, 16rem);
+      font-weight: 900;
+      line-height: 0.82;
+      letter-spacing: -0.06em;
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(255, 255, 255, 0.12);
+      opacity: 0.95;
+    }
+    @supports not (-webkit-text-stroke: 1px red) {
+      .club-hero__mega {
+        color: rgba(255, 255, 255, 0.04);
+        -webkit-text-stroke: 0;
+      }
+    }
+    .club-hero__inner {
+      position: relative;
+      padding-top: 0.25rem;
+      padding-bottom: 0.5rem;
+    }
+    .club-visual-strip {
+      position: relative;
+      margin-top: 2.5rem;
+      overflow: hidden;
+      border-radius: 1rem;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(10, 10, 15, 0.35);
+    }
+    .club-visual-strip::before,
+    .club-visual-strip::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 2.75rem;
+      z-index: 2;
+      width: 3rem;
+      pointer-events: none;
+    }
+    .club-visual-strip::before {
+      left: 0;
+      background: linear-gradient(to right, rgba(10, 10, 15, 0.95), transparent);
+    }
+    .club-visual-strip::after {
+      right: 0;
+      background: linear-gradient(to left, rgba(10, 10, 15, 0.95), transparent);
+    }
+    .club-visual-strip__track {
+      will-change: transform;
+    }
+    .club-step__idx {
+      position: absolute;
+      left: 2.65rem;
+      top: 0.1rem;
+      z-index: 0;
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(2.5rem, 6vw, 3.75rem);
+      font-weight: 800;
+      line-height: 1;
+      color: rgba(255, 255, 255, 0.04);
+      user-select: none;
+      pointer-events: none;
+    }
+    @media (min-width: 768px) {
+      .club-step__idx {
+        left: 3rem;
+      }
+    }
+    .club-stats-frame {
+      position: relative;
+      padding: 2rem 1rem 1rem;
+    }
+    @media (min-width: 640px) {
+      .club-stats-frame {
+        padding: 2.5rem 1.5rem 1.5rem;
+      }
+    }
+    .club-stats-frame__glow {
+      pointer-events: none;
+      position: absolute;
+      inset: 0;
+      border-radius: 1.5rem;
+      background: radial-gradient(ellipse 90% 80% at 50% 0%, rgba(249, 115, 22, 0.12), transparent 55%);
+      opacity: 0.9;
+    }
+    .club-stats-frame .stat-card {
+      position: relative;
+      z-index: 1;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: linear-gradient(165deg, rgba(255, 255, 255, 0.06) 0%, rgba(10, 10, 15, 0.5) 100%);
+      transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.35s ease, box-shadow 0.35s ease;
+    }
+    .club-stats-frame .stat-card:hover {
+      transform: translateY(-6px) scale(1.02);
+      border-color: rgba(249, 115, 22, 0.35);
+      box-shadow: 0 28px 60px -32px rgba(220, 38, 38, 0.4);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .club-stats-frame .stat-card:hover {
+        transform: none;
+      }
+      .club-visual-strip__track {
+        will-change: auto;
+      }
+    }
+    /* Termine: Kalenderansicht */
+    .termine-calendar {
+      position: relative;
+      border-radius: 1.25rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: linear-gradient(160deg, rgba(255, 255, 255, 0.05) 0%, rgba(10, 10, 15, 0.75) 100%);
+      padding: 1.5rem 1.25rem 1.75rem;
+      box-shadow: 0 40px 80px -48px rgba(0, 0, 0, 0.85);
+    }
+    @media (min-width: 640px) {
+      .termine-calendar {
+        padding: 2rem 1.75rem 2.25rem;
+      }
+    }
+    .termine-cal-nav {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .termine-cal-nav__btns {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .termine-cal-nav__btn {
+      display: inline-flex;
+      min-height: 44px;
+      min-width: 44px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 0.75rem;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.04);
+      color: rgba(255, 255, 255, 0.9);
+      transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+    }
+    .termine-cal-nav__btn:hover {
+      border-color: rgba(249, 115, 22, 0.45);
+      background: rgba(249, 115, 22, 0.1);
+      color: #fff;
+    }
+    .termine-cal-nav__label {
+      min-width: 12rem;
+      text-align: center;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: rgba(255, 255, 255, 0.95);
+    }
+    #termine-cal-grid {
+      margin-top: 1.25rem;
+    }
+    .termine-cal-grid__head {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 2px;
+      margin-bottom: 0.35rem;
+    }
+    .termine-cal-grid__headcell {
+      padding: 0.35rem 0.15rem;
+      text-align: center;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(148, 163, 184, 0.85);
+    }
+    .termine-cal-grid__cells {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 3px;
+    }
+    .termine-cal-cell {
+      position: relative;
+      min-height: 4.25rem;
+      border-radius: 0.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      background: rgba(255, 255, 255, 0.02);
+      padding: 0.35rem 0.3rem 0.25rem;
+      font-size: 0.7rem;
+      line-height: 1.25;
+      color: rgba(226, 232, 240, 0.92);
+      transition: border-color 0.2s ease, background 0.2s ease;
+    }
+    @media (min-width: 640px) {
+      .termine-cal-cell {
+        min-height: 5rem;
+        padding: 0.45rem 0.4rem 0.3rem;
+        font-size: 0.72rem;
+      }
+    }
+    .termine-cal-cell--muted {
+      opacity: 0.25;
+      border-color: transparent;
+      background: transparent;
+    }
+    .termine-cal-cell__num {
+      display: block;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.55);
+    }
+    .termine-cal-cell--event {
+      border-color: rgba(249, 115, 22, 0.45);
+      background: linear-gradient(145deg, rgba(249, 115, 22, 0.14), rgba(220, 38, 38, 0.08));
+      box-shadow: 0 0 24px -8px rgba(220, 38, 38, 0.35);
+    }
+    .termine-cal-cell--event .termine-cal-cell__num {
+      color: rgba(255, 255, 255, 0.95);
+    }
+    .termine-cal-cell__title {
+      display: block;
+      margin-top: 0.2rem;
+      font-weight: 700;
+      font-size: 0.62rem;
+      line-height: 1.2;
+      color: #fff;
+    }
+    @media (min-width: 640px) {
+      .termine-cal-cell__title {
+        font-size: 0.68rem;
+      }
+    }
+    .termine-cal-cell__sub {
+      display: block;
+      margin-top: 0.1rem;
+      font-size: 0.58rem;
+      color: rgba(203, 213, 225, 0.9);
+    }
     .club-pullquote {
       position: relative;
       border-left: 3px solid rgba(249, 115, 22, 0.85);
@@ -521,6 +832,22 @@
       font-weight: 600;
       line-height: 1.35;
       color: rgba(255, 255, 255, 0.95);
+    }
+    .club-pullquote.club-pullquote--cinema {
+      margin-top: 3rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-left: 4px solid rgba(249, 115, 22, 0.95);
+      border-radius: 0 1rem 1rem 0;
+      background: linear-gradient(135deg, rgba(249, 115, 22, 0.08) 0%, rgba(10, 10, 15, 0.65) 38%, rgba(10, 10, 15, 0.85) 100%);
+      padding: 1.5rem 1.5rem 1.75rem 1.75rem;
+      box-shadow: 0 40px 100px -50px rgba(220, 38, 38, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(12px);
+    }
+    @media (min-width: 640px) {
+      .club-pullquote.club-pullquote--cinema {
+        margin-top: 3.5rem;
+        padding: 2rem 2rem 2.25rem 2rem;
+      }
     }
     #club-main-grid {
       perspective: 1800px;
@@ -535,8 +862,20 @@
       bottom: 0.5rem;
       width: 3px;
       border-radius: 3px;
-      background: linear-gradient(to bottom, rgba(220, 38, 38, 0.85), rgba(249, 115, 22, 0.35), rgba(255, 255, 255, 0.08));
+      background: rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+    }
+    .club-timeline__fill {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 100%;
+      transform: scaleY(0);
       transform-origin: top center;
+      border-radius: 3px;
+      background: linear-gradient(to bottom, rgba(249, 115, 22, 0.95), rgba(220, 38, 38, 0.75), rgba(220, 38, 38, 0.35));
+      will-change: transform;
     }
     @media (min-width: 768px) {
       .club-timeline__line {
@@ -607,6 +946,89 @@
     }
     #ueber-img-wrap {
       transform-style: preserve-3d;
+    }
+    .club-visual-strip__track {
+      display: flex;
+      gap: 0.65rem;
+      padding: 0.65rem;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+    }
+    @media (min-width: 768px) {
+      .club-visual-strip__track {
+        overflow-x: visible;
+        scroll-snap-type: none;
+      }
+    }
+    .club-visual-strip__track figure {
+      position: relative;
+      flex: 0 0 min(42vw, 200px);
+      scroll-snap-align: start;
+      overflow: hidden;
+      border-radius: 0.65rem;
+    }
+    @media (min-width: 768px) {
+      .club-visual-strip__track figure {
+        flex: 0 0 min(28vw, 220px);
+      }
+    }
+    .club-visual-strip__track img {
+      height: 7.5rem;
+      width: 100%;
+      object-fit: cover;
+      transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    @media (min-width: 640px) {
+      .club-visual-strip__track img {
+        height: 8.5rem;
+      }
+    }
+    .club-visual-strip__track figure:hover img {
+      transform: scale(1.04);
+    }
+    .club-sticky-stack {
+      position: relative;
+    }
+    .club-sticky-stack__main {
+      position: relative;
+      overflow: hidden;
+      border-radius: 1rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .club-sticky-stack__main img {
+      display: block;
+      width: 100%;
+      height: auto;
+      min-height: 280px;
+      object-fit: cover;
+    }
+    .club-sticky-stack__float {
+      position: absolute;
+      z-index: 2;
+      right: -0.5rem;
+      bottom: -0.75rem;
+      width: 46%;
+      max-width: 200px;
+      overflow: hidden;
+      border-radius: 0.75rem;
+      border: 2px solid rgba(10, 10, 15, 0.95);
+      box-shadow: 0 20px 50px -20px rgba(0, 0, 0, 0.85);
+    }
+    .club-sticky-stack__float img {
+      display: block;
+      width: 100%;
+      height: auto;
+      min-height: 120px;
+      object-fit: cover;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .club-timeline__fill {
+        will-change: auto;
+      }
+      .club-visual-strip__track img {
+        transition: none;
+      }
     }
     .club-img-badge {
       position: absolute;
@@ -769,11 +1191,181 @@
         opacity: 1;
       }
     }
-    .team-roster h3 {
-      font-family: 'Orbitron', sans-serif;
+    .team-roster-showcase {
+      position: relative;
+      isolation: isolate;
     }
-    .team-roster dd {
+    .team-roster-showcase__bg {
+      pointer-events: none;
+      position: absolute;
+      inset: -5% -8% auto;
+      height: min(420px, 55vh);
+      background: radial-gradient(ellipse 90% 70% at 15% 0%, rgba(249, 115, 22, 0.14), transparent 55%),
+        radial-gradient(ellipse 70% 50% at 90% 20%, rgba(220, 38, 38, 0.1), transparent 50%);
+      z-index: 0;
+    }
+    .team-roster-showcase__watermark {
+      pointer-events: none;
+      position: absolute;
+      right: -2%;
+      top: -0.5rem;
+      z-index: 0;
+      font-size: clamp(3.5rem, 14vw, 10rem);
+      font-weight: 800;
+      line-height: 0.85;
+      letter-spacing: -0.04em;
+      color: rgba(255, 255, 255, 0.03);
+      white-space: nowrap;
+    }
+    .roster-bento-card {
+      position: relative;
+      overflow: hidden;
+      border-radius: 1rem;
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      background: linear-gradient(148deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.02) 45%, rgba(10, 10, 15, 0.4) 100%);
+      padding: 1.35rem 1.5rem 1.45rem;
+      box-shadow: 0 24px 60px -40px rgba(0, 0, 0, 0.75);
+      transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.35s ease, box-shadow 0.35s ease;
+    }
+    .roster-bento-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: radial-gradient(ellipse 100% 80% at 100% 0%, rgba(249, 115, 22, 0.18), transparent 58%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    .roster-bento-card::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      border-radius: 3px 0 0 3px;
+      background: linear-gradient(to bottom, rgba(249, 115, 22, 0.95), rgba(220, 38, 38, 0.45));
+      opacity: 0.85;
+      transform: scaleY(0);
+      transform-origin: top center;
+      transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .roster-bento-card:hover {
+      transform: translateY(-8px) scale(1.01);
+      border-color: rgba(249, 115, 22, 0.35);
+      box-shadow: 0 32px 70px -36px rgba(220, 38, 38, 0.35);
+    }
+    .roster-bento-card:hover::before {
+      opacity: 1;
+    }
+    .roster-bento-card:hover::after {
+      transform: scaleY(1);
+    }
+    .roster-bento-card__label {
+      position: relative;
+      z-index: 1;
       margin: 0;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: rgba(249, 115, 22, 0.95);
+    }
+    .roster-bento-card__value {
+      position: relative;
+      z-index: 1;
+      margin: 0.5rem 0 0;
+      font-size: 1.05rem;
+      font-weight: 600;
+      line-height: 1.45;
+      color: rgba(255, 255, 255, 0.95);
+    }
+    .roster-bento-card__value--muted {
+      font-weight: 500;
+      color: rgba(148, 163, 184, 0.98);
+    }
+    .roster-members-wrap {
+      position: relative;
+      margin-top: 3.5rem;
+      padding-top: 2.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .roster-member-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 0.6rem;
+    }
+    .roster-member-chip {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 9999px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02));
+      padding: 0.45rem 0.95rem;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      color: rgba(226, 232, 240, 0.92);
+      transition: border-color 0.3s ease, background 0.3s ease, transform 0.3s ease;
+    }
+    .roster-member-chip:hover {
+      border-color: rgba(249, 115, 22, 0.4);
+      background: rgba(249, 115, 22, 0.08);
+      transform: translateY(-2px);
+    }
+    .roster-marquee {
+      position: relative;
+      margin-bottom: 1.25rem;
+      overflow: hidden;
+      mask-image: linear-gradient(to right, transparent, black 12%, black 88%, transparent);
+      -webkit-mask-image: linear-gradient(to right, transparent, black 12%, black 88%, transparent);
+    }
+    .roster-marquee__track {
+      display: flex;
+      width: max-content;
+      animation: roster-marquee-scroll 42s linear infinite;
+    }
+    .roster-marquee__track--reverse {
+      animation-direction: reverse;
+      animation-duration: 54s;
+    }
+    .roster-marquee__item {
+      flex-shrink: 0;
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(2rem, 5vw, 3.25rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: rgba(255, 255, 255, 0.045);
+      white-space: nowrap;
+    }
+    @keyframes roster-marquee-scroll {
+      from {
+        transform: translateX(0);
+      }
+      to {
+        transform: translateX(-50%);
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .roster-bento-card {
+        transition: none;
+      }
+      .roster-bento-card::after {
+        transform: scaleY(1);
+      }
+      .roster-bento-card:hover {
+        transform: none;
+      }
+      .roster-member-chip {
+        transition: none;
+      }
+      .roster-member-chip:hover {
+        transform: none;
+      }
+      .roster-marquee {
+        display: none;
+      }
     }
     /* Scroll-Journey: globaler Fortschritt + Kapitel (alle Sections) */
     .scroll-journey {
@@ -951,13 +1543,9 @@
     <!-- 1. HERO -->
     <section id="hero" class="relative flex min-h-[100dvh] flex-col items-center justify-center overflow-hidden">
       <div id="hero-slides" class="absolute inset-0" role="img" aria-label="Impressionen Rallyeclub Klostertal — Slideshow">
-        <div class="hero-slide is-active" style="background-image: url('images/headers/hero.png');"></div>
-        <div class="hero-slide" style="background-image: url('images/headers/1.png');"></div>
-        <div class="hero-slide" style="background-image: url('images/gallery/IMG-20150410-WA0001.jpg');"></div>
-        <div class="hero-slide" style="background-image: url('images/headers/2.png');"></div>
-        <div class="hero-slide" style="background-image: url('images/Autoslalom.jpg');"></div>
-        <div class="hero-slide" style="background-image: url('images/headers/rally-stock-1.jpg');"></div>
-        <div class="hero-slide" style="background-image: url('images/headers/rally-stock-2.jpg');"></div>
+        <div class="hero-slide is-active" style="background-image: url('images/headers/hero-hq-1.png');"></div>
+        <div class="hero-slide" style="background-image: url('images/headers/hero-hq-2.png');"></div>
+        <div class="hero-slide" style="background-image: url('images/headers/hero-hq-3.png');"></div>
       </div>
       <div class="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/88 via-black/42 to-black/[0.93]" aria-hidden="true"></div>
       <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_95%_65%_at_50%_22%,rgba(220,38,38,0.14),transparent_58%)]" aria-hidden="true"></div>
@@ -987,77 +1575,139 @@
     <!-- 2. ÜBER UNS — Story-Timeline + Bild + Stats -->
     <section id="ueber-uns" class="club-zone relative scroll-mt-20 border-t border-white/[0.07] py-20 sm:py-24 lg:py-32">
       <div class="club-zone__mesh" aria-hidden="true"></div>
+      <div class="club-zone__aurora" aria-hidden="true"></div>
+      <div class="club-zone__gridlines" aria-hidden="true"></div>
       <div class="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div class="flex flex-wrap items-end justify-between gap-4">
-          <h2 id="headline-ueber" class="font-display clip-reveal text-4xl font-bold text-white sm:text-5xl md:text-6xl">Der Club</h2>
-          <p class="font-display text-[10px] font-bold uppercase tracking-[0.4em] text-rally-orange/90 sm:text-xs">Story · Klostertal</p>
-        </div>
-        <p class="mt-4 max-w-2xl text-base leading-relaxed text-rally-muted sm:text-lg">
-          Von der ersten Idee bis zur Startaufstellung: unsere Geschichte in vier Takten — und warum sich’s lohnt, reinzuschauen.
-        </p>
+        <header class="club-hero">
+          <div class="club-hero__mega font-display" aria-hidden="true">CLUB</div>
+          <div class="club-hero__inner">
+            <div class="flex flex-wrap items-end justify-between gap-4">
+              <h2 id="headline-ueber" class="font-display clip-reveal text-4xl font-bold tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">Der Club</h2>
+              <p class="font-display text-[10px] font-bold uppercase tracking-[0.4em] text-rally-orange/90 sm:text-xs">Story · Klostertal</p>
+            </div>
+            <p id="club-intro" class="mt-5 max-w-2xl text-base leading-relaxed text-rally-muted sm:text-lg">
+              Von der ersten Idee bis zur Startaufstellung: unsere Geschichte in vier Takten — und warum sich’s lohnt, reinzuschauen.
+            </p>
+          </div>
+        </header>
 
-        <blockquote id="club-pullquote" class="club-pullquote relative z-10 mt-10 max-w-4xl">
+        <blockquote id="club-pullquote" class="club-pullquote club-pullquote--cinema relative z-10 mt-12 max-w-4xl sm:mt-14">
           <p>
             Asphalt, Schotter, Adrenalin — und ein Team, das zusammenhält.
             <span class="text-rally-orange">Das ist Rallyeclub Klostertal.</span>
           </p>
         </blockquote>
 
+        <div class="club-visual-strip" aria-label="Impressionen aus Vereins-Chronik und Slalom-Terminen">
+          <div class="club-visual-strip__track">
+            <figure>
+              <img src="images/gallery/IMG-20150410-WA0001.jpg" alt="Autoslalom Röthis — Vereinsimpression" width="400" height="300" loading="lazy" />
+            </figure>
+            <figure>
+              <img src="images/Autoslalom.jpg" alt="Autoslalom St. Gallenkirch" width="400" height="300" loading="lazy" />
+            </figure>
+            <figure>
+              <img src="images/gallery/IMG-20150410-WA0000.jpg" alt="Autoslalom Röthis — Fahrzeug" width="400" height="300" loading="lazy" />
+            </figure>
+            <figure>
+              <img src="images/Vorankuendigung.jpg" alt="Slalom Vorankündigung" width="400" height="300" loading="lazy" />
+            </figure>
+            <figure>
+              <img src="images/headers/3.png" alt="Gala und Vereinsleben" width="400" height="300" loading="lazy" />
+            </figure>
+            <figure>
+              <img src="images/Bericht-Kartfahren-Bild.png" alt="Kartfahren Event" width="400" height="300" loading="lazy" />
+            </figure>
+          </div>
+          <p class="border-t border-white/[0.06] px-4 py-2.5 text-center text-[11px] text-rally-muted/90 sm:text-xs">
+            Motive aus Slalom, Gala und Vereinsleben — dieselben Themen wie auf der früheren Website.
+          </p>
+        </div>
+
         <div id="club-main-grid" class="mt-14 grid gap-12 lg:grid-cols-2 lg:items-start lg:gap-16">
           <div id="club-timeline" class="relative pl-1">
-            <div class="club-timeline__line" aria-hidden="true"></div>
+            <div class="club-timeline__line" aria-hidden="true">
+              <div class="club-timeline__fill" id="club-timeline-fill"></div>
+            </div>
 
             <article class="club-step" data-club-step>
               <span class="club-step__dot" aria-hidden="true"></span>
-              <span class="club-step__year">2008</span>
-              <h3 class="club-step__title">Die Zündung</h3>
-              <p>
-                Eine Handvoll Motorsportfans im <strong class="font-semibold text-white">Klostertal</strong> — keine großen Budgets, sondern echte Leidenschaft fürs Fahren und fairen Wettkampf. So entstand der Verein: klein, aber mit Vollgas.
-              </p>
+              <span class="club-step__idx" aria-hidden="true">01</span>
+              <div class="club-step__body relative z-[1]">
+                <span class="club-step__year">2008</span>
+                <h3 class="club-step__title">Die Zündung</h3>
+                <p>
+                  Eine Handvoll Motorsportfans im <strong class="font-semibold text-white">Klostertal</strong> — keine großen Budgets, sondern echte Leidenschaft fürs Fahren und fairen Wettkampf. So entstand der Verein: klein, aber mit Vollgas.
+                </p>
+              </div>
             </article>
 
             <article class="club-step" data-club-step>
               <span class="club-step__dot" aria-hidden="true"></span>
-              <span class="club-step__year">Wachstum</span>
-              <h3 class="club-step__title">Slalom &amp; Publikum</h3>
-              <p>
-                <strong class="font-semibold text-white">Autoslaloms</strong>, erste feste Termine, volle Startfelder — der Club wächst mit jeder Saison. Wer aufs Gas steht, findet hier seine Bühne.
-              </p>
+              <span class="club-step__idx" aria-hidden="true">02</span>
+              <div class="club-step__body relative z-[1]">
+                <span class="club-step__year">Wachstum</span>
+                <h3 class="club-step__title">Slalom &amp; Publikum</h3>
+                <p>
+                  <strong class="font-semibold text-white">Autoslaloms</strong>, erste feste Termine, volle Startfelder — der Club wächst mit jeder Saison. Wer aufs Gas steht, findet hier seine Bühne.
+                </p>
+              </div>
             </article>
 
             <article class="club-step" data-club-step>
               <span class="club-step__dot" aria-hidden="true"></span>
-              <span class="club-step__year">Heute</span>
-              <h3 class="club-step__title">Mehr als Zeiten</h3>
-              <p>
-                Gala, Jahreshauptversammlung, gemeinsame Abende — neben der Strecke zählt die <strong class="font-semibold text-white">Gemeinschaft</strong>. Wir feiern Erfolge, packen Rückschläge an und freuen uns auf jede neue Session.
-              </p>
+              <span class="club-step__idx" aria-hidden="true">03</span>
+              <div class="club-step__body relative z-[1]">
+                <span class="club-step__year">Heute</span>
+                <h3 class="club-step__title">Mehr als Zeiten</h3>
+                <p>
+                  Gala, Jahreshauptversammlung, gemeinsame Abende — neben der Strecke zählt die <strong class="font-semibold text-white">Gemeinschaft</strong>. Wir feiern Erfolge, packen Rückschläge an und freuen uns auf jede neue Session.
+                </p>
+              </div>
             </article>
 
             <article class="club-step" data-club-step>
               <span class="club-step__dot" aria-hidden="true"></span>
-              <span class="club-step__year">Morgen</span>
-              <h3 class="club-step__title">Vollgas voraus</h3>
-              <p>
-                Egal ob Einsteiger oder alte Hasen: <span class="text-white/95">Vorarlbergs heißester Rallye-Club</span> sucht Menschen mit Herz für Motorsport —
-                <span class="text-rally-orange">willkommen in der Familie.</span>
-              </p>
+              <span class="club-step__idx" aria-hidden="true">04</span>
+              <div class="club-step__body relative z-[1]">
+                <span class="club-step__year">Morgen</span>
+                <h3 class="club-step__title">Vollgas voraus</h3>
+                <p>
+                  Egal ob Einsteiger oder alte Hasen: <span class="text-white/95">Vorarlbergs heißester Rallye-Club</span> sucht Menschen mit Herz für Motorsport —
+                  <span class="text-rally-orange">willkommen in der Familie.</span>
+                </p>
+              </div>
             </article>
           </div>
 
           <div id="ueber-img-wrap" class="lg:sticky lg:top-28">
-            <div class="relative overflow-hidden rounded-2xl border border-white/10 shadow-[0_32px_80px_-40px_rgba(220,38,38,0.35)] ring-1 ring-white/[0.06]">
-              <img src="images/headers/2.png" alt="Rallye-Impression aus dem Klostertal" class="h-full w-full object-cover transition duration-700 ease-out hover:scale-[1.03]" width="800" height="600" loading="lazy" />
-              <div class="pointer-events-none absolute inset-0 bg-gradient-to-br from-rally-bg/25 via-transparent to-rally-accent/30"></div>
-              <span class="club-img-badge">Vorarlberg</span>
+            <div class="club-sticky-stack relative overflow-visible pb-8 shadow-[0_32px_80px_-40px_rgba(220,38,38,0.35)]">
+              <div class="club-sticky-stack__main shadow-[0_32px_80px_-40px_rgba(220,38,38,0.25)] ring-1 ring-white/[0.06]">
+                <img
+                  id="club-sticky-main-img"
+                  src="images/gallery/IMG-20150410-WA0001.jpg"
+                  alt="Autoslalom Röthis — Rallyeclub Klostertal"
+                  class="club-parallax-img h-full min-h-[280px] w-full object-cover transition duration-700 ease-out"
+                  width="800"
+                  height="600"
+                  loading="lazy"
+                />
+                <div class="pointer-events-none absolute inset-0 bg-gradient-to-br from-rally-bg/25 via-transparent to-rally-accent/30"></div>
+                <span class="club-img-badge">Chronik</span>
+              </div>
+              <div class="club-sticky-stack__float" aria-hidden="true">
+                <img src="images/headers/1.png" alt="" width="400" height="240" loading="lazy" />
+              </div>
             </div>
             <p class="mt-4 text-center text-xs text-rally-muted/90 sm:text-sm">
-              Echte Strecken, echte Emotionen — kein Showroom, kein Filter.
+              Echte Strecken, echte Emotionen — Motive aus Slalom und Vereinsleben wie früher online.
             </p>
           </div>
         </div>
 
-        <div id="stats-row" class="relative z-10 mt-20 grid gap-4 sm:grid-cols-3">
+        <div id="club-stats-block" class="club-stats-frame relative z-10 mt-20">
+          <div class="club-stats-frame__glow" aria-hidden="true"></div>
+          <div id="stats-row" class="relative z-[1] grid gap-4 sm:grid-cols-3">
           <article class="stat-card glass rounded-2xl p-6 text-center">
             <p class="font-display text-4xl font-bold text-white"><span class="stat-num" data-target="2015" data-start="2008">2008</span></p>
             <p class="mt-2 text-sm font-medium uppercase tracking-wider text-rally-muted">Gegründet</p>
@@ -1070,6 +1720,7 @@
             <p class="font-display text-4xl font-bold text-white"><span class="stat-num" data-target="10" data-suffix="+">0</span></p>
             <p class="mt-2 text-sm font-medium uppercase tracking-wider text-rally-muted">Events pro Jahr</p>
           </article>
+          </div>
         </div>
 
         <div class="relative z-10 mt-20 border-t border-white/10 pt-16">
@@ -1215,52 +1866,86 @@
           </div>
         </div>
 
-        <div class="team-roster mt-16 max-w-4xl border-t border-white/10 pt-12">
-          <h3 class="text-xl font-bold text-white sm:text-2xl">Ehrenamt &amp; Gremien</h3>
-          <p class="mt-2 text-sm text-rally-muted">Wie auf der bisherigen Mitglieder-Seite ausgewiesen.</p>
-          <dl class="mt-8 grid gap-8 sm:grid-cols-2">
-            <div>
-              <dt class="font-display text-[10px] font-bold uppercase tracking-[0.35em] text-rally-orange/90">Ehrenobmann</dt>
-              <dd class="mt-2 text-white">Armin Gassner</dd>
-              <dt class="mt-6 font-display text-[10px] font-bold uppercase tracking-[0.35em] text-rally-orange/90">Ehrenvizeobmann</dt>
-              <dd class="mt-2 text-white">Fritz Kogler</dd>
-              <dt class="mt-6 font-display text-[10px] font-bold uppercase tracking-[0.35em] text-rally-orange/90">Ehrenmitglieder</dt>
-              <dd class="mt-2 text-rally-muted">Adrian Imthurn, Gerd Lampert</dd>
-            </div>
-            <div>
-              <dt class="font-display text-[10px] font-bold uppercase tracking-[0.35em] text-rally-orange/90">Sportrat</dt>
-              <dd class="mt-2 text-white">Elias Schnetzer, Gernot Kogler</dd>
-              <dt class="mt-6 font-display text-[10px] font-bold uppercase tracking-[0.35em] text-rally-orange/90">Kassaprüfer</dt>
-              <dd class="mt-2 text-white">Andrea Schuler, Marion Neusiedler</dd>
-            </div>
-          </dl>
+        <div id="team-roster" class="team-roster-showcase relative z-10 mx-auto mt-16 max-w-6xl border-t border-white/10 pt-14">
+          <div class="team-roster-showcase__bg" aria-hidden="true"></div>
+          <p class="team-roster-showcase__watermark font-display" aria-hidden="true">EHRENAMT</p>
 
-          <h3 class="mt-14 text-lg font-bold text-white sm:text-xl">Weitere Mitglieder</h3>
-          <p class="mt-2 text-sm text-rally-muted">Auszug von der bisherigen Website (u. a. mit Fotos); weitere ohne Foto dort separat gelistet.</p>
-          <ul class="mt-6 columns-1 gap-x-10 text-sm leading-relaxed text-rally-muted sm:columns-2">
-            <li class="mb-1 break-inside-avoid">Dorner Joe</li>
-            <li class="mb-1 break-inside-avoid">Dieter Bettinazzi</li>
-            <li class="mb-1 break-inside-avoid">Günter Matt</li>
-            <li class="mb-1 break-inside-avoid">Johanna Matt</li>
-            <li class="mb-1 break-inside-avoid">Manfred Fischer</li>
-            <li class="mb-1 break-inside-avoid">Marco Schmid</li>
-            <li class="mb-1 break-inside-avoid">Mike Korpics</li>
-            <li class="mb-1 break-inside-avoid">Norbert Matt</li>
-            <li class="mb-1 break-inside-avoid">Sarah Matt</li>
-            <li class="mb-1 break-inside-avoid">Wolfgang Ospelt</li>
-            <li class="mb-1 break-inside-avoid">Rainer Neusiedler</li>
-            <li class="mb-1 break-inside-avoid">Melanie Schnetzer</li>
-            <li class="mb-1 break-inside-avoid">Tobias Sohler</li>
-            <li class="mb-1 break-inside-avoid">Daniel Zimmermann</li>
-            <li class="mb-1 break-inside-avoid">Thomas Ammann</li>
-            <li class="mb-1 break-inside-avoid">Rene Bargehr</li>
-            <li class="mb-1 break-inside-avoid">Michael Bargehr</li>
-            <li class="mb-1 break-inside-avoid">Anja Dorner</li>
-            <li class="mb-1 break-inside-avoid">Michael Gassner</li>
-            <li class="mb-1 break-inside-avoid">Martin Taumberger</li>
-            <li class="mb-1 break-inside-avoid">David Wiederin</li>
-            <li class="mb-1 break-inside-avoid">Peter Füchsl</li>
-          </ul>
+          <div class="relative z-[1]">
+            <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <h3 class="font-display text-2xl font-bold tracking-tight text-white sm:text-3xl md:text-4xl">Ehrenamt &amp; Gremien</h3>
+                <p class="mt-2 max-w-xl text-sm leading-relaxed text-rally-muted">Wie auf der bisherigen Mitglieder-Seite ausgewiesen.</p>
+              </div>
+              <span class="font-display text-[10px] font-bold uppercase tracking-[0.4em] text-rally-orange/85">Struktur</span>
+            </div>
+
+            <div class="roster-bento mt-10 grid gap-4 sm:grid-cols-2">
+              <article class="roster-bento-card" data-roster-bento>
+                <p class="roster-bento-card__label">Ehrenobmann</p>
+                <p class="roster-bento-card__value">Armin Gassner</p>
+              </article>
+              <article class="roster-bento-card" data-roster-bento>
+                <p class="roster-bento-card__label">Ehrenvizeobmann</p>
+                <p class="roster-bento-card__value">Fritz Kogler</p>
+              </article>
+              <article class="roster-bento-card" data-roster-bento>
+                <p class="roster-bento-card__label">Ehrenmitglieder</p>
+                <p class="roster-bento-card__value roster-bento-card__value--muted">Adrian Imthurn, Gerd Lampert</p>
+              </article>
+              <article class="roster-bento-card" data-roster-bento>
+                <p class="roster-bento-card__label">Sportrat</p>
+                <p class="roster-bento-card__value">Elias Schnetzer, Gernot Kogler</p>
+              </article>
+              <article class="roster-bento-card sm:col-span-2" data-roster-bento>
+                <p class="roster-bento-card__label">Kassaprüfer</p>
+                <p class="roster-bento-card__value">Andrea Schuler, Marion Neusiedler</p>
+              </article>
+            </div>
+
+            <div class="roster-members-wrap">
+              <div class="roster-marquee" aria-hidden="true">
+                <div class="roster-marquee__track">
+                  <span class="roster-marquee__item">Rallyeclub · Klostertal · Slalom · Gala · Gemeinschaft ·</span>
+                  <span class="roster-marquee__item">Rallyeclub · Klostertal · Slalom · Gala · Gemeinschaft ·</span>
+                </div>
+              </div>
+              <div class="roster-marquee" aria-hidden="true">
+                <div class="roster-marquee__track roster-marquee__track--reverse">
+                  <span class="roster-marquee__item">Vorarlberg · Motorsport · Verein ·</span>
+                  <span class="roster-marquee__item">Vorarlberg · Motorsport · Verein ·</span>
+                </div>
+              </div>
+
+              <h3 id="roster-members-heading" class="font-display text-xl font-bold text-white sm:text-2xl">Weitere Mitglieder</h3>
+              <p class="mt-2 max-w-2xl text-sm text-rally-muted">
+                Auszug von der bisherigen Website (u. a. mit Fotos); weitere ohne Foto dort separat gelistet.
+              </p>
+              <ul class="roster-member-chips mt-8 list-none p-0" aria-label="Weitere Mitglieder — Namen">
+                <li class="roster-member-chip" data-member-chip>Dorner Joe</li>
+                <li class="roster-member-chip" data-member-chip>Dieter Bettinazzi</li>
+                <li class="roster-member-chip" data-member-chip>Günter Matt</li>
+                <li class="roster-member-chip" data-member-chip>Johanna Matt</li>
+                <li class="roster-member-chip" data-member-chip>Manfred Fischer</li>
+                <li class="roster-member-chip" data-member-chip>Marco Schmid</li>
+                <li class="roster-member-chip" data-member-chip>Mike Korpics</li>
+                <li class="roster-member-chip" data-member-chip>Norbert Matt</li>
+                <li class="roster-member-chip" data-member-chip>Sarah Matt</li>
+                <li class="roster-member-chip" data-member-chip>Wolfgang Ospelt</li>
+                <li class="roster-member-chip" data-member-chip>Rainer Neusiedler</li>
+                <li class="roster-member-chip" data-member-chip>Melanie Schnetzer</li>
+                <li class="roster-member-chip" data-member-chip>Tobias Sohler</li>
+                <li class="roster-member-chip" data-member-chip>Daniel Zimmermann</li>
+                <li class="roster-member-chip" data-member-chip>Thomas Ammann</li>
+                <li class="roster-member-chip" data-member-chip>Rene Bargehr</li>
+                <li class="roster-member-chip" data-member-chip>Michael Bargehr</li>
+                <li class="roster-member-chip" data-member-chip>Anja Dorner</li>
+                <li class="roster-member-chip" data-member-chip>Michael Gassner</li>
+                <li class="roster-member-chip" data-member-chip>Martin Taumberger</li>
+                <li class="roster-member-chip" data-member-chip>David Wiederin</li>
+                <li class="roster-member-chip" data-member-chip>Peter Füchsl</li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -1273,7 +1958,17 @@
       <div class="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="flex flex-wrap items-end justify-between gap-6">
           <h2 id="headline-termine" class="font-display clip-reveal text-4xl font-bold text-white sm:text-5xl md:text-6xl">Termine</h2>
-          <p class="font-display text-xs font-semibold uppercase tracking-[0.35em] text-rally-orange/90">Saison 2026</p>
+          <div class="flex flex-wrap items-center justify-end gap-3 sm:gap-4">
+            <p class="font-display text-xs font-semibold uppercase tracking-[0.35em] text-rally-orange/90">Saison 2026</p>
+            <a
+              href="#termine-kalender"
+              class="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full border border-rally-accent/40 bg-rally-accent/10 px-5 py-2.5 text-sm font-semibold text-rally-orange shadow-[0_0_24px_-8px_rgba(249,115,22,0.45)] transition hover:border-rally-orange hover:bg-rally-accent/20 hover:text-white"
+              data-lenis-scroll
+            >
+              <svg class="h-4 w-4 shrink-0 opacity-90" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+              Kalenderansicht
+            </a>
+          </div>
         </div>
         <p id="termine-intro" class="mt-6 max-w-3xl text-lg leading-relaxed text-rally-muted">
           Saisonale Highlights und feste Vereinstermine — <strong class="text-white">Aktualisierungen</strong> durch das Vorstandsteam. Rückfragen: <a class="text-rally-orange underline decoration-white/20 underline-offset-4 hover:text-white" href="mailto:info@rallyeclub-klostertal.at">info@rallyeclub-klostertal.at</a>.
@@ -1368,26 +2063,50 @@
             </article>
           </div>
         </div>
+
+        <div id="termine-kalender" class="termine-calendar scroll-mt-24 mt-20" tabindex="-1">
+          <div class="termine-cal-nav">
+            <div>
+              <h3 class="font-display text-xl font-bold text-white sm:text-2xl">Kalenderansicht</h3>
+              <p class="mt-1 max-w-xl text-sm text-rally-muted">Zeitfenster der Saison 2026 — Marker sind Orientierung, sobald Fixtermine feststehen, tragen wir sie nach.</p>
+            </div>
+            <div class="termine-cal-nav__btns">
+              <button type="button" id="termine-cal-prev" class="termine-cal-nav__btn" aria-label="Vorheriger Monat">
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+              </button>
+              <p id="termine-cal-label" class="termine-cal-nav__label">—</p>
+              <button type="button" id="termine-cal-next" class="termine-cal-nav__btn" aria-label="Nächster Monat">
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </button>
+            </div>
+          </div>
+          <div id="termine-cal-grid" class="min-h-[12rem]"></div>
+        </div>
       </div>
     </section>
 
     <!-- Highlights: Bento + Zonen-Look + Tilt -->
     <section id="events" class="events-zone relative scroll-mt-20 border-t border-white/10 py-20 sm:py-24 lg:py-28">
       <div class="events-zone__mesh" aria-hidden="true"></div>
+      <div class="events-zone__aurora" aria-hidden="true"></div>
       <div class="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div class="flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <p class="font-display text-[10px] font-bold uppercase tracking-[0.42em] text-rally-orange/90">Saison &amp; Formate</p>
-            <h2 id="headline-events" class="font-display clip-reveal mt-2 text-4xl font-bold text-white sm:text-5xl md:text-6xl">Highlights</h2>
+        <header class="events-highlight-hero relative">
+          <div class="events-highlight-hero__mega font-display" aria-hidden="true">HIGHLIGHTS</div>
+          <div class="relative z-10 flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <p class="font-display text-[10px] font-bold uppercase tracking-[0.42em] text-rally-orange/90">Saison &amp; Formate</p>
+              <h2 id="headline-events" class="font-display clip-reveal mt-2 text-4xl font-bold text-white sm:text-5xl md:text-6xl">Highlights</h2>
+            </div>
+            <p class="font-display text-xs font-semibold uppercase tracking-[0.35em] text-white/35">Klostertal</p>
           </div>
-          <p class="font-display text-xs font-semibold uppercase tracking-[0.35em] text-white/35">Klostertal</p>
-        </div>
-        <p class="mt-5 max-w-2xl text-base leading-relaxed text-rally-muted sm:text-lg">
-          Von der Strecke bis zum Festsaal — das sind die Stationen, die unseren Kalender prägen. Ergebnisse, Fotos und Medien ergänzen wir mit laufender Saison.
-        </p>
+          <p id="events-intro" class="relative z-10 mt-5 max-w-2xl text-base leading-relaxed text-rally-muted sm:text-lg">
+            Von der Strecke bis zum Festsaal — das sind die Stationen, die unseren Kalender prägen. Ergebnisse, Fotos und Medien ergänzen wir mit laufender Saison.
+          </p>
+        </header>
 
+        <div class="highlight-grid-wrap">
         <div id="highlight-grid" class="highlight-grid mt-12 grid auto-rows-[minmax(200px,auto)] grid-cols-1 gap-4 sm:gap-5 md:mt-14 md:grid-cols-12">
-          <article class="group highlight-card highlight-card--feature md:col-span-7 md:row-span-2 min-h-[320px] md:min-h-[420px]" data-highlight-tilt>
+          <article class="group highlight-card highlight-card--feature md:col-span-7 md:row-span-2 min-h-[320px] md:min-h-[420px]" data-highlight-tilt data-highlight-card>
             <div class="highlight-card-inner">
               <div class="highlight-card__media">
                 <img src="images/headers/1.png" alt="Autoslalom St. Gallenkirch — Fahrzeug in der Kurve" class="highlight-card__img" loading="lazy" width="800" height="600" />
@@ -1403,7 +2122,7 @@
             </div>
           </article>
 
-          <article class="group highlight-card md:col-span-5 min-h-[200px]" data-highlight-tilt>
+          <article class="group highlight-card md:col-span-5 min-h-[200px]" data-highlight-tilt data-highlight-card>
             <div class="highlight-card-inner">
               <div class="highlight-card__media">
                 <img src="images/headers/2.png" alt="Bergrennen — Rallye in alpinem Gelände" class="highlight-card__img" loading="lazy" width="800" height="600" />
@@ -1419,7 +2138,7 @@
             </div>
           </article>
 
-          <article class="group highlight-card md:col-span-5 min-h-[200px]" data-highlight-tilt>
+          <article class="group highlight-card md:col-span-5 min-h-[200px]" data-highlight-tilt data-highlight-card>
             <div class="highlight-card-inner">
               <div class="highlight-card__media">
                 <img src="images/headers/3.png" alt="Gala-Abend — Vereinsfeier" class="highlight-card__img" loading="lazy" width="800" height="600" />
@@ -1435,7 +2154,7 @@
             </div>
           </article>
 
-          <article class="group highlight-card md:col-span-6 min-h-[220px]" data-highlight-tilt>
+          <article class="group highlight-card md:col-span-6 min-h-[220px]" data-highlight-tilt data-highlight-card>
             <div class="highlight-card-inner">
               <div class="highlight-card__media">
                 <img src="images/headers/4.png" alt="Jahreshauptversammlung im Rallyeclub" class="highlight-card__img" loading="lazy" width="800" height="600" />
@@ -1451,7 +2170,7 @@
             </div>
           </article>
 
-          <article class="group highlight-card md:col-span-6 min-h-[220px]" data-highlight-tilt>
+          <article class="group highlight-card md:col-span-6 min-h-[220px]" data-highlight-tilt data-highlight-card>
             <div class="highlight-card-inner">
               <div class="highlight-card__media">
                 <img src="images/Autoslalom.jpg" alt="Autoslalom — Kurs und Fahrzeug" class="highlight-card__img" loading="lazy" width="800" height="600" />
@@ -1467,8 +2186,9 @@
             </div>
           </article>
         </div>
+        </div>
 
-        <div class="events-highlights-foot">
+        <div id="events-highlights-foot" class="events-highlights-foot">
           <p class="max-w-xl text-lg font-medium leading-relaxed text-white/95 sm:text-xl">
             Vom ersten Start bis zur Gala — <span class="text-rally-orange">Motorsport mit Herz</span> im Klostertal.
           </p>
@@ -1554,13 +2274,13 @@
           </figure>
           <figure class="gallery-item mb-4 break-inside-avoid overflow-hidden rounded-xl border border-white/10">
             <div class="group relative">
-              <img src="images/headers/rally-stock-1.jpg" alt="Motorsport-Stimmung — ergänzendes Bild" class="w-full object-cover transition duration-500 group-hover:scale-[1.02]" loading="lazy" />
+              <img src="images/headers/hero-hq-2.png" alt="Motorsport-Stimmung — Vereinsimpression" class="w-full object-cover transition duration-500 group-hover:scale-[1.02]" loading="lazy" />
               <div class="pointer-events-none absolute inset-0 bg-rally-accent/0 transition duration-300 group-hover:bg-rally-accent/25"></div>
             </div>
           </figure>
           <figure class="gallery-item mb-4 break-inside-avoid overflow-hidden rounded-xl border border-white/10">
             <div class="group relative">
-              <img src="images/headers/rally-stock-2.jpg" alt="Rennwagen-Detail — ergänzendes Bild" class="w-full object-cover transition duration-500 group-hover:scale-[1.02]" loading="lazy" />
+              <img src="images/headers/hero-hq-3.png" alt="Rennwagen-Detail — Vereinsimpression" class="w-full object-cover transition duration-500 group-hover:scale-[1.02]" loading="lazy" />
               <div class="pointer-events-none absolute inset-0 bg-rally-accent/0 transition duration-300 group-hover:bg-rally-accent/25"></div>
             </div>
           </figure>
@@ -1606,8 +2326,25 @@
               <p><span class="text-rally-muted">E-Mail:</span><br /><a class="min-h-[44px] inline-flex items-center font-medium text-white underline decoration-rally-accent/50 underline-offset-4 hover:text-rally-orange" href="mailto:info@rallyeclub-klostertal.at">info@rallyeclub-klostertal.at</a></p>
               <p><span class="text-rally-muted">Facebook:</span><br /><a class="min-h-[44px] inline-flex items-center break-all font-medium text-white underline decoration-rally-accent/50 underline-offset-4 hover:text-rally-orange" href="https://www.facebook.com/132632750148150" target="_blank" rel="noopener noreferrer">facebook.com/132632750148150</a></p>
             </div>
-            <div class="map-embed overflow-hidden rounded-2xl border border-white/10">
-              <iframe title="Karte Klostertal Vorarlberg" class="h-72 w-full border-0" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.openstreetmap.org/export/embed.html?bbox=9.85%2C46.95%2C10.25%2C47.15&amp;layer=mapnik&amp;marker=47.05%2C10.05"></iframe>
+            <div>
+              <p class="font-display text-[10px] font-bold uppercase tracking-[0.4em] text-rally-orange/90">Standort</p>
+              <p class="mt-2 text-sm text-rally-muted">Klostertal, Vorarlberg — interaktive Karte (Google Maps).</p>
+              <div class="map-embed mt-4 overflow-hidden rounded-2xl border border-white/10 shadow-[0_24px_60px_-40px_rgba(0,0,0,0.6)]">
+                <iframe
+                  title="Google Maps — Klostertal, Vorarlberg"
+                  class="h-72 min-h-[280px] w-full border-0 sm:h-80"
+                  loading="lazy"
+                  allowfullscreen
+                  referrerpolicy="no-referrer-when-downgrade"
+                  src="https://www.google.com/maps?q=Klostertal%2C+Vorarlberg%2C+%C3%96sterreich&amp;hl=de&amp;z=11&amp;output=embed"
+                ></iframe>
+              </div>
+              <a
+                class="mt-3 inline-flex min-h-[44px] items-center text-sm font-medium text-rally-orange underline decoration-white/20 underline-offset-4 transition hover:text-white"
+                href="https://www.google.com/maps/search/?api=1&amp;query=Klostertal%2C+Vorarlberg%2C+%C3%96sterreich"
+                target="_blank"
+                rel="noopener noreferrer"
+                >Größere Karte in Google Maps öffnen</a>
             </div>
           </div>
           <form id="kontakt-form" class="glass rounded-2xl p-6 sm:p-8" action="#" method="post">
@@ -2015,7 +2752,7 @@
         '#headline-kontakt',
       ].forEach(clipReveal);
 
-      /** Über uns — Pull-Quote, Timeline, Bild, Org-Karten */
+      /** Über uns — Pull-Quote, Bildstreifen, Timeline (scrub), Steps, Sticky-Bild, Org-Karten */
       if (!prefersReducedMotion) {
         gsap.from('#club-pullquote', {
           opacity: 0,
@@ -2030,20 +2767,40 @@
             if (pq) pq.style.filter = 'none';
           },
         });
-        gsap.from('.club-timeline__line', {
-          scaleY: 0,
-          transformOrigin: 'top center',
-          duration: 1.15,
-          ease: 'power2.inOut',
-          scrollTrigger: { trigger: '#club-timeline', start: 'top 80%', once: true },
-        });
-        gsap.from('[data-club-step]', {
-          x: -56,
+        gsap.from('.club-visual-strip figure', {
           opacity: 0,
-          stagger: 0.2,
-          duration: 0.8,
+          y: 36,
+          scale: 0.94,
+          stagger: 0.07,
+          duration: 0.62,
           ease: 'power3.out',
-          scrollTrigger: { trigger: '#club-timeline', start: 'top 78%', once: true },
+          scrollTrigger: { trigger: '.club-visual-strip', start: 'top 88%', once: true },
+        });
+        gsap.fromTo(
+          '#club-timeline-fill',
+          { scaleY: 0, transformOrigin: 'top center' },
+          {
+            scaleY: 1,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: '#club-timeline',
+              start: 'top 72%',
+              end: 'bottom 32%',
+              scrub: 0.45,
+              invalidateOnRefresh: true,
+            },
+          }
+        );
+        document.querySelectorAll('[data-club-step]').forEach(function (step) {
+          var body = step.querySelector('.club-step__body');
+          if (!body) return;
+          gsap.from(body, {
+            opacity: 0,
+            x: -44,
+            duration: 0.78,
+            ease: 'power3.out',
+            scrollTrigger: { trigger: step, start: 'top 84%', once: true },
+          });
         });
         gsap.from('#ueber-img-wrap', {
           x: 80,
@@ -2054,6 +2811,23 @@
           ease: 'power3.out',
           scrollTrigger: { trigger: '#club-main-grid', start: 'top 72%', once: true },
         });
+        var clubParallaxImg = document.getElementById('club-sticky-main-img');
+        if (clubParallaxImg) {
+          gsap.fromTo(
+            clubParallaxImg,
+            { yPercent: 4 },
+            {
+              yPercent: -5,
+              ease: 'none',
+              scrollTrigger: {
+                trigger: '#club-main-grid',
+                start: 'top bottom',
+                end: 'bottom top',
+                scrub: 1,
+              },
+            }
+          );
+        }
         gsap.from('[data-club-org]', {
           y: 56,
           opacity: 0,
@@ -2064,14 +2838,56 @@
           ease: 'power3.out',
           scrollTrigger: { trigger: '#club-org-grid', start: 'top 88%', once: true },
         });
+        gsap.from('.club-hero__inner', {
+          opacity: 0,
+          y: 36,
+          duration: 1,
+          ease: 'power3.out',
+          scrollTrigger: { trigger: '.club-hero', start: 'top 88%', once: true },
+        });
+        gsap.to('.club-hero__mega', {
+          xPercent: -14,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: '.club-hero',
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: 1,
+          },
+        });
+        if (window.matchMedia('(min-width: 768px)').matches) {
+          var clubStripEl = document.querySelector('.club-visual-strip');
+          var clubTrackEl = document.querySelector('.club-visual-strip__track');
+          if (clubStripEl && clubTrackEl && clubTrackEl.scrollWidth > clubStripEl.clientWidth) {
+            gsap.fromTo(
+              clubTrackEl,
+              { x: 0 },
+              {
+                x: function () {
+                  return Math.min(0, -(clubTrackEl.scrollWidth - clubStripEl.clientWidth));
+                },
+                ease: 'none',
+                scrollTrigger: {
+                  trigger: clubStripEl,
+                  start: 'top bottom',
+                  end: 'bottom top',
+                  scrub: 1,
+                  invalidateOnRefresh: true,
+                },
+              }
+            );
+          }
+        }
       } else {
-        gsap.set('#club-pullquote', { opacity: 1, filter: 'none' });
-        gsap.set('[data-club-step]', { opacity: 1 });
+        gsap.set('.club-hero__inner', { opacity: 1, y: 0 });
+        gsap.set('#club-pullquote', { opacity: 1, filter: 'none', y: 0 });
+        gsap.set('#club-timeline-fill', { scaleY: 1, transformOrigin: 'top center' });
+        gsap.set('[data-club-step] .club-step__body', { opacity: 1, x: 0 });
         gsap.set('#ueber-img-wrap', { opacity: 1, rotationY: 0 });
         gsap.set('[data-club-org]', { opacity: 1, rotationX: 0 });
       }
 
-      /** Stats count */
+      /** Stats count + Karten-Einblendung */
       const statNums = document.querySelectorAll('.stat-num');
       function runCount(el) {
         const target = parseInt(el.getAttribute('data-target'), 10);
@@ -2089,14 +2905,28 @@
           },
         });
       }
-      ScrollTrigger.create({
-        trigger: '#stats-row',
-        start: 'top 80%',
-        once: true,
-        onEnter: function () {
-          statNums.forEach(runCount);
-        },
-      });
+      if (!prefersReducedMotion) {
+        gsap.from('#stats-row .stat-card', {
+          y: 44,
+          opacity: 0,
+          stagger: 0.12,
+          duration: 0.72,
+          ease: 'power3.out',
+          scrollTrigger: { trigger: '#stats-row', start: 'top 86%', once: true },
+          onComplete: function () {
+            statNums.forEach(runCount);
+          },
+        });
+      } else {
+        ScrollTrigger.create({
+          trigger: '#stats-row',
+          start: 'top 80%',
+          once: true,
+          onEnter: function () {
+            statNums.forEach(runCount);
+          },
+        });
+      }
 
       /** Termine: Intro + scroll-gefüllte Linie + Cards + Parallax-Orbs */
       var termineLineProgress = document.getElementById('termine-line-progress');
@@ -2198,6 +3028,82 @@
         gsap.set('[data-termine-card]', { opacity: 1, y: 0, rotationX: 0 });
       }
 
+      /** Termine: Kalenderansicht (Monatsgitter, Saison 2026) */
+      (function initTermineCalendar() {
+        var wrap = document.getElementById('termine-kalender');
+        var gridEl = document.getElementById('termine-cal-grid');
+        var labelEl = document.getElementById('termine-cal-label');
+        var btnPrev = document.getElementById('termine-cal-prev');
+        var btnNext = document.getElementById('termine-cal-next');
+        if (!wrap || !gridEl || !labelEl || !btnPrev || !btnNext) return;
+        var view = new Date(2026, 2, 1);
+        var events = [
+          { month: 2, day: 15, title: 'Autoslalom', sub: 'Slalom · St. Gallenkirch', kind: 'slalom' },
+          { month: 6, day: 12, title: 'Club-Event', sub: 'Sommer', kind: 'club' },
+          { month: 10, day: 8, title: 'Gala &amp; Ehrungen', sub: 'Herbst', kind: 'gala' },
+        ];
+        var monthNames = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
+        function render() {
+          var y = view.getFullYear();
+          var m = view.getMonth();
+          labelEl.textContent = monthNames[m] + ' ' + y;
+          var first = new Date(y, m, 1);
+          var startPad = (first.getDay() + 6) % 7;
+          var daysInMonth = new Date(y, m + 1, 0).getDate();
+          var html = '<div class="termine-cal-grid__head" role="row">';
+          ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'].forEach(function (d) {
+            html += '<div class="termine-cal-grid__headcell">' + d + '</div>';
+          });
+          html += '</div><div class="termine-cal-grid__cells" role="grid">';
+          var i;
+          for (i = 0; i < startPad; i++) {
+            html += '<div class="termine-cal-cell termine-cal-cell--muted" data-termine-cal aria-hidden="true"></div>';
+          }
+          for (var day = 1; day <= daysInMonth; day++) {
+            var evList = events.filter(function (e) {
+              return e.month === m && e.day === day;
+            });
+            var cls = 'termine-cal-cell';
+            if (evList.length) cls += ' termine-cal-cell--event termine-cal-cell--' + evList[0].kind;
+            html += '<div class="' + cls + '" data-termine-cal role="gridcell">';
+            html += '<span class="termine-cal-cell__num">' + day + '</span>';
+            if (evList.length) {
+              html += '<span class="termine-cal-cell__title">' + evList[0].title + '</span>';
+              html += '<span class="termine-cal-cell__sub">' + evList[0].sub + '</span>';
+            }
+            html += '</div>';
+          }
+          html += '</div>';
+          gridEl.innerHTML = html;
+          if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
+        }
+        btnPrev.addEventListener('click', function () {
+          view.setMonth(view.getMonth() - 1);
+          render();
+        });
+        btnNext.addEventListener('click', function () {
+          view.setMonth(view.getMonth() + 1);
+          render();
+        });
+        render();
+        if (!prefersReducedMotion) {
+          requestAnimationFrame(function () {
+            gsap.from('#termine-kalender [data-termine-cal]', {
+              opacity: 0,
+              y: 12,
+              stagger: 0.018,
+              duration: 0.42,
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: '#termine-kalender',
+                start: 'top 88%',
+                once: true,
+              },
+            });
+          });
+        }
+      })();
+
       /** Highlights: 3D-Tilt (Maus), reduzierte Bewegung aus */
       if (!prefersReducedMotion) {
         document.querySelectorAll('[data-highlight-tilt]').forEach(function (el) {
@@ -2215,18 +3121,74 @@
         });
       }
 
-      /** Highlights: Einblendung */
+      /** Highlights: Intro, Mega-Typo, pro Karte starker Reveal (sichtbar!) + Footer */
       if (!prefersReducedMotion) {
-        gsap.from('#highlight-grid .highlight-card', {
-          y: 40,
+        gsap.from('#events-intro', {
           opacity: 0,
-          rotationX: 5,
-          transformPerspective: 900,
-          duration: 0.7,
-          stagger: 0.09,
-          ease: 'power3.out',
-          scrollTrigger: { trigger: '#highlight-grid', start: 'top 86%', once: true },
+          y: 56,
+          filter: 'blur(14px)',
+          duration: 1.05,
+          ease: 'back.out(1.2)',
+          scrollTrigger: { trigger: '#events-intro', start: 'top 88%', once: true },
+          onComplete: function () {
+            var ei = document.getElementById('events-intro');
+            if (ei) ei.style.filter = 'none';
+          },
         });
+        gsap.to('.events-highlight-hero__mega', {
+          xPercent: 14,
+          yPercent: 6,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: '.events-highlight-hero',
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: 0.8,
+          },
+        });
+        document.querySelectorAll('[data-highlight-card]').forEach(function (card, i) {
+          var inner = card.querySelector('.highlight-card-inner');
+          if (!inner) return;
+          var isFeature = card.classList.contains('highlight-card--feature');
+          var dir = i % 2 === 0 ? -1 : 1;
+          var xMove = isFeature ? -110 : dir * 90;
+          var rotY = isFeature ? -14 : dir * 12;
+          gsap.from(inner, {
+            x: xMove,
+            y: 140,
+            opacity: 0,
+            scale: 0.82,
+            rotationY: rotY,
+            transformPerspective: 1800,
+            transformOrigin: '50% 50%',
+            duration: 1.2,
+            ease: 'back.out(1.35)',
+            scrollTrigger: {
+              trigger: card,
+              start: 'top 93%',
+              once: true,
+            },
+          });
+        });
+        gsap.from('#events-highlights-foot', {
+          opacity: 0,
+          y: 64,
+          scale: 0.97,
+          duration: 0.95,
+          ease: 'back.out(1.1)',
+          scrollTrigger: { trigger: '#events-highlights-foot', start: 'top 92%', once: true },
+        });
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () {
+            ScrollTrigger.refresh();
+          });
+        });
+      } else {
+        gsap.set('#events-intro', { opacity: 1, filter: 'none' });
+        document.querySelectorAll('[data-highlight-card] .highlight-card-inner').forEach(function (inner) {
+          gsap.set(inner, { opacity: 1, x: 0, y: 0, rotationY: 0 });
+        });
+        gsap.set('#events-highlights-foot', { opacity: 1, y: 0 });
       }
 
       /** Team-Showcase: sanfte Einblendung */
@@ -2237,6 +3199,35 @@
           duration: 0.75,
           ease: 'power3.out',
           scrollTrigger: { trigger: '#team', start: 'top 82%', once: true },
+        });
+        gsap.from('[data-roster-bento]', {
+          y: 52,
+          opacity: 0,
+          rotationX: 14,
+          transformPerspective: 900,
+          duration: 0.72,
+          stagger: 0.1,
+          ease: 'power3.out',
+          scrollTrigger: { trigger: '#team-roster', start: 'top 78%', once: true },
+        });
+        gsap.from('[data-member-chip]', {
+          y: 28,
+          opacity: 0,
+          scale: 0.9,
+          duration: 0.45,
+          stagger: { each: 0.028, from: 'random' },
+          ease: 'power2.out',
+          scrollTrigger: { trigger: '#roster-members-heading', start: 'top 88%', once: true },
+        });
+        gsap.to('.team-roster-showcase__watermark', {
+          xPercent: 8,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: '#team-roster',
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: 1,
+          },
         });
       }
 
