@@ -1,0 +1,9 @@
+Dieses Repo ist aktuell eine statische index.html (Tailwind per CDN, kein npm).
+
+Die React-Dateien hier (team-showcase.tsx + ../../lib/utils.ts) sind für eine spätere Migration:
+  1) npx create-next-app@latest ODER npm create vite@latest -- --template react-ts
+  2) npx shadcn@latest init   → legt u.a. components/ui und globals mit CSS-Variablen an
+  3) npm install react-icons
+  4) shadcn nutzt typischerweise @/components/ui — in tsconfig.json "paths": { "@/*": ["./*"] }
+
+Die funktionierende Team-Showcase-UI liegt bereits in index.html (#team).
