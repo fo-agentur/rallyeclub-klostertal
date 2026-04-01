@@ -158,7 +158,19 @@
         cursor: none;
       }
     }
-    /* Highlights: Bento + 3D-Tilt (Gallery-Card-Stil, z. B. 21st.dev) */
+    /* Highlights: Bento + Zonen-Look + 3D-Tilt */
+    .events-zone {
+      position: relative;
+      overflow: hidden;
+    }
+    .events-zone__mesh {
+      pointer-events: none;
+      position: absolute;
+      inset: 0;
+      opacity: 0.55;
+      background: radial-gradient(ellipse 85% 55% at 85% 5%, rgba(220, 38, 38, 0.11) 0%, transparent 52%),
+        radial-gradient(ellipse 65% 50% at 5% 95%, rgba(249, 115, 22, 0.07) 0%, transparent 48%);
+    }
     .highlight-grid {
       perspective: 1200px;
     }
@@ -170,7 +182,7 @@
     }
     .highlight-card[data-highlight-tilt] {
       transform: perspective(1000px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y)) translateZ(0);
-      transition: transform 0.12s ease-out;
+      transition: transform 0.14s ease-out;
     }
     @media (prefers-reduced-motion: reduce) {
       .highlight-card[data-highlight-tilt] {
@@ -179,11 +191,143 @@
       }
     }
     .highlight-card-inner {
+      position: relative;
+      height: 100%;
       transform: translateZ(0);
-      box-shadow: 0 20px 50px -15px rgba(0, 0, 0, 0.65);
+      overflow: hidden;
+      border-radius: 1rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(12, 12, 18, 0.35);
+      box-shadow: 0 24px 56px -22px rgba(0, 0, 0, 0.75);
+    }
+    .highlight-card--feature .highlight-card-inner {
+      border-radius: 1.25rem;
+      border-color: rgba(249, 115, 22, 0.22);
+      box-shadow: 0 0 0 1px rgba(249, 115, 22, 0.08), 0 32px 70px -28px rgba(0, 0, 0, 0.82);
     }
     .highlight-card:hover .highlight-card-inner {
-      box-shadow: 0 28px 60px -12px rgba(220, 38, 38, 0.18), 0 20px 50px -15px rgba(0, 0, 0, 0.7);
+      border-color: rgba(255, 255, 255, 0.16);
+      box-shadow: 0 32px 64px -24px rgba(220, 38, 38, 0.12), 0 24px 56px -22px rgba(0, 0, 0, 0.78);
+    }
+    .highlight-card--feature:hover .highlight-card-inner {
+      border-color: rgba(249, 115, 22, 0.35);
+    }
+    .highlight-card__media {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+    .highlight-card__img {
+      position: absolute;
+      inset: 0;
+      height: 100%;
+      width: 100%;
+      object-fit: cover;
+      transform: scale(1.001);
+      transition: transform 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .highlight-card:hover .highlight-card__img {
+      transform: scale(1.03);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .highlight-card:hover .highlight-card__img {
+        transform: none;
+      }
+    }
+    .highlight-card__scrim {
+      pointer-events: none;
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: linear-gradient(to top, rgba(8, 8, 12, 0.94) 0%, rgba(8, 8, 12, 0.35) 42%, transparent 72%);
+    }
+    .highlight-card--feature .highlight-card__scrim {
+      background: linear-gradient(to top, rgba(8, 8, 12, 0.92) 0%, transparent 58%),
+        linear-gradient(105deg, rgba(8, 8, 12, 0.55) 0%, transparent 48%);
+    }
+    .highlight-card__frame {
+      pointer-events: none;
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      border-radius: inherit;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    }
+    .highlight-card__idx {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      z-index: 2;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.65rem;
+      font-weight: 800;
+      letter-spacing: 0.28em;
+      color: rgba(255, 255, 255, 0.14);
+    }
+    .highlight-card__body {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      height: 100%;
+      min-height: 12rem;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 1.25rem 1.35rem 1.5rem;
+    }
+    @media (min-width: 640px) {
+      .highlight-card__body {
+        padding: 1.5rem 1.75rem 1.75rem;
+      }
+      .highlight-card__body--feature {
+        min-height: 22rem;
+        padding: 2rem 2rem 2.25rem;
+      }
+    }
+    .highlight-card__eyebrow {
+      margin-bottom: 0.5rem;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.42em;
+      text-transform: uppercase;
+      color: rgba(249, 115, 22, 0.95);
+    }
+    .highlight-card__tag {
+      margin-bottom: 0.5rem;
+      display: inline-flex;
+      width: fit-content;
+      align-items: center;
+      border-radius: 9999px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(255, 255, 255, 0.06);
+      padding: 0.35rem 0.75rem;
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.88);
+    }
+    .highlight-card--feature .highlight-card__tag {
+      border-color: rgba(249, 115, 22, 0.35);
+      background: rgba(220, 38, 38, 0.12);
+      color: rgba(254, 215, 170, 0.98);
+    }
+    .events-highlights-foot {
+      margin-top: 2.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.25rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 2.5rem;
+      text-align: center;
+    }
+    @media (min-width: 640px) {
+      .events-highlights-foot {
+        flex-direction: row;
+        justify-content: space-between;
+        text-align: left;
+      }
     }
     /* Termine: „Race-Calendar“-Look + Animationen */
     .termine-zone {
@@ -606,7 +750,8 @@
     .photo img,
     .hero-bg,
     #hero-slides,
-    .hero-slide {
+    .hero-slide,
+    .highlight-card__img {
       image-rendering: auto;
       -webkit-backface-visibility: hidden;
       backface-visibility: hidden;
@@ -917,70 +1062,111 @@
       </div>
     </section>
 
-    <!-- Highlights: Bento-Galerie + 3D-Tilt (Gallery-Card-Stil) -->
-    <section id="events" class="relative scroll-mt-20 py-20 sm:py-24 lg:py-28">
-      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <h2 id="headline-events" class="font-display clip-reveal text-4xl font-bold text-white sm:text-5xl md:text-6xl">Highlights</h2>
-        <p class="mt-4 max-w-2xl text-lg text-rally-muted">Unsere Stationen — als Bento-Galerie mit Tiefe und Licht (inspiriert von modernen Gallery-Cards). Ergebnisse und Medien folgen, sobald die Saison läuft.</p>
-        <div id="highlight-grid" class="highlight-grid mt-12 grid auto-rows-[minmax(200px,auto)] grid-cols-1 gap-4 sm:gap-5 md:grid-cols-12">
-          <article class="group highlight-card md:col-span-7 md:row-span-2 min-h-[320px] md:min-h-[420px]" data-highlight-tilt>
-            <div class="highlight-card-inner relative h-full overflow-hidden rounded-2xl border border-white/10 bg-rally-card/40">
-              <img src="images/headers/1.png" alt="" class="absolute inset-0 h-full w-full object-cover transition duration-700 ease-out group-hover:scale-105" loading="lazy" width="800" height="600" />
-              <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
-              <div class="relative z-10 flex h-full flex-col justify-end p-6 sm:p-8">
-                <span class="mb-2 inline-flex w-fit rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-rally-orange">Slalom</span>
-                <h3 class="font-display text-2xl font-bold text-white sm:text-3xl">Autoslalom St. Gallenkirch</h3>
-                <p class="mt-2 max-w-lg text-sm leading-relaxed text-white/80">Präzision, Pylonen, Publikum — unser klassisches Heimspiel im Klostertal.</p>
+    <!-- Highlights: Bento + Zonen-Look + Tilt -->
+    <section id="events" class="events-zone relative scroll-mt-20 border-t border-white/10 py-20 sm:py-24 lg:py-28">
+      <div class="events-zone__mesh" aria-hidden="true"></div>
+      <div class="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p class="font-display text-[10px] font-bold uppercase tracking-[0.42em] text-rally-orange/90">Saison &amp; Formate</p>
+            <h2 id="headline-events" class="font-display clip-reveal mt-2 text-4xl font-bold text-white sm:text-5xl md:text-6xl">Highlights</h2>
+          </div>
+          <p class="font-display text-xs font-semibold uppercase tracking-[0.35em] text-white/35">Klostertal</p>
+        </div>
+        <p class="mt-5 max-w-2xl text-base leading-relaxed text-rally-muted sm:text-lg">
+          Von der Strecke bis zum Festsaal — das sind die Stationen, die unseren Kalender prägen. Ergebnisse, Fotos und Medien ergänzen wir mit laufender Saison.
+        </p>
+
+        <div id="highlight-grid" class="highlight-grid mt-12 grid auto-rows-[minmax(200px,auto)] grid-cols-1 gap-4 sm:gap-5 md:mt-14 md:grid-cols-12">
+          <article class="group highlight-card highlight-card--feature md:col-span-7 md:row-span-2 min-h-[320px] md:min-h-[420px]" data-highlight-tilt>
+            <div class="highlight-card-inner">
+              <div class="highlight-card__media">
+                <img src="images/headers/1.png" alt="Autoslalom St. Gallenkirch — Fahrzeug in der Kurve" class="highlight-card__img" loading="lazy" width="800" height="600" />
+              </div>
+              <div class="highlight-card__scrim" aria-hidden="true"></div>
+              <span class="highlight-card__frame" aria-hidden="true"></span>
+              <div class="highlight-card__body highlight-card__body--feature">
+                <span class="highlight-card__eyebrow">Signature Event</span>
+                <span class="highlight-card__tag">Slalom</span>
+                <h3 class="font-display text-2xl font-bold leading-tight text-white sm:text-3xl md:text-4xl">Autoslalom St. Gallenkirch</h3>
+                <p class="mt-3 max-w-xl text-sm leading-relaxed text-white/80 sm:text-base">Pylonen, Präzision, Publikum — unser klassisches Heimspiel im Klostertal.</p>
               </div>
             </div>
           </article>
+
           <article class="group highlight-card md:col-span-5 min-h-[200px]" data-highlight-tilt>
-            <div class="highlight-card-inner relative h-full overflow-hidden rounded-2xl border border-white/10 bg-rally-card/40">
-              <img src="images/headers/2.png" alt="" class="absolute inset-0 h-full w-full object-cover transition duration-700 ease-out group-hover:scale-105" loading="lazy" width="800" height="600" />
-              <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/25 to-transparent"></div>
-              <div class="relative z-10 flex h-full flex-col justify-end p-6">
-                <span class="mb-2 inline-flex w-fit rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-rally-orange">Berg</span>
-                <h3 class="font-display text-xl font-bold text-white">Bergrennen</h3>
-                <p class="mt-1 text-sm text-white/75">Höhenmeter, Adrenalin, Ansehen.</p>
+            <div class="highlight-card-inner">
+              <div class="highlight-card__media">
+                <img src="images/headers/2.png" alt="Bergrennen — Rallye in alpinem Gelände" class="highlight-card__img" loading="lazy" width="800" height="600" />
+              </div>
+              <div class="highlight-card__scrim" aria-hidden="true"></div>
+              <span class="highlight-card__idx" aria-hidden="true">01</span>
+              <span class="highlight-card__frame" aria-hidden="true"></span>
+              <div class="highlight-card__body min-h-[11rem] sm:min-h-[12rem]">
+                <span class="highlight-card__tag">Berg</span>
+                <h3 class="font-display text-xl font-bold text-white sm:text-2xl">Bergrennen</h3>
+                <p class="mt-2 text-sm leading-relaxed text-white/78">Höhenmeter, Adrenalin, Ansehen.</p>
               </div>
             </div>
           </article>
+
           <article class="group highlight-card md:col-span-5 min-h-[200px]" data-highlight-tilt>
-            <div class="highlight-card-inner relative h-full overflow-hidden rounded-2xl border border-white/10 bg-rally-card/40">
-              <img src="images/headers/3.png" alt="" class="absolute inset-0 h-full w-full object-cover transition duration-700 ease-out group-hover:scale-105" loading="lazy" width="800" height="600" />
-              <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/25 to-transparent"></div>
-              <div class="relative z-10 flex h-full flex-col justify-end p-6">
-                <span class="mb-2 inline-flex w-fit rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-rally-orange">Abend</span>
-                <h3 class="font-display text-xl font-bold text-white">Gala</h3>
-                <p class="mt-1 text-sm text-white/75">Preise, Party, Vereinsfamilie.</p>
+            <div class="highlight-card-inner">
+              <div class="highlight-card__media">
+                <img src="images/headers/3.png" alt="Gala-Abend — Vereinsfeier" class="highlight-card__img" loading="lazy" width="800" height="600" />
+              </div>
+              <div class="highlight-card__scrim" aria-hidden="true"></div>
+              <span class="highlight-card__idx" aria-hidden="true">02</span>
+              <span class="highlight-card__frame" aria-hidden="true"></span>
+              <div class="highlight-card__body min-h-[11rem] sm:min-h-[12rem]">
+                <span class="highlight-card__tag">Abend</span>
+                <h3 class="font-display text-xl font-bold text-white sm:text-2xl">Gala &amp; Ehrungen</h3>
+                <p class="mt-2 text-sm leading-relaxed text-white/78">Preise, Party, Vereinsfamilie.</p>
               </div>
             </div>
           </article>
+
           <article class="group highlight-card md:col-span-6 min-h-[220px]" data-highlight-tilt>
-            <div class="highlight-card-inner relative h-full overflow-hidden rounded-2xl border border-white/10 bg-rally-card/40">
-              <img src="images/headers/4.png" alt="" class="absolute inset-0 h-full w-full object-cover transition duration-700 ease-out group-hover:scale-105" loading="lazy" width="800" height="600" />
-              <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/25 to-transparent"></div>
-              <div class="relative z-10 flex h-full flex-col justify-end p-6">
-                <span class="mb-2 inline-flex w-fit rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-rally-orange">Verein</span>
-                <h3 class="font-display text-xl font-bold text-white">Jahreshauptversammlung</h3>
-                <p class="mt-1 text-sm text-white/75">Demokratie auf Asphalt-Niveau.</p>
+            <div class="highlight-card-inner">
+              <div class="highlight-card__media">
+                <img src="images/headers/4.png" alt="Jahreshauptversammlung im Rallyeclub" class="highlight-card__img" loading="lazy" width="800" height="600" />
+              </div>
+              <div class="highlight-card__scrim" aria-hidden="true"></div>
+              <span class="highlight-card__idx" aria-hidden="true">03</span>
+              <span class="highlight-card__frame" aria-hidden="true"></span>
+              <div class="highlight-card__body min-h-[12rem]">
+                <span class="highlight-card__tag">Verein</span>
+                <h3 class="font-display text-xl font-bold text-white sm:text-2xl">Jahreshauptversammlung</h3>
+                <p class="mt-2 text-sm leading-relaxed text-white/78">Mitgliedschaft, Wahlen, Ausblick.</p>
               </div>
             </div>
           </article>
+
           <article class="group highlight-card md:col-span-6 min-h-[220px]" data-highlight-tilt>
-            <div class="highlight-card-inner relative h-full overflow-hidden rounded-2xl border border-white/10 bg-rally-card/40">
-              <img src="images/Autoslalom.jpg" alt="" class="absolute inset-0 h-full w-full object-cover transition duration-700 ease-out group-hover:scale-105" loading="lazy" width="800" height="600" />
-              <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/25 to-transparent"></div>
-              <div class="relative z-10 flex h-full flex-col justify-end p-6">
-                <span class="mb-2 inline-flex w-fit rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-rally-orange">Action</span>
-                <h3 class="font-display text-xl font-bold text-white">Autoslalom</h3>
-                <p class="mt-1 text-sm text-white/75">Kurven, Zeiten, Emotionen.</p>
+            <div class="highlight-card-inner">
+              <div class="highlight-card__media">
+                <img src="images/Autoslalom.jpg" alt="Autoslalom — Kurs und Fahrzeug" class="highlight-card__img" loading="lazy" width="800" height="600" />
+              </div>
+              <div class="highlight-card__scrim" aria-hidden="true"></div>
+              <span class="highlight-card__idx" aria-hidden="true">04</span>
+              <span class="highlight-card__frame" aria-hidden="true"></span>
+              <div class="highlight-card__body min-h-[12rem]">
+                <span class="highlight-card__tag">Action</span>
+                <h3 class="font-display text-xl font-bold text-white sm:text-2xl">Slalom-Serie</h3>
+                <p class="mt-2 text-sm leading-relaxed text-white/78">Kurven, Zeiten, Emotionen — über die Saison verteilt.</p>
               </div>
             </div>
           </article>
         </div>
-        <div class="mx-auto mt-16 max-w-3xl text-center">
-          <p class="text-xl font-medium leading-relaxed text-white md:text-2xl">Vom Autoslalom bis zur Gala — <span class="text-rally-orange">wir leben Motorsport.</span></p>
+
+        <div class="events-highlights-foot">
+          <p class="max-w-xl text-lg font-medium leading-relaxed text-white/95 sm:text-xl">
+            Vom ersten Start bis zur Gala — <span class="text-rally-orange">Motorsport mit Herz</span> im Klostertal.
+          </p>
+          <div class="flex flex-wrap items-center justify-center gap-3 sm:justify-end">
+            <a href="#termine" class="inline-flex min-h-[44px] items-center justify-center rounded-full border border-white/15 bg-white/5 px-5 py-2.5 text-sm font-semibold text-white transition hover:border-rally-orange hover:text-rally-orange" data-lenis-scroll>Zu den Terminen</a>
+            <a href="#medien" class="inline-flex min-h-[44px] items-center justify-center rounded-full bg-gradient-to-r from-rally-accent to-rally-orange px-5 py-2.5 text-sm font-semibold text-white shadow-lg transition hover:brightness-110" data-lenis-scroll>In die Galerie</a>
+          </div>
         </div>
       </div>
     </section>
@@ -1707,8 +1893,8 @@
             var r = el.getBoundingClientRect();
             var x = (e.clientX - r.left) / r.width - 0.5;
             var y = (e.clientY - r.top) / r.height - 0.5;
-            el.style.setProperty('--tilt-x', y * -10 + 'deg');
-            el.style.setProperty('--tilt-y', x * 10 + 'deg');
+            el.style.setProperty('--tilt-x', y * -6 + 'deg');
+            el.style.setProperty('--tilt-y', x * 6 + 'deg');
           });
           el.addEventListener('mouseleave', function () {
             el.style.setProperty('--tilt-x', '0deg');
@@ -1720,14 +1906,14 @@
       /** Highlights: Einblendung */
       if (!prefersReducedMotion) {
         gsap.from('#highlight-grid .highlight-card', {
-          y: 48,
+          y: 40,
           opacity: 0,
-          rotationX: 8,
+          rotationX: 5,
           transformPerspective: 900,
-          duration: 0.75,
-          stagger: 0.1,
+          duration: 0.7,
+          stagger: 0.09,
           ease: 'power3.out',
-          scrollTrigger: { trigger: '#highlight-grid', start: 'top 88%' },
+          scrollTrigger: { trigger: '#highlight-grid', start: 'top 86%', once: true },
         });
       }
 
