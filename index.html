@@ -1117,32 +1117,30 @@
       border-radius: 0.75rem;
       transition: opacity 0.35s ease, box-shadow 0.35s ease;
     }
-    .team-photo-card--initials {
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    .team-photo-card--photo {
+      padding: 0;
       border: 1px solid rgba(255, 255, 255, 0.12);
-      background: linear-gradient(155deg, rgba(220, 38, 38, 0.22), rgba(18, 18, 26, 0.98));
+      background: rgba(12, 12, 18, 0.98);
     }
-    .team-photo-card__face {
-      font-family: 'Orbitron', sans-serif;
-      font-size: clamp(1.35rem, 4vw, 1.85rem);
-      font-weight: 800;
-      letter-spacing: 0.06em;
-      color: rgba(255, 255, 255, 0.92);
+    .team-photo-card__img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 18%;
       transition: filter 0.45s ease, opacity 0.35s ease;
       filter: grayscale(1) brightness(0.88);
     }
-    .team-showcase.team-showcase--hover .team-photo-card.is-active .team-photo-card__face {
+    .team-showcase.team-showcase--hover .team-photo-card.is-active .team-photo-card__img {
       filter: grayscale(0) brightness(1);
     }
     .team-showcase.team-showcase--hover .team-photo-card:not(.is-active) {
       opacity: 0.58;
     }
-    .team-showcase.team-showcase--hover .team-photo-card:not(.is-active) .team-photo-card__face {
+    .team-showcase.team-showcase--hover .team-photo-card:not(.is-active) .team-photo-card__img {
       filter: grayscale(1) brightness(0.72);
     }
-    .team-showcase.team-showcase--hover .team-photo-card.is-active.team-photo-card--initials {
+    .team-showcase.team-showcase--hover .team-photo-card.is-active {
       box-shadow: 0 0 0 1px rgba(249, 115, 22, 0.45), 0 12px 32px -16px rgba(220, 38, 38, 0.35);
     }
     .team-member-row {
@@ -1218,15 +1216,15 @@
     }
     @media (prefers-reduced-motion: reduce) {
       .team-photo-card,
-      .team-photo-card__face,
+      .team-photo-card__img,
       .team-member-row,
       .team-row-indicator,
       .team-member-name,
       .team-social {
         transition: none;
       }
-      .team-photo-card__face {
-        filter: none;
+      .team-photo-card__img {
+        filter: none !important;
       }
       .team-showcase.team-showcase--hover .team-photo-card:not(.is-active) {
         opacity: 1;
@@ -1799,7 +1797,7 @@
         <p class="mt-5 max-w-3xl text-base leading-relaxed text-rally-muted sm:text-lg">
           Namen und Funktionen entsprechen der öffentlichen Mitglieder-Übersicht der bisherigen Website
           <a class="text-rally-orange underline decoration-white/20 underline-offset-4 hover:text-white" href="http://www.rallyeclub-klostertal.at/index.php/mitglieder" target="_blank" rel="noopener noreferrer">rallyeclub-klostertal.at</a>.
-          Dort waren für viele Personen noch keine Fotos hinterlegt — hier zeigen wir daher <strong class="text-white/90">Initialen</strong> statt fremder Stock-Bilder. Gerne später durch Vereinsfotos ersetzen.
+          Die Porträts unten stammen von dort (gleiche Bilddateien). Für Alex Schmöllerl nutzt die alte Seite wie hier ein Platzhalterbild („Foto folgt“).
         </p>
 
         <div
@@ -1809,27 +1807,27 @@
         >
           <div class="team-showcase__photos flex touch-pan-x gap-2 overflow-x-auto pb-1 [-webkit-overflow-scrolling:touch] md:gap-3 md:pb-0">
             <div class="flex flex-col gap-2 md:gap-3">
-              <button type="button" class="team-photo-card team-photo-card--initials h-[120px] w-[110px] sm:h-[140px] sm:w-[130px] md:h-[165px] md:w-[155px]" data-team-id="1" aria-label="Christoph Schuler, Obmann">
-                <span class="team-photo-card__face">CS</span>
+              <button type="button" class="team-photo-card team-photo-card--photo h-[120px] w-[110px] sm:h-[140px] sm:w-[130px] md:h-[165px] md:w-[155px]" data-team-id="1" aria-label="Christoph Schuler, Obmann">
+                <img class="team-photo-card__img" src="images/team/christoph-schuler.jpg" alt="" width="165" height="293" loading="lazy" decoding="async" />
               </button>
-              <button type="button" class="team-photo-card team-photo-card--initials h-[120px] w-[110px] sm:h-[140px] sm:w-[130px] md:h-[165px] md:w-[155px]" data-team-id="4" aria-label="Manuel Schuler, Vorstand">
-                <span class="team-photo-card__face">MS</span>
+              <button type="button" class="team-photo-card team-photo-card--photo h-[120px] w-[110px] sm:h-[140px] sm:w-[130px] md:h-[165px] md:w-[155px]" data-team-id="4" aria-label="Manuel Schuler, Vorstand">
+                <img class="team-photo-card__img" src="images/team/manuel-schuler.jpg" alt="" width="165" height="293" loading="lazy" decoding="async" />
               </button>
             </div>
             <div class="mt-[48px] flex flex-col gap-2 sm:mt-[56px] md:mt-[68px] md:gap-3">
-              <button type="button" class="team-photo-card team-photo-card--initials h-[132px] w-[122px] sm:h-[155px] sm:w-[145px] md:h-[182px] md:w-[172px]" data-team-id="2" aria-label="Christian Breuss, Vizeobmann">
-                <span class="team-photo-card__face">CB</span>
+              <button type="button" class="team-photo-card team-photo-card--photo h-[132px] w-[122px] sm:h-[155px] sm:w-[145px] md:h-[182px] md:w-[172px]" data-team-id="2" aria-label="Christian Breuss, Vizeobmann">
+                <img class="team-photo-card__img" src="images/team/christian-breuss.jpg" alt="" width="165" height="124" loading="lazy" decoding="async" />
               </button>
-              <button type="button" class="team-photo-card team-photo-card--initials h-[132px] w-[122px] sm:h-[155px] sm:w-[145px] md:h-[182px] md:w-[172px]" data-team-id="5" aria-label="Herbert Schuler, Vorstand">
-                <span class="team-photo-card__face">HS</span>
+              <button type="button" class="team-photo-card team-photo-card--photo h-[132px] w-[122px] sm:h-[155px] sm:w-[145px] md:h-[182px] md:w-[172px]" data-team-id="5" aria-label="Herbert Schuler, Vorstand">
+                <img class="team-photo-card__img" src="images/team/herbert-schuler.jpg" alt="" width="165" height="124" loading="lazy" decoding="async" />
               </button>
             </div>
             <div class="mt-[22px] flex flex-col gap-2 sm:mt-[26px] md:mt-[32px] md:gap-3">
-              <button type="button" class="team-photo-card team-photo-card--initials h-[125px] w-[115px] sm:h-[146px] sm:w-[136px] md:h-[172px] md:w-[162px]" data-team-id="3" aria-label="Martina Zögernitz, Schriftführerin und Kassierin">
-                <span class="team-photo-card__face">MZ</span>
+              <button type="button" class="team-photo-card team-photo-card--photo h-[125px] w-[115px] sm:h-[146px] sm:w-[136px] md:h-[172px] md:w-[162px]" data-team-id="3" aria-label="Martina Zögernitz, Schriftführerin und Kassierin">
+                <img class="team-photo-card__img" src="images/team/martina-zoegernitz.jpg" alt="" width="165" height="295" loading="lazy" decoding="async" />
               </button>
-              <button type="button" class="team-photo-card team-photo-card--initials h-[125px] w-[115px] sm:h-[146px] sm:w-[136px] md:h-[172px] md:w-[162px]" data-team-id="6" aria-label="Alex Schmöllerl, Fahrervertreter">
-                <span class="team-photo-card__face">AS</span>
+              <button type="button" class="team-photo-card team-photo-card--photo h-[125px] w-[115px] sm:h-[146px] sm:w-[136px] md:h-[172px] md:w-[162px]" data-team-id="6" aria-label="Alex Schmöllerl, Fahrervertreter — Platzhalter wie auf alter Website">
+                <img class="team-photo-card__img" src="images/team/alex-schmoellerl-placeholder.jpg" alt="" width="200" height="145" loading="lazy" decoding="async" />
               </button>
             </div>
           </div>
