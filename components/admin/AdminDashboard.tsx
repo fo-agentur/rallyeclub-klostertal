@@ -45,6 +45,8 @@ function safeFileName(name: string) {
 
 export function AdminDashboard() {
   const clients = getFirebaseClients()
+  /** Avoid SSR/client HTML mismatch: Firebase Auth only runs in the browser. */
+  const [mounted, setMounted] = useState(false)
   const [user, setUser] = useState<User | null>(null)
   const [authReady, setAuthReady] = useState(false)
   const [isAdmin, setIsAdmin] = useState(false)
@@ -55,6 +57,10 @@ export function AdminDashboard() {
   const [termine, setTermine] = useState<TermineItem[]>([])
   const [saveMsg, setSaveMsg] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   useEffect(() => {
     if (!clients) {
@@ -165,7 +171,7 @@ export function AdminDashboard() {
     )
   }
 
-  if (!authReady) {
+  if (!mounted || !authReady) {
     return <p className="p-8 text-center text-rally-muted">Lade …</p>
   }
 
