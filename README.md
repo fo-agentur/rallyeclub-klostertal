@@ -35,7 +35,11 @@ Optional dritter Parameter: Pfad zur Service-Account-JSON-Datei, falls weder `FI
 firebase deploy --only firestore:rules,storage
 ```
 
-(`firebase.json` ist angelegt.)
+(`firebase.json` ist angelegt.) Nach Änderungen an `storage.rules` unbedingt deployen — dort ist u. a. **max. 2 MB pro Bild** und nur `image/*` für `cms/**` hinterlegt.
+
+## CMS-Limits (Kosten / Speicher)
+
+Im Admin gelten feste Obergrenzen (siehe `lib/cms-limits.ts`): Anzahl Hero-Slides, Team, Galerie, Club-Streifen, Highlights, Termine sowie **max. Bildgröße pro Upload**. Überschüssige Inhalte werden auf der **öffentlichen Seite abgeschnitten**, bis du im CMS reduzierst. **API-Keys und Service-Account-JSON gehören nur in `.env.local`**, niemals ins Repository.
 
 ## Struktur
 

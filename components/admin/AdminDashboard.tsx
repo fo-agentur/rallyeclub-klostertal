@@ -11,6 +11,12 @@ import { collection, deleteDoc, doc, getDocs, onSnapshot, setDoc, addDoc, update
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 import { siteContentSchema, type SiteContent } from '@/lib/schemas/site-content'
 import { termineItemSchema, type TermineItem } from '@/lib/schemas/termine'
+import {
+  assertImageUploadAllowed,
+  CMS_LIMITS,
+  formatMaxImageSizeLabel,
+  validateSiteContentLimits,
+} from '@/lib/cms-limits'
 import { defaultSiteContent } from '@/lib/default-site-data'
 import { getFirebaseClients } from '@/lib/firebase/client-app'
 import { Button } from '@/components/ui/button'
@@ -116,6 +122,11 @@ export function AdminDashboard() {
     setBusy(true)
     setSaveMsg(null)
     try {
+      const limitErr = validateSiteContentLimits(site)
+      if (limitErr) {
+        setSaveMsg(limitErr)
+        return
+      }
       const parsed = siteContentSchema.parse(site)
       await setDoc(doc(clients.db, 'site', 'content'), parsed)
       await revalidateSiteCache(user)
@@ -129,6 +140,8 @@ export function AdminDashboard() {
 
   const uploadToCms = async (file: File, folder: string) => {
     if (!clients || !user || !isAdmin) throw new Error('Nicht angemeldet')
+    const denied = assertImageUploadAllowed(file)
+    if (denied) throw new Error(denied)
     const path = `cms/${folder}/${Date.now()}-${safeFileName(file.name)}`
     const storageRef = ref(clients.storage, path)
     await uploadBytes(storageRef, file, { contentType: file.type || 'application/octet-stream' })
@@ -143,10 +156,9 @@ export function AdminDashboard() {
             <CardTitle>Admin nicht verfügbar</CardTitle>
           </CardHeader>
           <CardContent className="text-sm text-rally-muted">
-            Bitte Firebase-Web-Variablen in <code className="text-white">.env.local</code> setzen (siehe{' '}
-            <code className="text-white">.env.example</code>: z. B.{' '}
-            <code className="text-white">NEXT_PUBLIC_FIREBASE_WEB_API_KEY</code>)
-            (siehe <code className="text-white">.env.example</code>).
+            Bitte Firebase-Web-Variablen in <code className="text-white">.env.local</code> setzen (Vorlage:{' '}
+            <code className="text-white">.env.example</code>, z. B.{' '}
+            <code className="text-white">NEXT_PUBLIC_FIREBASE_WEB_API_KEY</code>). Secrets niemals ins Git committen.
           </CardContent>
         </Card>
       </div>
@@ -203,6 +215,25 @@ export function AdminDashboard() {
         </Button>
       </div>
 
+      <Card className="mb-6 border-white/15 bg-white/[0.03]">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base">Speicher- &amp; Upload-Limits</CardTitle>
+        </CardHeader>
+        <CardContent className="text-xs leading-relaxed text-rally-muted">
+          <p>
+            Uploads sind begrenzt, damit Firebase Storage und Traffic klein bleiben (Vereinsseite, Free-Tier).
+            Pro Bild max. <strong className="text-white">{formatMaxImageSizeLabel()}</strong>, nur Bilder. Zusätzlich:
+            Hero bis <strong className="text-white">{CMS_LIMITS.maxHeroSlides}</strong> Slides, Team bis{' '}
+            <strong className="text-white">{CMS_LIMITS.maxTeamMembers}</strong>, Club-Streifen{' '}
+            <strong className="text-white">{CMS_LIMITS.maxClubStripImages}</strong>, Galerie{' '}
+            <strong className="text-white">{CMS_LIMITS.maxGalleryImages}</strong>, Highlights{' '}
+            <strong className="text-white">{CMS_LIMITS.maxHighlightCards}</strong>, Termine{' '}
+            <strong className="text-white">{CMS_LIMITS.maxTermineDocuments}</strong>. Überschüssige Einträge werden auf
+            der öffentlichen Seite nicht angezeigt, bis du sie im CMS reduzierst.
+          </p>
+        </CardContent>
+      </Card>
+
       <Tabs defaultValue="hero">
         <TabsList className="flex flex-wrap gap-1">
           <TabsTrigger value="hero">Hero</TabsTrigger>
@@ -243,12 +274,15 @@ export function AdminDashboard() {
                     onChange={async (e) => {
                       const f = e.target.files?.[0]
                       if (!f) return
+                      setSaveMsg(null)
                       setBusy(true)
                       try {
                         const url = await uploadToCms(f, 'hero')
                         const next = [...site.heroSlides]
                         next[i] = { ...next[i], imageSrc: url }
                         setSite({ ...site, heroSlides: next })
+                      } catch (err) {
+                        setSaveMsg(err instanceof Error ? err.message : 'Upload fehlgeschlagen')
                       } finally {
                         setBusy(false)
                       }
@@ -260,7 +294,15 @@ export function AdminDashboard() {
                 <Button
                   type="button"
                   variant="outline"
-                  onClick={() => setSite({ ...site, heroSlides: [...site.heroSlides, { imageSrc: '/images/headers/hero-hq-1.png' }] })}
+                  disabled={site.heroSlides.length >= CMS_LIMITS.maxHeroSlides}
+                  onClick={() => {
+                    if (site.heroSlides.length >= CMS_LIMITS.maxHeroSlides) {
+                      setSaveMsg(`Maximal ${CMS_LIMITS.maxHeroSlides} Hero-Slides.`)
+                      return
+                    }
+                    setSaveMsg(null)
+                    setSite({ ...site, heroSlides: [...site.heroSlides, { imageSrc: '/images/headers/hero-hq-1.png' }] })
+                  }}
                 >
                   Slide hinzufügen
                 </Button>
@@ -370,12 +412,15 @@ export function AdminDashboard() {
                     onChange={async (e) => {
                       const f = e.target.files?.[0]
                       if (!f) return
+                      setSaveMsg(null)
                       setBusy(true)
                       try {
                         const url = await uploadToCms(f, 'team')
                         const next = [...site.teamMembers]
                         next[i] = { ...next[i], imageSrc: url }
                         setSite({ ...site, teamMembers: next })
+                      } catch (err) {
+                        setSaveMsg(err instanceof Error ? err.message : 'Upload fehlgeschlagen')
                       } finally {
                         setBusy(false)
                       }
@@ -390,7 +435,13 @@ export function AdminDashboard() {
                 <Button
                   type="button"
                   variant="outline"
-                  onClick={() =>
+                  disabled={site.teamMembers.length >= CMS_LIMITS.maxTeamMembers}
+                  onClick={() => {
+                    if (site.teamMembers.length >= CMS_LIMITS.maxTeamMembers) {
+                      setSaveMsg(`Maximal ${CMS_LIMITS.maxTeamMembers} Team-Einträge.`)
+                      return
+                    }
+                    setSaveMsg(null)
                     setSite({
                       ...site,
                       teamMembers: [
@@ -403,7 +454,7 @@ export function AdminDashboard() {
                         },
                       ],
                     })
-                  }
+                  }}
                 >
                   Mitglied hinzufügen
                 </Button>
@@ -436,6 +487,8 @@ export function AdminDashboard() {
                 upload={uploadToCms}
                 folder="club"
                 setBusy={setBusy}
+                maxItems={CMS_LIMITS.maxClubStripImages}
+                onUploadMessage={setSaveMsg}
               />
               <div>
                 <Label>Highlights (JSON — erste = Feature)</Label>
@@ -460,6 +513,8 @@ export function AdminDashboard() {
                 upload={uploadToCms}
                 folder="gallery"
                 setBusy={setBusy}
+                maxItems={CMS_LIMITS.maxGalleryImages}
+                onUploadMessage={setSaveMsg}
               />
               <Button type="button" disabled={busy} onClick={() => void saveSite()}>
                 Speichern
@@ -577,8 +632,14 @@ export function AdminDashboard() {
               <Button
                 type="button"
                 variant="outline"
+                disabled={termine.length >= CMS_LIMITS.maxTermineDocuments}
                 onClick={async () => {
                   if (!clients) return
+                  if (termine.length >= CMS_LIMITS.maxTermineDocuments) {
+                    setSaveMsg(`Maximal ${CMS_LIMITS.maxTermineDocuments} Termine. Bitte bestehende löschen oder zusammenführen.`)
+                    return
+                  }
+                  setSaveMsg(null)
                   setBusy(true)
                   try {
                     const draft = termineItemSchema.parse({
@@ -692,6 +753,8 @@ function FieldList({
   upload,
   folder,
   setBusy,
+  maxItems,
+  onUploadMessage,
 }: {
   title: string
   items: StripItem[]
@@ -699,6 +762,8 @@ function FieldList({
   upload: (file: File, folder: string) => Promise<string>
   folder: string
   setBusy: (v: boolean) => void
+  maxItems: number
+  onUploadMessage: (msg: string | null) => void
 }) {
   const rows = items.length ? items : [{ src: '', alt: '' }]
 
@@ -734,12 +799,15 @@ function FieldList({
             onChange={async (e) => {
               const f = e.target.files?.[0]
               if (!f) return
+              onUploadMessage(null)
               setBusy(true)
               try {
                 const url = await upload(f, folder)
                 const next = [...rows]
                 next[i] = { ...next[i], src: url }
                 onChange(next)
+              } catch (err) {
+                onUploadMessage(err instanceof Error ? err.message : 'Upload fehlgeschlagen')
               } finally {
                 setBusy(false)
               }
@@ -748,7 +816,20 @@ function FieldList({
         </div>
       ))}
       <div className="flex gap-2">
-        <Button type="button" size="sm" variant="outline" onClick={() => onChange([...rows, { src: '', alt: '' }])}>
+        <Button
+          type="button"
+          size="sm"
+          variant="outline"
+          disabled={items.length >= maxItems}
+          onClick={() => {
+            if (items.length >= maxItems) {
+              onUploadMessage(`Limit: maximal ${maxItems} Bilder bei „${title}".`)
+              return
+            }
+            onUploadMessage(null)
+            onChange([...rows, { src: '', alt: '' }])
+          }}
+        >
           Zeile +
         </Button>
         <Button type="button" size="sm" variant="ghost" disabled={rows.length <= 1} onClick={() => onChange(rows.slice(0, -1))}>

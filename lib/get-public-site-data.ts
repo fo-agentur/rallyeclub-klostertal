@@ -1,5 +1,6 @@
 import { unstable_cache } from 'next/cache'
 import { getFirestore } from 'firebase-admin/firestore'
+import { clampSiteContentForPublic, clampTermineForPublic } from '@/lib/cms-limits'
 import { defaultSiteContent } from '@/lib/default-site-data'
 import { defaultTermine } from '@/lib/default-termine'
 import { getFirebaseAdminApp } from '@/lib/firebase/admin-app'
@@ -23,7 +24,7 @@ async function loadSiteUncached(): Promise<PublicSiteData> {
     if (snap.exists) {
       const parsed = siteContentSchema.safeParse(snap.data())
       if (parsed.success) {
-        site = parsed.data
+        site = clampSiteContentForPublic(parsed.data)
       }
     }
   } catch {
@@ -42,7 +43,7 @@ async function loadSiteUncached(): Promise<PublicSiteData> {
         }
       })
       rows.sort((a, b) => (a.sortOrder ?? 999) - (b.sortOrder ?? 999))
-      termine = rows.length > 0 ? rows : defaultTermine
+      termine = rows.length > 0 ? clampTermineForPublic(rows) : defaultTermine
     }
   } catch {
     termine = defaultTermine

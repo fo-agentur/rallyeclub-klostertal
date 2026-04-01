@@ -1,0 +1,38 @@
+type User @table {
+  displayName: String!
+  email: String!
+  createdAt: Timestamp!
+  role: String!
+  firstName: String
+  lastName: String
+  phoneNumber: String
+  emergencyContact: String
+}
+
+type Event @table {
+  name: String!
+  eventDate: Date!
+  location: String!
+  registrationDeadline: Date!
+  createdAt: Timestamp!
+  isActive: Boolean!
+  description: String
+  entryFee: Float
+}
+
+type Registration @table {
+  user: User!
+  event: Event!
+  registrationDate: Timestamp!
+  status: String!
+  paymentStatus: String
+}
+
+type Result @table {
+  user: User!
+  event: Event!
+  position: Int!
+  score: Float!
+  createdAt: Timestamp!
+  notes: String
+}
