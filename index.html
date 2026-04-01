@@ -65,23 +65,64 @@
         transition-duration: 0.01ms !important;
       }
     }
-    .cursor-dot {
+    /* Custom-Cursor: Zielkreis + Mittelpunkt (statt weicher Glow-Blob) */
+    .cursor-rally {
       pointer-events: none;
       position: fixed;
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(220, 38, 38, 0.25) 0%, rgba(249, 115, 22, 0.08) 55%, transparent 70%);
       z-index: 9998;
+      width: 44px;
+      height: 44px;
+      margin: 0;
+      padding: 0;
       transform: translate(-50%, -50%);
       opacity: 0;
-      transition: opacity 0.3s ease;
+      transition: opacity 0.35s ease, transform 0.2s ease;
     }
-    .cursor-dot.is-visible {
+    .cursor-rally.is-visible {
       opacity: 1;
     }
+    .cursor-rally__ring {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 1.5px solid rgba(255, 255, 255, 0.35);
+      box-shadow:
+        0 0 0 1px rgba(249, 115, 22, 0.45) inset,
+        0 0 24px rgba(220, 38, 38, 0.35),
+        0 0 8px rgba(249, 115, 22, 0.25);
+      background: radial-gradient(circle at 30% 28%, rgba(255, 255, 255, 0.08) 0%, transparent 42%);
+    }
+    .cursor-rally__ring::after {
+      content: '';
+      position: absolute;
+      inset: 5px;
+      border-radius: 50%;
+      border: 1px dashed rgba(249, 115, 22, 0.45);
+      opacity: 0.9;
+    }
+    .cursor-rally__core {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 5px;
+      height: 5px;
+      margin: -2.5px 0 0 -2.5px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 0 10px rgba(220, 38, 38, 0.95), 0 0 4px rgba(249, 115, 22, 0.9);
+    }
+    .cursor-rally.is-interactive {
+      transform: translate(-50%, -50%) scale(1.12);
+    }
+    .cursor-rally.is-interactive .cursor-rally__ring {
+      border-color: rgba(249, 115, 22, 0.75);
+      box-shadow:
+        0 0 0 1px rgba(249, 115, 22, 0.55) inset,
+        0 0 32px rgba(220, 38, 38, 0.55),
+        0 0 14px rgba(249, 115, 22, 0.45);
+    }
     @media (max-width: 1023px), (prefers-reduced-motion: reduce) {
-      .cursor-dot {
+      .cursor-rally {
         display: none !important;
       }
     }
@@ -1534,7 +1575,10 @@
   <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[10001] focus:rounded-lg focus:bg-rally-accent focus:px-4 focus:py-3 focus:text-white focus:outline-none">Zum Inhalt springen</a>
 
   <div id="page-overlay" class="pointer-events-none fixed inset-0 z-[10000] bg-black translate-y-0" aria-hidden="true"></div>
-  <div id="custom-cursor" class="cursor-dot hidden lg:block" aria-hidden="true"></div>
+  <div id="custom-cursor" class="cursor-rally hidden lg:block" aria-hidden="true">
+    <span class="cursor-rally__ring" aria-hidden="true"></span>
+    <span class="cursor-rally__core" aria-hidden="true"></span>
+  </div>
 
   <!-- Scroll-Journey: Fortschritt + aktuelles Kapitel (alle Haupt-Sektionen) -->
   <div id="scroll-journey" class="scroll-journey" aria-hidden="true">
@@ -3328,7 +3372,7 @@
       }
       updateHeaderScroll();
 
-      /** Custom cursor */
+      /** Custom cursor — Zielkreis mit leichtem Follow + Hover auf klickbare Elemente */
       const cursorEl = document.getElementById('custom-cursor');
       if (cursorEl && !prefersReducedMotion && window.matchMedia('(min-width: 1024px)').matches) {
         document.body.classList.add('has-custom-cursor');
@@ -3337,10 +3381,13 @@
         let my = window.innerHeight / 2;
         let cx = mx;
         let cy = my;
-        const lerp = 0.18;
+        const lerp = 0.22;
         document.addEventListener('mousemove', function (e) {
           mx = e.clientX;
           my = e.clientY;
+          var el = document.elementFromPoint(e.clientX, e.clientY);
+          var hit = el && el.closest && el.closest('a, button, [role="button"], input, textarea, select, label, summary');
+          cursorEl.classList.toggle('is-interactive', !!hit);
         });
         function loop() {
           cx += (mx - cx) * lerp;
