@@ -134,39 +134,24 @@
       position: fixed;
       right: 0;
       top: 0;
-      bottom: 0;
       z-index: 400;
-      width: 56px;
+      width: clamp(160px, 20vw, 240px);
+      height: 100vh;
+      height: 100dvh;
+      padding-right: max(0.35rem, env(safe-area-inset-right));
       pointer-events: none;
-      opacity: 0;
+      overflow: hidden;
+      background: linear-gradient(270deg, rgba(10, 10, 15, 0.92) 0%, rgba(10, 10, 15, 0.45) 45%, transparent 100%);
+      border-left: 1px solid rgba(255, 255, 255, 0.06);
     }
-    .scroll-buddy-track {
-      position: absolute;
-      right: 22px;
-      top: 8%;
-      bottom: 8%;
-      width: 2px;
-      background: rgba(255,255,255,0.04);
-      border-radius: 1px;
-    }
-    .scroll-buddy-progress {
-      position: absolute;
-      top: 0;
-      left: 0;
+    .scroll-buddy svg {
+      display: block;
       width: 100%;
-      height: 0%;
-      background: linear-gradient(to bottom, #dc2626, #f97316);
-      border-radius: 1px;
-      transition: height 0.05s linear;
+      height: 100%;
+      overflow: visible;
     }
-    .scroll-buddy-car {
-      position: absolute;
-      right: 10px;
-      top: 8%;
-      width: 26px;
-      height: 46px;
-      transform: translateY(0) rotate(0deg);
-      filter: drop-shadow(0 0 6px rgba(220,38,38,0.3));
+    .scroll-buddy-car-img {
+      filter: hue-rotate(-22deg) saturate(1.2) brightness(1.08) drop-shadow(0 0 14px rgba(220, 38, 38, 0.45));
     }
     @media (max-width: 1023px), (prefers-reduced-motion: reduce) {
       .scroll-buddy {
@@ -217,26 +202,42 @@
   <div id="page-overlay" class="pointer-events-none fixed inset-0 z-[10000] bg-black translate-y-0" aria-hidden="true"></div>
   <div id="custom-cursor" class="cursor-dot hidden lg:block" aria-hidden="true"></div>
   <div id="scroll-buddy" class="scroll-buddy" aria-hidden="true">
-    <div class="scroll-buddy-track">
-      <div id="scroll-progress-bar" class="scroll-buddy-progress"></div>
-    </div>
-    <svg id="scroll-car" class="scroll-buddy-car" viewBox="0 0 26 46" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <path d="M 13 1 C 8 2.5 5 6 4.5 11 L 4 24 C 4.2 33 6.5 39 13 42 C 19.5 39 21.8 33 22 24 L 21.5 11 C 21 6 18 2.5 13 1 Z" fill="#c0392b"/>
-      <path d="M 13 1.5 C 9.5 3 7 5.5 6 9 L 6.5 16 C 8 18 10.5 19 13 19 C 15.5 19 18 18 19.5 16 L 20 9 C 19 5.5 16.5 3 13 1.5 Z" fill="#a93226" opacity="0.55"/>
-      <ellipse cx="13" cy="20" rx="6" ry="9" fill="#0f0f18" opacity="0.85"/>
-      <ellipse cx="13" cy="13.5" rx="5" ry="3" fill="rgba(56,189,248,0.1)" stroke="rgba(56,189,248,0.18)" stroke-width="0.5"/>
-      <ellipse cx="13" cy="28" rx="4" ry="2.2" fill="rgba(56,189,248,0.06)"/>
-      <ellipse cx="3.2" cy="10" rx="2.2" ry="4" fill="#080810"/>
-      <ellipse cx="22.8" cy="10" rx="2.2" ry="4" fill="#080810"/>
-      <ellipse cx="2.5" cy="32" rx="2.5" ry="4.5" fill="#080810"/>
-      <ellipse cx="23.5" cy="32" rx="2.5" ry="4.5" fill="#080810"/>
-      <circle cx="9" cy="2.5" r="1.2" fill="#fbbf24" opacity="0.7"/>
-      <circle cx="17" cy="2.5" r="1.2" fill="#fbbf24" opacity="0.7"/>
-      <rect x="5" y="40" width="4" height="1.5" rx="0.5" fill="#dc2626" opacity="0.9"/>
-      <rect x="17" y="40" width="4" height="1.5" rx="0.5" fill="#dc2626" opacity="0.9"/>
+    <!-- Strecke: volle Höhe. Fahrzeug: Openclipart Public Domain (jonadem, „top view car“) openclipart.org/detail/173138 -->
+    <svg viewBox="0 0 160 1000" class="h-full w-full" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+      <defs>
+        <linearGradient id="sb-grass" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#064e3b"/>
+          <stop offset="100%" stop-color="#022c22"/>
+        </linearGradient>
+      </defs>
+      <rect x="0" y="0" width="22" height="1000" fill="url(#sb-grass)" opacity="0.55"/>
+      <rect x="138" y="0" width="22" height="1000" fill="url(#sb-grass)" opacity="0.55"/>
+      <!-- Mittlere Sonderprüfung: mehrere S-Kurven über die volle Scroll-Länge -->
+      <path
+        id="buddy-route-path"
+        fill="none"
+        d="M 80 18 C 122 95 132 210 78 310 C 22 410 32 520 98 620 C 152 720 128 830 72 910 C 38 965 58 992 80 998"
+      />
+      <use href="#buddy-route-path" stroke="#101018" stroke-width="56" stroke-linecap="round" stroke-linejoin="round"/>
+      <use href="#buddy-route-path" stroke="#fbbf24" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="10 14" opacity="0.78"/>
+      <g transform="translate(80 998)" opacity="0.6">
+        <line x1="0" y1="-14" x2="0" y2="8" stroke="#94a3b8" stroke-width="1.5"/>
+        <path d="M 2 -14 L 22 -8 L 2 -2 Z" fill="#dc2626"/>
+      </g>
+      <g id="scroll-car" transform="translate(0,0)">
+        <image
+          class="scroll-buddy-car-img"
+          href="images/scroll-buddy-car.svg"
+          xlink:href="images/scroll-buddy-car.svg"
+          x="-48"
+          y="-105"
+          width="96"
+          height="211"
+          preserveAspectRatio="xMidYMid meet"
+        />
+      </g>
     </svg>
   </div>
-  
 
   <header id="site-header" class="nav-glass fixed left-0 right-0 top-0 z-[900] border-b border-transparent">
     <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
@@ -654,6 +655,7 @@
   <script src="js/firebase-config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/MotionPathPlugin.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.1/dist/lenis.min.js"></script>
   <script src="js/termine.js"></script>
   <script>
@@ -661,7 +663,7 @@
       const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       const isMobile = window.matchMedia('(max-width: 767px)').matches;
 
-      gsap.registerPlugin(ScrollTrigger);
+      gsap.registerPlugin(ScrollTrigger, MotionPathPlugin);
 
       /** Lenis + ScrollTrigger */
       let lenis = null;
@@ -932,33 +934,22 @@
         },
       });
 
-      /** Scroll-Begleiter: kleines Porsche-Auto faehrt am rechten Rand mit */
-      var buddyMq = window.matchMedia('(min-width: 1024px)');
-      var scrollCar = document.getElementById('scroll-car');
-      var scrollBuddy = document.getElementById('scroll-buddy');
-      var progressBar = document.getElementById('scroll-progress-bar');
-      if (!prefersReducedMotion && buddyMq.matches && scrollCar && scrollBuddy) {
-        gsap.to(scrollBuddy, { opacity: 1, duration: 0.8, delay: 1.5, ease: 'power2.out' });
-
-        var trackTop = 8;
-        var trackBottom = 92;
-        var trackRange = trackBottom - trackTop;
-
-        ScrollTrigger.create({
-          trigger: document.body,
-          start: 'top top',
-          end: 'bottom bottom',
-          scrub: 0,
-          onUpdate: function (self) {
-            var p = self.progress;
-            var yPercent = trackTop + p * trackRange;
-            var xWobble = Math.sin(p * Math.PI * 4) * 8;
-            var rotate = Math.cos(p * Math.PI * 4) * 6;
-            scrollCar.style.top = yPercent + '%';
-            scrollCar.style.transform = 'translateX(' + xWobble + 'px) rotate(' + rotate + 'deg)';
-            if (progressBar) {
-              progressBar.style.height = (p * 100) + '%';
-            }
+      /** Scroll-Begleiter: Auto auf Kurvenpfad (MotionPath + ScrollTrigger, Lenis-kompatibel) */
+      const buddyMq = window.matchMedia('(min-width: 1024px)');
+      if (!prefersReducedMotion && buddyMq.matches && document.getElementById('scroll-car') && document.getElementById('buddy-route-path')) {
+        gsap.to('#scroll-car', {
+          motionPath: {
+            path: '#buddy-route-path',
+            align: '#buddy-route-path',
+            alignOrigin: [0.5, 0.5],
+            autoRotate: 90,
+          },
+          ease: 'none',
+          scrollTrigger: {
+            trigger: document.body,
+            start: 'top top',
+            end: 'bottom bottom',
+            scrub: 0.5,
           },
         });
       }
