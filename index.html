@@ -130,62 +130,32 @@
         cursor: none;
       }
     }
-    .scroll-buddy {
-      position: fixed;
-      right: 0;
-      top: 0;
-      z-index: 400;
-      width: clamp(160px, 20vw, 240px);
-      height: 100vh;
-      height: 100dvh;
-      padding-right: max(0.35rem, env(safe-area-inset-right));
-      pointer-events: none;
-      overflow: hidden;
-      background: linear-gradient(270deg, rgba(10, 10, 15, 0.92) 0%, rgba(10, 10, 15, 0.45) 45%, transparent 100%);
-      border-left: 1px solid rgba(255, 255, 255, 0.06);
+    /* Highlights: Bento + 3D-Tilt (Gallery-Card-Stil, z. B. 21st.dev) */
+    .highlight-grid {
+      perspective: 1200px;
     }
-    .scroll-buddy svg {
-      display: block;
-      width: 100%;
-      height: 100%;
-      overflow: visible;
-    }
-    .scroll-buddy-car-img {
-      filter: hue-rotate(-22deg) saturate(1.2) brightness(1.08) drop-shadow(0 0 14px rgba(220, 38, 38, 0.45));
-    }
-    @media (max-width: 1023px), (prefers-reduced-motion: reduce) {
-      .scroll-buddy {
-        display: none;
-      }
-    }
-    .flip-scene {
-      perspective: 1400px;
-    }
-    .flip-inner {
-      position: relative;
-      width: 100%;
-      min-height: 340px;
+    .highlight-card {
+      --tilt-x: 0deg;
+      --tilt-y: 0deg;
       transform-style: preserve-3d;
-      transition: transform 0.65s cubic-bezier(0.4, 0, 0.2, 1);
+      will-change: transform;
     }
-    .flip-inner.is-flipped {
-      transform: rotateY(180deg);
+    .highlight-card[data-highlight-tilt] {
+      transform: perspective(1000px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y)) translateZ(0);
+      transition: transform 0.12s ease-out;
     }
     @media (prefers-reduced-motion: reduce) {
-      .flip-inner {
+      .highlight-card[data-highlight-tilt] {
+        transform: none !important;
         transition: none;
       }
     }
-    .flip-face {
-      position: absolute;
-      inset: 0;
-      backface-visibility: hidden;
-      -webkit-backface-visibility: hidden;
-      border-radius: 1rem;
-      overflow: hidden;
+    .highlight-card-inner {
+      transform: translateZ(0);
+      box-shadow: 0 20px 50px -15px rgba(0, 0, 0, 0.65);
     }
-    .flip-back {
-      transform: rotateY(180deg);
+    .highlight-card:hover .highlight-card-inner {
+      box-shadow: 0 28px 60px -12px rgba(220, 38, 38, 0.18), 0 20px 50px -15px rgba(0, 0, 0, 0.7);
     }
     /* Sharper photo presentation: less “digital zoom” blur from aggressive scaling */
     .photo img,
@@ -201,43 +171,6 @@
 
   <div id="page-overlay" class="pointer-events-none fixed inset-0 z-[10000] bg-black translate-y-0" aria-hidden="true"></div>
   <div id="custom-cursor" class="cursor-dot hidden lg:block" aria-hidden="true"></div>
-  <div id="scroll-buddy" class="scroll-buddy" aria-hidden="true">
-    <!-- Strecke: volle Höhe. Fahrzeug: Openclipart Public Domain (jonadem, „top view car“) openclipart.org/detail/173138 -->
-    <svg viewBox="0 0 160 1000" class="h-full w-full" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-      <defs>
-        <linearGradient id="sb-grass" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stop-color="#064e3b"/>
-          <stop offset="100%" stop-color="#022c22"/>
-        </linearGradient>
-      </defs>
-      <rect x="0" y="0" width="22" height="1000" fill="url(#sb-grass)" opacity="0.55"/>
-      <rect x="138" y="0" width="22" height="1000" fill="url(#sb-grass)" opacity="0.55"/>
-      <!-- Mittlere Sonderprüfung: mehrere S-Kurven über die volle Scroll-Länge -->
-      <path
-        id="buddy-route-path"
-        fill="none"
-        d="M 80 18 C 122 95 132 210 78 310 C 22 410 32 520 98 620 C 152 720 128 830 72 910 C 38 965 58 992 80 998"
-      />
-      <use href="#buddy-route-path" stroke="#101018" stroke-width="56" stroke-linecap="round" stroke-linejoin="round"/>
-      <use href="#buddy-route-path" stroke="#fbbf24" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="10 14" opacity="0.78"/>
-      <g transform="translate(80 998)" opacity="0.6">
-        <line x1="0" y1="-14" x2="0" y2="8" stroke="#94a3b8" stroke-width="1.5"/>
-        <path d="M 2 -14 L 22 -8 L 2 -2 Z" fill="#dc2626"/>
-      </g>
-      <g id="scroll-car" transform="translate(0,0)">
-        <image
-          class="scroll-buddy-car-img"
-          href="images/scroll-buddy-car.svg"
-          xlink:href="images/scroll-buddy-car.svg"
-          x="-48"
-          y="-105"
-          width="96"
-          height="211"
-          preserveAspectRatio="xMidYMid meet"
-        />
-      </g>
-    </svg>
-  </div>
 
   <header id="site-header" class="nav-glass fixed left-0 right-0 top-0 z-[900] border-b border-transparent">
     <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
@@ -340,12 +273,12 @@
       </div>
     </section>
 
-    <!-- Termine (Firestore oder lokaler Browser-Speicher) -->
+    <!-- Termine (redaktionell, später ggf. Admin/CMS) -->
     <section id="termine" class="relative scroll-mt-20 border-t border-white/10 py-20 sm:py-24 lg:py-28">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <h2 id="headline-termine" class="font-display clip-reveal text-4xl font-bold text-white sm:text-5xl md:text-6xl">Termine</h2>
         <p class="mt-4 max-w-3xl text-lg leading-relaxed text-rally-muted">
-          Saisonale Highlights und feste Vereinstermine — <strong class="text-white">neue Termine könnt ihr unten eintragen</strong> (lokal im Browser oder, wenn konfiguriert, für alle sichtbar über die Datenbank). Für Rückfragen: <a class="text-rally-orange underline decoration-white/20 underline-offset-4 hover:text-white" href="mailto:info@rallyeclub-klostertal.at">info@rallyeclub-klostertal.at</a>.
+          Saisonale Highlights und feste Vereinstermine — <strong class="text-white">Aktualisierungen</strong> erfolgen über das Vorstandsteam. Für Rückfragen: <a class="text-rally-orange underline decoration-white/20 underline-offset-4 hover:text-white" href="mailto:info@rallyeclub-klostertal.at">info@rallyeclub-klostertal.at</a>.
         </p>
         <div class="mt-10 overflow-x-auto rounded-2xl border border-white/10">
           <table class="w-full min-w-[520px] border-collapse text-left text-sm sm:text-base">
@@ -356,113 +289,89 @@
                 <th class="px-4 py-4 font-display font-semibold text-white sm:px-6">Ort / Hinweis</th>
               </tr>
             </thead>
-            <tbody id="termine-tbody" class="text-rally-muted">
+            <tbody class="text-rally-muted">
               <tr class="border-b border-white/10">
-                <td class="px-4 py-6 text-white/80 sm:px-6" colspan="3">Lade Termine …</td>
+                <td class="px-4 py-4 text-white/90 sm:px-6">Frühjahr 2026</td>
+                <td class="px-4 py-4 text-white/90 sm:px-6">Autoslalom</td>
+                <td class="px-4 py-4 sm:px-6">St. Gallenkirch — Ausschreibung folgt</td>
+              </tr>
+              <tr class="border-b border-white/10">
+                <td class="px-4 py-4 text-white/90 sm:px-6">Sommer 2026</td>
+                <td class="px-4 py-4 text-white/90 sm:px-6">Club-Event</td>
+                <td class="px-4 py-4 sm:px-6">Termin wird bekanntgegeben</td>
+              </tr>
+              <tr class="border-b border-white/10">
+                <td class="px-4 py-4 text-white/90 sm:px-6">Herbst 2026</td>
+                <td class="px-4 py-4 text-white/90 sm:px-6">Gala &amp; Ehrungen</td>
+                <td class="px-4 py-4 sm:px-6">Details folgen</td>
               </tr>
             </tbody>
           </table>
         </div>
-        <div class="mt-10 rounded-2xl border border-white/10 bg-white/[0.03] p-6 sm:p-8">
-          <h3 class="font-display text-lg font-semibold text-white">Termin eintragen</h3>
-          <p class="mt-2 text-sm text-rally-muted">Ohne Firebase bleiben Einträge nur auf diesem Gerät gespeichert. Für eine gemeinsame Liste: <code class="rounded bg-black/40 px-1.5 py-0.5 text-xs text-rally-orange">js/firebase-config.example.js</code> nach <code class="rounded bg-black/40 px-1.5 py-0.5 text-xs text-rally-orange">firebase-config.js</code> kopieren, Projekt anlegen und <code class="rounded bg-black/40 px-1.5 py-0.5 text-xs text-rally-orange">firestore.rules</code> deployen.</p>
-          <form id="termin-form" class="mt-6 grid gap-4 sm:grid-cols-2">
-            <label class="block sm:col-span-2">
-              <span class="mb-1.5 block text-sm font-medium text-white">Datum / Zeitraum</span>
-              <input name="dateStr" type="text" required maxlength="80" autocomplete="off" class="min-h-[48px] w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-white placeholder:text-rally-muted/60 outline-none transition focus:border-rally-orange focus:ring-2 focus:ring-rally-orange/40" placeholder="z. B. 12. Juli 2026 oder Saison 2026" />
-            </label>
-            <label class="block sm:col-span-2">
-              <span class="mb-1.5 block text-sm font-medium text-white">Veranstaltung</span>
-              <input name="title" type="text" required maxlength="200" class="min-h-[48px] w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-white outline-none transition focus:border-rally-orange focus:ring-2 focus:ring-rally-orange/40" placeholder="z. B. Autoslalom St. Gallenkirch" />
-            </label>
-            <label class="block sm:col-span-2">
-              <span class="mb-1.5 block text-sm font-medium text-white">Ort / Kurzinfo</span>
-              <input name="location" type="text" required maxlength="200" class="min-h-[48px] w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-white outline-none transition focus:border-rally-orange focus:ring-2 focus:ring-rally-orange/40" placeholder="Ort, Startzeit, Link zur Ausschreibung …" />
-            </label>
-            <label class="block sm:col-span-2">
-              <span class="mb-1.5 block text-sm font-medium text-white">Zusatz (optional)</span>
-              <textarea name="note" rows="2" maxlength="500" class="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-white placeholder:text-rally-muted/60 outline-none transition focus:border-rally-orange focus:ring-2 focus:ring-rally-orange/40" placeholder="Interne Notiz, Kontakt …"></textarea>
-            </label>
-            <div class="flex flex-col gap-3 sm:col-span-2 sm:flex-row sm:items-center">
-              <button type="submit" class="min-h-[48px] rounded-full bg-gradient-to-r from-rally-accent to-rally-orange px-8 py-3 text-sm font-semibold text-white transition hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">Speichern</button>
-              <p id="termin-form-status" class="text-sm text-rally-muted" role="status"></p>
-            </div>
-          </form>
-        </div>
       </div>
     </section>
 
-    <!-- Highlights (Flip-Karten) -->
+    <!-- Highlights: Bento-Galerie + 3D-Tilt (Gallery-Card-Stil) -->
     <section id="events" class="relative scroll-mt-20 py-20 sm:py-24 lg:py-28">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <h2 id="headline-events" class="font-display clip-reveal text-4xl font-bold text-white sm:text-5xl md:text-6xl">Highlights</h2>
-        <p class="mt-4 max-w-2xl text-lg text-rally-muted">Tippe oder klicke eine Karte — auf der Rückseite stehen Ergebnisse und Infos (Platzhalter, bis echte Daten nachgetragen werden).</p>
-        <div class="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          <div class="flip-scene">
-            <button type="button" class="flip-inner group relative h-full w-full cursor-pointer border-0 bg-transparent p-0 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-rally-orange" data-flip-card aria-expanded="false" aria-label="Autoslalom St. Gallenkirch — Details umdrehen">
-              <div class="flip-face flip-front border border-white/10 shadow-xl">
-                <img src="images/headers/1.png" alt="" class="h-full min-h-[280px] w-full object-cover transition duration-500 group-hover:scale-[1.02]" loading="lazy" width="800" height="600" />
-                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/25 to-transparent"></div>
-                <h3 class="absolute bottom-0 left-0 right-0 p-6 font-display text-xl font-bold text-white">Autoslalom St. Gallenkirch</h3>
+        <p class="mt-4 max-w-2xl text-lg text-rally-muted">Unsere Stationen — als Bento-Galerie mit Tiefe und Licht (inspiriert von modernen Gallery-Cards). Ergebnisse und Medien folgen, sobald die Saison läuft.</p>
+        <div id="highlight-grid" class="highlight-grid mt-12 grid auto-rows-[minmax(200px,auto)] grid-cols-1 gap-4 sm:gap-5 md:grid-cols-12">
+          <article class="group highlight-card md:col-span-7 md:row-span-2 min-h-[320px] md:min-h-[420px]" data-highlight-tilt>
+            <div class="highlight-card-inner relative h-full overflow-hidden rounded-2xl border border-white/10 bg-rally-card/40">
+              <img src="images/headers/1.png" alt="" class="absolute inset-0 h-full w-full object-cover transition duration-700 ease-out group-hover:scale-105" loading="lazy" width="800" height="600" />
+              <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
+              <div class="relative z-10 flex h-full flex-col justify-end p-6 sm:p-8">
+                <span class="mb-2 inline-flex w-fit rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-rally-orange">Slalom</span>
+                <h3 class="font-display text-2xl font-bold text-white sm:text-3xl">Autoslalom St. Gallenkirch</h3>
+                <p class="mt-2 max-w-lg text-sm leading-relaxed text-white/80">Präzision, Pylonen, Publikum — unser klassisches Heimspiel im Klostertal.</p>
               </div>
-              <div class="flip-face flip-back glass flex flex-col justify-center border border-white/10 p-6 text-center shadow-xl">
-                <p class="text-xs font-semibold uppercase tracking-wider text-rally-orange">Ergebnisse</p>
-                <p class="mt-3 text-sm leading-relaxed text-rally-muted">Podestplätze und Zeiten werden nach jedem Lauf hier ergänzt — Klassensieger und Schnellste Runden folgen.</p>
+            </div>
+          </article>
+          <article class="group highlight-card md:col-span-5 min-h-[200px]" data-highlight-tilt>
+            <div class="highlight-card-inner relative h-full overflow-hidden rounded-2xl border border-white/10 bg-rally-card/40">
+              <img src="images/headers/2.png" alt="" class="absolute inset-0 h-full w-full object-cover transition duration-700 ease-out group-hover:scale-105" loading="lazy" width="800" height="600" />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/25 to-transparent"></div>
+              <div class="relative z-10 flex h-full flex-col justify-end p-6">
+                <span class="mb-2 inline-flex w-fit rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-rally-orange">Berg</span>
+                <h3 class="font-display text-xl font-bold text-white">Bergrennen</h3>
+                <p class="mt-1 text-sm text-white/75">Höhenmeter, Adrenalin, Ansehen.</p>
               </div>
-            </button>
-          </div>
-          <div class="flip-scene">
-            <button type="button" class="flip-inner group relative h-full w-full cursor-pointer border-0 bg-transparent p-0 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-rally-orange" data-flip-card aria-expanded="false" aria-label="Bergrennen — Details umdrehen">
-              <div class="flip-face flip-front border border-white/10 shadow-xl">
-                <img src="images/headers/2.png" alt="" class="h-full min-h-[280px] w-full object-cover transition duration-500 group-hover:scale-[1.02]" loading="lazy" width="800" height="600" />
-                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/25 to-transparent"></div>
-                <h3 class="absolute bottom-0 left-0 right-0 p-6 font-display text-xl font-bold text-white">Bergrennen</h3>
+            </div>
+          </article>
+          <article class="group highlight-card md:col-span-5 min-h-[200px]" data-highlight-tilt>
+            <div class="highlight-card-inner relative h-full overflow-hidden rounded-2xl border border-white/10 bg-rally-card/40">
+              <img src="images/headers/3.png" alt="" class="absolute inset-0 h-full w-full object-cover transition duration-700 ease-out group-hover:scale-105" loading="lazy" width="800" height="600" />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/25 to-transparent"></div>
+              <div class="relative z-10 flex h-full flex-col justify-end p-6">
+                <span class="mb-2 inline-flex w-fit rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-rally-orange">Abend</span>
+                <h3 class="font-display text-xl font-bold text-white">Gala</h3>
+                <p class="mt-1 text-sm text-white/75">Preise, Party, Vereinsfamilie.</p>
               </div>
-              <div class="flip-face flip-back glass flex flex-col justify-center border border-white/10 p-6 text-center shadow-xl">
-                <p class="text-xs font-semibold uppercase tracking-wider text-rally-orange">Ergebnisse</p>
-                <p class="mt-3 text-sm leading-relaxed text-rally-muted">Bergpreise und Klassensiege — Details und offizielle Wertung nach Veranstaltungsende.</p>
+            </div>
+          </article>
+          <article class="group highlight-card md:col-span-6 min-h-[220px]" data-highlight-tilt>
+            <div class="highlight-card-inner relative h-full overflow-hidden rounded-2xl border border-white/10 bg-rally-card/40">
+              <img src="images/headers/4.png" alt="" class="absolute inset-0 h-full w-full object-cover transition duration-700 ease-out group-hover:scale-105" loading="lazy" width="800" height="600" />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/25 to-transparent"></div>
+              <div class="relative z-10 flex h-full flex-col justify-end p-6">
+                <span class="mb-2 inline-flex w-fit rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-rally-orange">Verein</span>
+                <h3 class="font-display text-xl font-bold text-white">Jahreshauptversammlung</h3>
+                <p class="mt-1 text-sm text-white/75">Demokratie auf Asphalt-Niveau.</p>
               </div>
-            </button>
-          </div>
-          <div class="flip-scene">
-            <button type="button" class="flip-inner group relative h-full w-full cursor-pointer border-0 bg-transparent p-0 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-rally-orange" data-flip-card aria-expanded="false" aria-label="Gala Abend — Details umdrehen">
-              <div class="flip-face flip-front border border-white/10 shadow-xl">
-                <img src="images/headers/3.png" alt="" class="h-full min-h-[280px] w-full object-cover transition duration-500 group-hover:scale-[1.02]" loading="lazy" width="800" height="600" />
-                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/25 to-transparent"></div>
-                <h3 class="absolute bottom-0 left-0 right-0 p-6 font-display text-xl font-bold text-white">Gala Abend</h3>
+            </div>
+          </article>
+          <article class="group highlight-card md:col-span-6 min-h-[220px]" data-highlight-tilt>
+            <div class="highlight-card-inner relative h-full overflow-hidden rounded-2xl border border-white/10 bg-rally-card/40">
+              <img src="images/Autoslalom.jpg" alt="" class="absolute inset-0 h-full w-full object-cover transition duration-700 ease-out group-hover:scale-105" loading="lazy" width="800" height="600" />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/25 to-transparent"></div>
+              <div class="relative z-10 flex h-full flex-col justify-end p-6">
+                <span class="mb-2 inline-flex w-fit rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-rally-orange">Action</span>
+                <h3 class="font-display text-xl font-bold text-white">Autoslalom</h3>
+                <p class="mt-1 text-sm text-white/75">Kurven, Zeiten, Emotionen.</p>
               </div>
-              <div class="flip-face flip-back glass flex flex-col justify-center border border-white/10 p-6 text-center shadow-xl">
-                <p class="text-xs font-semibold uppercase tracking-wider text-rally-orange">Preise</p>
-                <p class="mt-3 text-sm leading-relaxed text-rally-muted">Ehrenpreise und Community-Award — Veröffentlichung nach der Gala.</p>
-              </div>
-            </button>
-          </div>
-          <div class="flip-scene">
-            <button type="button" class="flip-inner group relative h-full w-full cursor-pointer border-0 bg-transparent p-0 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-rally-orange" data-flip-card aria-expanded="false" aria-label="Jahreshauptversammlung — Details umdrehen">
-              <div class="flip-face flip-front border border-white/10 shadow-xl">
-                <img src="images/headers/4.png" alt="" class="h-full min-h-[280px] w-full object-cover transition duration-500 group-hover:scale-[1.02]" loading="lazy" width="800" height="600" />
-                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/25 to-transparent"></div>
-                <h3 class="absolute bottom-0 left-0 right-0 p-6 font-display text-xl font-bold text-white">Jahreshauptversammlung</h3>
-              </div>
-              <div class="flip-face flip-back glass flex flex-col justify-center border border-white/10 p-6 text-center shadow-xl">
-                <p class="text-xs font-semibold uppercase tracking-wider text-rally-orange">Infos</p>
-                <p class="mt-3 text-sm leading-relaxed text-rally-muted">Protokoll und Vorstand — Infos für Mitglieder nach der JHV.</p>
-              </div>
-            </button>
-          </div>
-          <div class="flip-scene">
-            <button type="button" class="flip-inner group relative h-full w-full cursor-pointer border-0 bg-transparent p-0 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-rally-orange" data-flip-card aria-expanded="false" aria-label="Autoslalom — Details umdrehen">
-              <div class="flip-face flip-front border border-white/10 shadow-xl">
-                <img src="images/Autoslalom.jpg" alt="" class="h-full min-h-[280px] w-full object-cover transition duration-500 group-hover:scale-[1.02]" loading="lazy" width="800" height="600" />
-                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/25 to-transparent"></div>
-                <h3 class="absolute bottom-0 left-0 right-0 p-6 font-display text-xl font-bold text-white">Autoslalom</h3>
-              </div>
-              <div class="flip-face flip-back glass flex flex-col justify-center border border-white/10 p-6 text-center shadow-xl">
-                <p class="text-xs font-semibold uppercase tracking-wider text-rally-orange">Ranglisten</p>
-                <p class="mt-3 text-sm leading-relaxed text-rally-muted">Slalom-Ergebnisse und Ranglisten erscheinen hier nach Veröffentlichung.</p>
-              </div>
-            </button>
-          </div>
+            </div>
+          </article>
         </div>
         <div class="mx-auto mt-16 max-w-3xl text-center">
           <p class="text-xl font-medium leading-relaxed text-white md:text-2xl">Vom Autoslalom bis zur Gala — <span class="text-rally-orange">wir leben Motorsport.</span></p>
@@ -652,18 +561,15 @@
     </div>
   </footer>
 
-  <script src="js/firebase-config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollTrigger.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/MotionPathPlugin.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.1/dist/lenis.min.js"></script>
-  <script src="js/termine.js"></script>
   <script>
     (function () {
       const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       const isMobile = window.matchMedia('(max-width: 767px)').matches;
 
-      gsap.registerPlugin(ScrollTrigger, MotionPathPlugin);
+      gsap.registerPlugin(ScrollTrigger);
 
       /** Lenis + ScrollTrigger */
       let lenis = null;
@@ -934,33 +840,36 @@
         },
       });
 
-      /** Scroll-Begleiter: Auto auf Kurvenpfad (MotionPath + ScrollTrigger, Lenis-kompatibel) */
-      const buddyMq = window.matchMedia('(min-width: 1024px)');
-      if (!prefersReducedMotion && buddyMq.matches && document.getElementById('scroll-car') && document.getElementById('buddy-route-path')) {
-        gsap.to('#scroll-car', {
-          motionPath: {
-            path: '#buddy-route-path',
-            align: '#buddy-route-path',
-            alignOrigin: [0.5, 0.5],
-            autoRotate: 90,
-          },
-          ease: 'none',
-          scrollTrigger: {
-            trigger: document.body,
-            start: 'top top',
-            end: 'bottom bottom',
-            scrub: 0.5,
-          },
+      /** Highlights: 3D-Tilt (Maus), reduzierte Bewegung aus */
+      if (!prefersReducedMotion) {
+        document.querySelectorAll('[data-highlight-tilt]').forEach(function (el) {
+          el.addEventListener('mousemove', function (e) {
+            var r = el.getBoundingClientRect();
+            var x = (e.clientX - r.left) / r.width - 0.5;
+            var y = (e.clientY - r.top) / r.height - 0.5;
+            el.style.setProperty('--tilt-x', y * -10 + 'deg');
+            el.style.setProperty('--tilt-y', x * 10 + 'deg');
+          });
+          el.addEventListener('mouseleave', function () {
+            el.style.setProperty('--tilt-x', '0deg');
+            el.style.setProperty('--tilt-y', '0deg');
+          });
         });
       }
 
-      /** Highlight-Flip-Karten */
-      document.querySelectorAll('[data-flip-card]').forEach(function (cardBtn) {
-        cardBtn.addEventListener('click', function () {
-          cardBtn.classList.toggle('is-flipped');
-          cardBtn.setAttribute('aria-expanded', cardBtn.classList.contains('is-flipped'));
+      /** Highlights: Einblendung */
+      if (!prefersReducedMotion) {
+        gsap.from('#highlight-grid .highlight-card', {
+          y: 48,
+          opacity: 0,
+          rotationX: 8,
+          transformPerspective: 900,
+          duration: 0.75,
+          stagger: 0.1,
+          ease: 'power3.out',
+          scrollTrigger: { trigger: '#highlight-grid', start: 'top 88%' },
         });
-      });
+      }
 
       /** Gallery stagger */
       if (!prefersReducedMotion) {
