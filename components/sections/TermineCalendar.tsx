@@ -88,14 +88,18 @@ export function TermineCalendar({ termine }: { termine: TermineItem[] }) {
     gsap.registerPlugin(ScrollTrigger)
     const ctx = gsap.context(() => {
       requestAnimationFrame(() => {
-        gsap.from('#termine-kalender [data-termine-cal]', {
-          opacity: 0,
-          y: 12,
-          stagger: 0.018,
-          duration: 0.42,
-          ease: 'power2.out',
-          scrollTrigger: { trigger: '#termine-kalender', start: 'top 88%', once: true },
-        })
+        gsap.fromTo(
+          '#termine-kalender [data-termine-cal]',
+          { opacity: 0, y: 12 },
+          {
+            opacity: 1,
+            y: 0,
+            stagger: 0.018,
+            duration: 0.42,
+            ease: 'power2.out',
+            scrollTrigger: { trigger: '#termine-kalender', start: 'top 88%', once: true },
+          }
+        )
       })
     })
     return () => ctx.revert()

@@ -4,6 +4,44 @@ import Image from 'next/image'
 import { useCallback, useState } from 'react'
 import type { SiteContent } from '@/lib/schemas/site-content'
 
+function TeamMemberPhoto({
+  src,
+  alt,
+  className,
+  width,
+  height,
+}: {
+  src: string
+  alt: string
+  className?: string
+  width: number
+  height: number
+}) {
+  const [failed, setFailed] = useState(false)
+  if (failed) {
+    return (
+      <div
+        className={`${className ?? ''} flex h-full min-h-[80px] w-full items-center justify-center bg-white/[0.06] px-2 text-center text-[9px] font-semibold leading-snug tracking-wide text-rally-muted sm:text-[10px]`}
+        role="img"
+        aria-label={alt}
+      >
+        Foto folgt in Kürze
+      </div>
+    )
+  }
+  return (
+    <Image
+      className={className}
+      src={src}
+      alt={alt}
+      width={width}
+      height={height}
+      loading="lazy"
+      onError={() => setFailed(true)}
+    />
+  )
+}
+
 export function TeamSection({ site }: { site: SiteContent }) {
   const { teamMembers, social } = site
   const [activeId, setActiveId] = useState<string | null>(null)
@@ -54,9 +92,10 @@ export function TeamSection({ site }: { site: SiteContent }) {
                     <button
                       key={id}
                       type="button"
-                      className={`team-photo-card team-photo-card--photo ${colIdx === 0 ? 'h-[120px] w-[110px] sm:h-[140px] sm:w-[130px] md:h-[165px] md:w-[155px]' : colIdx === 1 ? 'h-[132px] w-[122px] sm:h-[155px] sm:w-[145px] md:h-[182px] md:w-[172px]' : 'h-[125px] w-[115px] sm:h-[146px] sm:w-[136px] md:h-[172px] md:w-[162px]'}`}
+                      className={`team-photo-card team-photo-card--photo ${activeId === id ? 'is-active' : ''} ${colIdx === 0 ? 'h-[120px] w-[110px] sm:h-[140px] sm:w-[130px] md:h-[165px] md:w-[155px]' : colIdx === 1 ? 'h-[132px] w-[122px] sm:h-[155px] sm:w-[145px] md:h-[182px] md:w-[172px]' : 'h-[125px] w-[115px] sm:h-[146px] sm:w-[136px] md:h-[172px] md:w-[162px]'}`}
                       data-team-id={id}
                       aria-label={`${m.name}, ${m.role}`}
+                      aria-pressed={activeId === id}
                       onMouseEnter={() => setActive(id)}
                       onMouseLeave={() => setActive(null)}
                       onFocus={() => setActive(id)}
@@ -64,13 +103,12 @@ export function TeamSection({ site }: { site: SiteContent }) {
                         if (!e.currentTarget.parentElement?.contains(e.relatedTarget)) setActive(null)
                       }}
                     >
-                      <Image
+                      <TeamMemberPhoto
                         className="team-photo-card__img"
                         src={m.imageSrc}
-                        alt=""
+                        alt={`${m.name}, ${m.role}`}
                         width={165}
                         height={293}
-                        loading="lazy"
                       />
                     </button>
                   )

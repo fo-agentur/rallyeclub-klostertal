@@ -133,21 +133,45 @@ export function GsapHomeEffects() {
       cleanups.push(() => st.kill())
     })
 
-    gsap.from('[data-termine-card]', {
-      y: 56,
-      opacity: 0,
-      rotationX: 8,
-      transformPerspective: 1200,
-      stagger: 0.12,
-      duration: 0.75,
-      ease: 'power3.out',
-      scrollTrigger: { trigger: '#termine-track', start: 'top 82%', once: true },
-      onComplete: () => {
-        document.querySelectorAll('[data-termine-card]').forEach((c) => {
-          ;(c as HTMLElement).style.willChange = 'auto'
-        })
-      },
-    })
+    gsap.fromTo(
+      '[data-termine-card]',
+      { y: 56, opacity: 0, rotationX: 8 },
+      {
+        y: 0,
+        opacity: 1,
+        rotationX: 0,
+        transformPerspective: 1200,
+        stagger: 0.12,
+        duration: 0.75,
+        ease: 'power3.out',
+        scrollTrigger: { trigger: '#termine-track', start: 'top 82%', once: true },
+        onComplete: () => {
+          document.querySelectorAll('[data-termine-card]').forEach((c) => {
+            ;(c as HTMLElement).style.willChange = 'auto'
+          })
+        },
+      }
+    )
+
+    const lineProgress = document.getElementById('termine-line-progress')
+    const termineTrack = document.getElementById('termine-track')
+    if (lineProgress && termineTrack) {
+      gsap.fromTo(
+        lineProgress,
+        { scaleY: 0 },
+        {
+          scaleY: 1,
+          ease: 'none',
+          transformOrigin: 'center top',
+          scrollTrigger: {
+            trigger: termineTrack,
+            start: 'top 72%',
+            end: 'bottom 38%',
+            scrub: 0.45,
+          },
+        }
+      )
+    }
 
     document.querySelectorAll<HTMLElement>('[data-highlight-tilt]').forEach((el) => {
       const move = (e: MouseEvent) => {
