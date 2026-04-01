@@ -44,3 +44,6 @@ next-env.d.ts
 
 # Local env
 .env.local
+
+# Verworfene lokale Experimente (z. B. Horizon-Vite-App)
+/experiments/
