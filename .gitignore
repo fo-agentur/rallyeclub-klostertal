@@ -47,3 +47,6 @@ next-env.d.ts
 
 # Verworfene lokale Experimente (z. B. Horizon-Vite-App)
 /experiments/
+
+# Next.js-Redesign (Branch redesign-v2): optional lokal behalten, nicht mit dev-flo mischen
+/web/
