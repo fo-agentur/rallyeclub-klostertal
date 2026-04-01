@@ -157,6 +157,144 @@
     .highlight-card:hover .highlight-card-inner {
       box-shadow: 0 28px 60px -12px rgba(220, 38, 38, 0.18), 0 20px 50px -15px rgba(0, 0, 0, 0.7);
     }
+    /* Termine: „Race-Calendar“-Look + Animationen */
+    .termine-zone {
+      position: relative;
+      overflow: hidden;
+    }
+    .termine-zone__glow {
+      pointer-events: none;
+      position: absolute;
+      inset: 0;
+      opacity: 0.5;
+            background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(220, 38, 38, 0.14) 0%, transparent 55%),
+        radial-gradient(ellipse 60% 40% at 100% 0%, rgba(249, 115, 22, 0.08) 0%, transparent 45%);
+    }
+    .termine-orb {
+      pointer-events: none;
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(64px);
+      opacity: 0.35;
+    }
+    .termine-orb--1 {
+      right: -8%;
+      top: 15%;
+      width: min(50vw, 420px);
+      height: min(50vw, 420px);
+      background: rgba(220, 38, 38, 0.45);
+    }
+    .termine-orb--2 {
+      left: -5%;
+      bottom: 10%;
+      width: min(45vw, 360px);
+      height: min(45vw, 360px);
+      background: rgba(249, 115, 22, 0.25);
+    }
+    .termine-line {
+      position: absolute;
+      left: 1.25rem;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      overflow: hidden;
+      border-radius: 2px;
+      background: linear-gradient(to bottom, rgba(220, 38, 38, 0.5), rgba(255, 255, 255, 0.12), transparent);
+    }
+    @media (min-width: 768px) {
+      .termine-line {
+        left: 2.25rem;
+      }
+    }
+    .termine-line__pulse {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 40%;
+      background: linear-gradient(to bottom, transparent, rgba(249, 115, 22, 0.45), transparent);
+      animation: termine-line-pulse 3.5s ease-in-out infinite;
+    }
+    @keyframes termine-line-pulse {
+      0%, 100% {
+        transform: translateY(-20%);
+        opacity: 0.2;
+      }
+      50% {
+        transform: translateY(180%);
+        opacity: 0.85;
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .termine-line__pulse {
+        animation: none;
+        display: none;
+      }
+    }
+    #termine-track {
+      perspective: 1400px;
+    }
+    .termine-card {
+      position: relative;
+      transform-style: preserve-3d;
+      border-radius: 1rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(18, 18, 26, 0.55);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease, border-color 0.35s ease;
+    }
+    .termine-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      padding: 1px;
+      background: linear-gradient(135deg, rgba(220, 38, 38, 0.5), rgba(249, 115, 22, 0.25), transparent);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    .termine-card:hover::before {
+      opacity: 1;
+    }
+    .termine-card:hover {
+      transform: translateY(-6px) scale(1.01);
+      box-shadow: 0 24px 48px -20px rgba(220, 38, 38, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.06);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .termine-card:hover {
+        transform: none;
+      }
+    }
+    .termine-card__dot {
+      position: absolute;
+      left: -1.5rem;
+      top: 1.75rem;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.35);
+      background: radial-gradient(circle at 30% 30%, #fff, rgba(220, 38, 38, 0.95));
+      box-shadow: 0 0 16px rgba(220, 38, 38, 0.65);
+    }
+    @media (min-width: 768px) {
+      .termine-card__dot {
+        left: -2.25rem;
+      }
+    }
+    .termine-card__idx {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 3rem;
+      font-weight: 800;
+      line-height: 1;
+      color: rgba(255, 255, 255, 0.06);
+      user-select: none;
+    }
     /* Sharper photo presentation: less “digital zoom” blur from aggressive scaling */
     .photo img,
     .hero-bg {
@@ -273,40 +411,80 @@
       </div>
     </section>
 
-    <!-- Termine (redaktionell, später ggf. Admin/CMS) -->
-    <section id="termine" class="relative scroll-mt-20 border-t border-white/10 py-20 sm:py-24 lg:py-28">
-      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <h2 id="headline-termine" class="font-display clip-reveal text-4xl font-bold text-white sm:text-5xl md:text-6xl">Termine</h2>
-        <p class="mt-4 max-w-3xl text-lg leading-relaxed text-rally-muted">
+    <!-- Termine: animierte Timeline + Cards (kein Tabellen-Look) -->
+    <section id="termine" class="termine-zone relative scroll-mt-20 border-t border-white/10 py-20 sm:py-24 lg:py-28">
+      <div class="termine-zone__glow" aria-hidden="true"></div>
+      <div class="termine-orb termine-orb--1 termine-parallax" aria-hidden="true"></div>
+      <div class="termine-orb termine-orb--2 termine-parallax" aria-hidden="true"></div>
+      <div class="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-wrap items-end justify-between gap-6">
+          <h2 id="headline-termine" class="font-display clip-reveal text-4xl font-bold text-white sm:text-5xl md:text-6xl">Termine</h2>
+          <p class="font-display text-xs font-semibold uppercase tracking-[0.35em] text-rally-orange/90">Saison 2026</p>
+        </div>
+        <p id="termine-intro" class="mt-6 max-w-3xl text-lg leading-relaxed text-rally-muted">
           Saisonale Highlights und feste Vereinstermine — <strong class="text-white">Aktualisierungen</strong> erfolgen über das Vorstandsteam. Für Rückfragen: <a class="text-rally-orange underline decoration-white/20 underline-offset-4 hover:text-white" href="mailto:info@rallyeclub-klostertal.at">info@rallyeclub-klostertal.at</a>.
         </p>
-        <div class="mt-10 overflow-x-auto rounded-2xl border border-white/10">
-          <table class="w-full min-w-[520px] border-collapse text-left text-sm sm:text-base">
-            <thead>
-              <tr class="border-b border-white/10 bg-white/5">
-                <th class="px-4 py-4 font-display font-semibold text-white sm:px-6">Datum</th>
-                <th class="px-4 py-4 font-display font-semibold text-white sm:px-6">Veranstaltung</th>
-                <th class="px-4 py-4 font-display font-semibold text-white sm:px-6">Ort / Hinweis</th>
-              </tr>
-            </thead>
-            <tbody class="text-rally-muted">
-              <tr class="border-b border-white/10">
-                <td class="px-4 py-4 text-white/90 sm:px-6">Frühjahr 2026</td>
-                <td class="px-4 py-4 text-white/90 sm:px-6">Autoslalom</td>
-                <td class="px-4 py-4 sm:px-6">St. Gallenkirch — Ausschreibung folgt</td>
-              </tr>
-              <tr class="border-b border-white/10">
-                <td class="px-4 py-4 text-white/90 sm:px-6">Sommer 2026</td>
-                <td class="px-4 py-4 text-white/90 sm:px-6">Club-Event</td>
-                <td class="px-4 py-4 sm:px-6">Termin wird bekanntgegeben</td>
-              </tr>
-              <tr class="border-b border-white/10">
-                <td class="px-4 py-4 text-white/90 sm:px-6">Herbst 2026</td>
-                <td class="px-4 py-4 text-white/90 sm:px-6">Gala &amp; Ehrungen</td>
-                <td class="px-4 py-4 sm:px-6">Details folgen</td>
-              </tr>
-            </tbody>
-          </table>
+
+        <div id="termine-track" class="relative mt-14 md:pl-16">
+          <div class="termine-line hidden md:block" aria-hidden="true">
+            <div class="termine-line__pulse"></div>
+          </div>
+
+          <div class="space-y-6 md:space-y-8">
+            <article class="termine-card" data-termine-card>
+              <span class="termine-card__dot hidden md:block" aria-hidden="true"></span>
+              <div class="relative flex flex-col gap-4 p-6 sm:flex-row sm:items-start sm:justify-between sm:gap-8 sm:p-8">
+                <div class="flex flex-1 flex-col gap-3 sm:flex-row sm:items-start sm:gap-8">
+                  <span class="termine-card__idx shrink-0">01</span>
+                  <div>
+                    <span class="inline-flex rounded-full border border-rally-accent/40 bg-rally-accent/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-rally-orange">Slalom</span>
+                    <h3 class="mt-3 font-display text-xl font-bold text-white sm:text-2xl">Autoslalom</h3>
+                    <p class="mt-2 text-sm leading-relaxed text-rally-muted sm:text-base">St. Gallenkirch — Ausschreibung folgt</p>
+                  </div>
+                </div>
+                <div class="flex shrink-0 flex-col items-start gap-1 border-l border-white/10 pl-0 sm:border-l sm:pl-6 md:min-w-[10rem] md:items-end md:border-l-0 md:pl-0">
+                  <span class="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/45">Zeitfenster</span>
+                  <div class="font-display text-lg font-semibold tabular-nums text-white sm:text-xl">Frühjahr 2026</div>
+                </div>
+              </div>
+            </article>
+
+            <article class="termine-card" data-termine-card>
+              <span class="termine-card__dot hidden md:block" aria-hidden="true"></span>
+              <div class="relative flex flex-col gap-4 p-6 sm:flex-row sm:items-start sm:justify-between sm:gap-8 sm:p-8">
+                <div class="flex flex-1 flex-col gap-3 sm:flex-row sm:items-start sm:gap-8">
+                  <span class="termine-card__idx shrink-0">02</span>
+                  <div>
+                    <span class="inline-flex rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-white/85">Club</span>
+                    <h3 class="mt-3 font-display text-xl font-bold text-white sm:text-2xl">Club-Event</h3>
+                    <p class="mt-2 text-sm leading-relaxed text-rally-muted sm:text-base">Termin wird bekanntgegeben</p>
+                  </div>
+                </div>
+                <div class="flex shrink-0 flex-col items-start gap-1 border-l border-white/10 pl-0 sm:border-l sm:pl-6 md:min-w-[10rem] md:items-end md:border-l-0 md:pl-0">
+                  <span class="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/45">Zeitfenster</span>
+                  <div class="font-display text-lg font-semibold tabular-nums text-white sm:text-xl">Sommer 2026</div>
+                </div>
+              </div>
+            </article>
+
+            <article class="termine-card" data-termine-card>
+              <span class="termine-card__dot hidden md:block" aria-hidden="true"></span>
+              <div class="relative flex flex-col gap-4 p-6 sm:flex-row sm:items-start sm:justify-between sm:gap-8 sm:p-8">
+                <div class="flex flex-1 flex-col gap-3 sm:flex-row sm:items-start sm:gap-8">
+                  <span class="termine-card__idx shrink-0">03</span>
+                  <div>
+                    <span class="inline-flex rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-white/85">Gala</span>
+                    <h3 class="mt-3 font-display text-xl font-bold text-white sm:text-2xl">Gala &amp; Ehrungen</h3>
+                    <p class="mt-2 text-sm leading-relaxed text-rally-muted sm:text-base">Details folgen</p>
+                  </div>
+                </div>
+                <div class="flex shrink-0 flex-col items-start gap-1 border-l border-white/10 pl-0 sm:border-l sm:pl-6 md:min-w-[10rem] md:items-end md:border-l-0 md:pl-0">
+                  <span class="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/45">Zeitfenster</span>
+                  <div class="font-display text-lg font-semibold tabular-nums text-white sm:text-xl">Herbst 2026</div>
+                </div>
+              </div>
+            </article>
+          </div>
         </div>
       </div>
     </section>
@@ -839,6 +1017,74 @@
           statNums.forEach(runCount);
         },
       });
+
+      /** Termine: Intro + Linie + Cards (3D-Stagger) + Parallax-Orbs */
+      if (!prefersReducedMotion) {
+        gsap.from('#termine-intro', {
+          opacity: 0,
+          y: 40,
+          filter: 'blur(10px)',
+          duration: 0.9,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: '#termine',
+            start: 'top 78%',
+            once: true,
+          },
+          onComplete: function () {
+            var el = document.getElementById('termine-intro');
+            if (el) el.style.filter = 'none';
+          },
+        });
+        gsap.from('.termine-line', {
+          scaleY: 0,
+          transformOrigin: 'top center',
+          duration: 1.05,
+          ease: 'power2.inOut',
+          scrollTrigger: {
+            trigger: '#termine-track',
+            start: 'top 84%',
+            once: true,
+          },
+        });
+        gsap.from('[data-termine-card]', {
+          y: 100,
+          opacity: 0,
+          rotationX: 22,
+          transformPerspective: 1200,
+          stagger: 0.16,
+          duration: 0.9,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: '#termine-track',
+            start: 'top 80%',
+            once: true,
+          },
+          onComplete: function () {
+            document.querySelectorAll('[data-termine-card]').forEach(function (c) {
+              c.style.willChange = 'auto';
+            });
+          },
+        });
+        document.querySelectorAll('[data-termine-card]').forEach(function (c) {
+          c.style.willChange = 'transform';
+        });
+        gsap.utils.toArray('.termine-parallax').forEach(function (el, i) {
+          gsap.to(el, {
+            y: (i + 1) * 55,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: '#termine',
+              start: 'top bottom',
+              end: 'bottom top',
+              scrub: 1.15,
+            },
+          });
+        });
+      } else {
+        gsap.set('#termine-intro', { opacity: 1, filter: 'none' });
+        gsap.set('[data-termine-card]', { opacity: 1, y: 0, rotationX: 0 });
+      }
 
       /** Highlights: 3D-Tilt (Maus), reduzierte Bewegung aus */
       if (!prefersReducedMotion) {
