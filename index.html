@@ -68,10 +68,25 @@
     .cursor-dot {
       pointer-events: none;
       position: fixed;
-      width: 50px;
-      height: 50px;
+      width: 56px;
+      height: 56px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(220, 38, 38, 0.25) 0%, rgba(249, 115, 22, 0.08) 55%, transparent 70%);
+      /* Layered: bright center + rally red halo — readable on dark hero and light sections */
+      background:
+        radial-gradient(circle at 50% 50%, #ffffff 0%, #ffffff 11%, transparent 13%),
+        radial-gradient(
+          circle at 50% 50%,
+          #f87171 0%,
+          #ef4444 16%,
+          rgba(220, 38, 38, 0.65) 38%,
+          rgba(249, 115, 22, 0.28) 58%,
+          transparent 76%
+        );
+      box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.5),
+        0 0 0 3px rgba(255, 255, 255, 0.92),
+        0 0 22px rgba(220, 38, 38, 0.9),
+        0 0 48px rgba(249, 115, 22, 0.4);
       z-index: 9998;
       transform: translate(-50%, -50%);
       opacity: 0;
