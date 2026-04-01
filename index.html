@@ -829,6 +829,13 @@
         requestAnimationFrame(loop);
       }
 
+      const contactForm = document.getElementById('kontakt-form');
+      if (contactForm) {
+        contactForm.addEventListener('submit', function (e) {
+          e.preventDefault();
+        });
+      }
+
       window.addEventListener('load', function () {
         ScrollTrigger.refresh();
       });
