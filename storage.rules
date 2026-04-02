@@ -1,9 +1,13 @@
 rules_version = '2';
+// Deploy: firebase deploy --only storage
+// Öffentliche Lesezugriffe für cms/** (Website + Next/Image). Schreiben nur mit Admin-Claim.
 service firebase.storage {
   match /b/{bucket}/o {
     match /cms/{allPaths=**} {
       allow read: if true;
-      allow write: if request.auth != null && request.auth.token.admin == true
+      // admin kann bool oder (selten) String sein — beides akzeptieren
+      allow write: if request.auth != null
+        && (request.auth.token.admin == true || request.auth.token.admin == 'true')
         && request.resource.size <= 2 * 1024 * 1024
         && request.resource.contentType.matches('image/.*');
     }

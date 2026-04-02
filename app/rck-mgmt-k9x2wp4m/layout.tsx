@@ -13,7 +13,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           Interner Bereich — nicht verlinkt. Zugriff nur mit Admin-Konto und Custom Claim.
         </p>
       </div>
-      {children}
+      <div suppressHydrationWarning>{children}</div>
     </div>
   )
 }

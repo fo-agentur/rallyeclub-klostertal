@@ -160,6 +160,8 @@ export function AdminDashboard() {
     if (!clients || !user || !isAdmin) throw new Error('Nicht angemeldet')
     const denied = assertImageUploadAllowed(file)
     if (denied) throw new Error(denied)
+    // Refresh ID token so Storage Rules see aktuelles Custom Claim admin (nach set-admin-claim).
+    await user.getIdToken(true)
     const path = `cms/${folder}/${Date.now()}-${safeFileName(file.name)}`
     const storageRef = ref(clients.storage, path)
     await uploadBytes(storageRef, file, { contentType: file.type || 'application/octet-stream' })
