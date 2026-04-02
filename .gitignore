@@ -1,0 +1,52 @@
+# Dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# Testing
+/coverage
+
+# Next.js
+/.next/
+/out/
+
+# Production
+/build
+
+# Misc
+.DS_Store
+*.pem
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Local env files
+.env
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Vercel
+.vercel
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# IDE
+.vscode/
+.idea/
+
+# Cursor MCP config (contains secrets/tokens)
+.cursor/mcp.json
+
+# Local env
+.env.local
+
+# Verworfene lokale Experimente (z. B. Horizon-Vite-App)
+/experiments/
+
+# Next.js-Redesign (Branch redesign-v2): optional lokal behalten, nicht mit dev-flo mischen
+/web/

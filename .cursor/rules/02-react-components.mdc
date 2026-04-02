@@ -1,0 +1,63 @@
+---
+globs: ["**/*.tsx", "**/*.ts"]
+---
+
+# React Component Patterns
+
+## Komponenten-Regeln
+- NUR funktionale Komponenten mit Arrow Functions
+- Server Components als Default
+- `"use client"` NUR für: Event Handlers, useState/useEffect, Browser APIs, Third-Party Client Libraries
+- Jede Komponente in eigener Datei
+- Props Interface direkt über der Komponente definieren
+- Kleine, fokussierte Komponenten — eine Aufgabe pro Komponente
+- Composition over Inheritance — verwende children und render props
+
+## Component Template
+```tsx
+interface EventCardProps {
+  title: string
+  date: string
+  imageUrl: string
+  isUpcoming?: boolean
+}
+
+const EventCard = ({ title, date, imageUrl, isUpcoming = false }: EventCardProps) => {
+  if (!title || !date) return null
+
+  return (
+    <article className="group relative overflow-hidden rounded-2xl">
+      {/* Component JSX */}
+    </article>
+  )
+}
+
+export { EventCard }
+```
+
+## Hooks Best Practices
+- Custom Hooks extrahieren wenn Logik wiederverwendbar ist (`useFirebaseAuth`, `useScrollPosition`)
+- Rules of Hooks einhalten (nur top-level, nur in React Functions)
+- `useMemo` für teure Berechnungen
+- `useCallback` für Funktionen die als Props übergeben werden
+- Cleanup Functions in `useEffect` um Memory Leaks zu vermeiden
+- `useState` minimieren — Server State bevorzugen
+
+## State Management
+- Server Components + Server Actions als primäre Datenquelle
+- URL State mit `nuqs` für Search Params
+- React Context NUR für App-weiten State (Theme, Auth)
+- `useState` nur für lokalen UI State (Modals, Toggles, Form Inputs)
+- KEIN prop drilling — Context oder Composition verwenden
+
+## Conditional Rendering
+- Short-circuit evaluation: `{isVisible && <Component />}`
+- Ternary für if/else: `{isActive ? <Active /> : <Inactive />}`
+- Early returns für Guard Clauses
+- KEINE verschachtelten Ternaries
+
+## Suspense & Loading
+- Client Components in `<Suspense>` mit Fallback wrappen
+- `React.lazy()` für non-critical Components
+- Skeleton Loading States statt Spinner
+- Streaming mit `loading.tsx` für Route Segments

@@ -1,0 +1,42 @@
+{
+  "swarmId": "swarm-mnhyhk6g",
+  "objective": "Build a cinematic website for Rallyeclub Klostertal based on http://www.rallyeclub-klostertal.at with GSAP scroll animations, sections: Hero, About, Events, Results, Gallery, Contact. Mobile-first. Output as index.html",
+  "strategy": "development",
+  "status": "stopped",
+  "agents": 8,
+  "agentPlan": [
+    {
+      "role": "Coordinator",
+      "type": "coordinator",
+      "count": 1,
+      "purpose": "Orchestrate workflow"
+    },
+    {
+      "role": "Architect",
+      "type": "architect",
+      "count": 1,
+      "purpose": "System design"
+    },
+    {
+      "role": "Coder",
+      "type": "coder",
+      "count": 3,
+      "purpose": "Implementation"
+    },
+    {
+      "role": "Tester",
+      "type": "tester",
+      "count": 2,
+      "purpose": "Quality assurance"
+    },
+    {
+      "role": "Reviewer",
+      "type": "reviewer",
+      "count": 1,
+      "purpose": "Code review"
+    }
+  ],
+  "startedAt": "2026-04-02T20:57:35.082Z",
+  "parallel": true,
+  "stoppedAt": "2026-04-02T21:06:24.363Z"
+}

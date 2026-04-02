@@ -1,0 +1,69 @@
+---
+alwaysApply: true
+---
+
+# Next.js & TypeScript Best Practices
+
+## App Router Architektur
+- IMMER App Router verwenden (`/app` Verzeichnis)
+- Server Components als Default — `"use client"` NUR wenn nötig (Event Handlers, Browser APIs, Hooks)
+- Route Groups `(group)` für logische Organisation nutzen
+- Layouts für shared UI (Header, Footer, Navigation)
+- `loading.tsx` für Streaming/Suspense auf Route-Level
+- `error.tsx` für Error Boundaries auf Route-Level
+- `not-found.tsx` für 404-Seiten
+
+## Projekt-Struktur
+```
+/app                    → Pages & Routing (App Router)
+  /(main)               → Öffentliche Seiten (Home, Events, Galerie)
+  /(legal)              → Rechtliche Seiten (Impressum, Datenschutz)
+  /api                  → API Routes
+  layout.tsx            → Root Layout
+  globals.css           → Globale Styles
+/components
+  /ui                   → Shadcn UI / Basis-Komponenten
+  /layout               → Header, Footer, Navigation
+  /sections             → Page Sections (Hero, About, Events)
+  /forms                → Formulare (Kontakt, Anmeldung)
+/lib                    → Utilities, Firebase Client, Helpers
+/types                  → TypeScript Interfaces & Types
+/public/images          → Statische Bilder & Medien
+/hooks                  → Custom React Hooks
+/config                 → App-Konfiguration, Constants
+```
+
+## TypeScript Regeln
+- Strict Mode IMMER aktiviert
+- KEINE `any` Types — immer konkrete Typen definieren
+- `interface` für Object Shapes und Component Props
+- `type` für Unions, Intersections, Utility Types
+- Alle Component Props als Interface definieren (z.B. `interface HeroSectionProps`)
+- Avoid `enums` — verwende `as const` Maps stattdessen
+- Nutze Zod Schemas für Runtime-Validierung + Type Inference (`z.infer<typeof schema>`)
+
+## Naming Conventions
+- **Komponenten-Dateien:** PascalCase (`HeroSection.tsx`, `EventCard.tsx`)
+- **Ordner:** kebab-case (`event-card/`, `hero-section/`)
+- **Variablen/Funktionen:** camelCase mit Hilfsverben (`isLoading`, `hasError`, `canSubmit`)
+- **Konstanten:** UPPER_SNAKE_CASE (`MAX_FILE_SIZE`, `API_TIMEOUT`)
+- **Event Handler:** `handle` Prefix (`handleClick`, `handleSubmit`, `handleKeyDown`)
+- **Boolean Props:** Frage-Form (`isVisible`, `hasData`, `shouldRender`)
+- **File Extensions:** `.config.ts`, `.test.ts`, `.types.ts`, `.hook.ts`
+
+## Code-Stil
+- Funktionale, deklarative Programmierung — KEINE Klassen
+- Arrow Functions für Komponenten: `const Hero = () => { ... }`
+- `function` Keyword für reine Utility-Funktionen
+- Early Returns für bessere Lesbarkeit
+- Keine Semikolons
+- Destructuring für Props und State
+- Favor named Exports über default Exports
+- Datei-Struktur: Export → Subcomponents → Helpers → Static Content → Types
+
+## Data Fetching
+- Server Components für Data Fetching bevorzugen
+- `fetch` mit Next.js Cache-Optionen nutzen
+- Preload Pattern implementieren um Waterfalls zu vermeiden
+- Server Actions für Mutations verwenden
+- `revalidatePath` / `revalidateTag` für Cache Invalidierung

@@ -1,0 +1,77 @@
+---
+alwaysApply: true
+---
+
+# Entwicklungs-Workflow & Checkpoints
+
+## PFLICHT-Workflow bei JEDER Änderung
+
+Befolge diesen Workflow bei JEDER Code-Änderung — ohne Ausnahme.
+
+### Phase 1: ANALYSE
+1. Lies und verstehe den aktuellen Code bevor du etwas änderst
+2. Identifiziere welche Dateien betroffen sind
+3. Prüfe ob es Abhängigkeiten gibt die brechen könnten
+4. Beschreibe kurz was du vorhast und warum
+
+### Phase 2: CHECKPOINT ERSTELLEN
+**VOR jeder Änderung** einen Git-Checkpoint erstellen:
+
+```bash
+git add -A && git commit -m "checkpoint: vor [kurze beschreibung der geplanten änderung]"
+```
+
+Wenn mehrere Dateien geändert werden, erstelle den Checkpoint BEVOR du die erste Datei anfasst.
+So kann der User jederzeit mit `git diff HEAD~1` sehen was sich geändert hat,
+oder mit `git checkout -- .` bzw. `git reset --hard HEAD~1` alles rückgängig machen.
+
+### Phase 3: IMPLEMENTIERUNG
+1. Ändere Dateien schrittweise — eine logische Einheit nach der anderen
+2. Bei großen Änderungen: Zwischencheckpoints setzen
+3. Teste nach jeder Teiländerung ob nichts kaputt ist
+4. Wenn etwas bricht → sofort stoppen und dem User Bescheid geben
+
+### Phase 4: VERIFIZIERUNG
+1. Prüfe ob die Änderung funktioniert (keine Linter Errors, kein Crash)
+2. Prüfe ob bestehende Funktionalität nicht gebrochen ist
+3. Zeige dem User eine kurze Zusammenfassung:
+   - Was wurde geändert (welche Dateien)
+   - Was ist das Ergebnis
+   - Wie kann er es testen
+
+### Phase 5: FINALER COMMIT
+Nach erfolgreicher Verifizierung:
+```bash
+git add -A && git commit -m "feat/fix/style: [beschreibung der änderung]"
+```
+
+## Rollback-Strategie
+
+Wenn etwas schiefgeht, biete dem User IMMER diese Optionen an:
+
+| Situation | Befehl | Effekt |
+|---|---|---|
+| Letzte Änderung rückgängig (uncommitted) | `git checkout -- .` | Verwirft alle nicht-committeten Änderungen |
+| Letzten Commit rückgängig (behalte Dateien) | `git reset --soft HEAD~1` | Commit weg, Änderungen bleiben staged |
+| Letzten Commit komplett rückgängig | `git reset --hard HEAD~1` | Alles zurück zum vorherigen Checkpoint |
+| Bestimmte Datei zurücksetzen | `git checkout HEAD~1 -- pfad/datei.tsx` | Nur diese Datei zurücksetzen |
+| Alle Checkpoints anzeigen | `git log --oneline -10` | Letzte 10 Commits/Checkpoints sehen |
+
+## Checkpoint-Regeln
+
+- **IMMER** Checkpoint VOR destruktiven Änderungen (Dateien löschen, große Refactors, Config-Änderungen)
+- **IMMER** Checkpoint VOR dem Installieren/Entfernen von Dependencies
+- Bei Unsicherheit: lieber einen Checkpoint zu viel als zu wenig
+- Checkpoint-Commits nutzen das Prefix `checkpoint:` um sie von echten Commits zu unterscheiden
+- Nach erfolgreichem Abschluss können Checkpoint-Commits optional zusammengefasst werden: `git rebase -i` (nur wenn der User es will)
+
+## Zusammenfassung nach jeder Änderung
+
+Am Ende JEDER Aufgabe dem User berichten:
+
+```
+✅ Änderung abgeschlossen
+📁 Geänderte Dateien: [Liste]
+💾 Checkpoint: [commit message]
+🔙 Rückgängig machen: git reset --hard HEAD~1
+```

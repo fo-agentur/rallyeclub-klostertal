@@ -1,0 +1,20 @@
+{
+  "tasks": {
+    "task-1775162764454-mnxczy": {
+      "taskId": "task-1775162764454-mnxczy",
+      "type": "implementation",
+      "description": "Analyze http://www.rallyeclub-klostertal.at and build a modern cinematic single-page website. Steps: 1) Research the existing site - extract brand colors, content, events, results. 2) Design a modern responsive layout with cinematic scroll animations using GSAP and ScrollTrigger. 3) Build a single HTML file with sections: Hero with rally imagery, About/Club History, Events, Results, Gallery, Contact. Use cinematic modules from /home/clawbot/.openclaw/workspace/cinematic-site-components/ as reference. Mobile-first, modern design. 4) Deploy to Vercel.",
+      "priority": "high",
+      "status": "in_progress",
+      "progress": 0,
+      "assignedTo": [
+        "coder"
+      ],
+      "tags": [],
+      "createdAt": "2026-04-02T20:46:04.454Z",
+      "startedAt": "2026-04-02T20:46:10.477Z",
+      "completedAt": null
+    }
+  },
+  "version": "3.0.0"
+}

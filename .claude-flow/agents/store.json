@@ -1,0 +1,15 @@
+{
+  "agents": {
+    "agent-1775163944077-tkjkov": {
+      "agentId": "agent-1775163944077-tkjkov",
+      "status": "idle",
+      "health": 1,
+      "taskCount": 0,
+      "config": {},
+      "createdAt": "2026-04-02T21:05:44.077Z",
+      "model": "sonnet",
+      "modelRoutedBy": "default"
+    }
+  },
+  "version": "3.0.0"
+}

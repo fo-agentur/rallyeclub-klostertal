@@ -1,0 +1,76 @@
+---
+globs: ["**/app/**/page.tsx", "**/app/**/layout.tsx", "**/next.config.*"]
+---
+
+# Performance & SEO
+
+## Web Vitals Ziele
+- **LCP** (Largest Contentful Paint): < 2.5s
+- **FID** (First Input Delay): < 100ms
+- **CLS** (Cumulative Layout Shift): < 0.1
+- **TTFB** (Time to First Byte): < 600ms
+- **INP** (Interaction to Next Paint): < 200ms
+
+## Bild-Optimierung
+- IMMER `next/image` verwenden — niemals `<img>` direkt
+- `width` und `height` PFLICHT (verhindert CLS)
+- `alt` Text PFLICHT (SEO + Accessibility)
+- `priority` für Above-the-fold Bilder (Hero, Logo)
+- Lazy Loading automatisch für alle anderen Bilder
+- `placeholder="blur"` mit `blurDataURL` für bessere UX
+- WebP als primäres Format
+- Responsive Sizes: `sizes="(max-width: 768px) 100vw, 50vw"` anpassen
+
+## Font-Optimierung
+- Fonts IMMER über `next/font/google` oder `next/font/local` laden
+- Font Display: `swap` für bessere LCP
+- Nur benötigte Gewichte laden (z.B. 400, 600, 700)
+- Maximal 2 Font-Familien
+
+## Code Splitting & Lazy Loading
+- Dynamic Imports für non-critical Komponenten: `dynamic(() => import(...))`
+- Route-basiertes Code Splitting ist automatisch (App Router)
+- Schwere Libraries (Framer Motion, Charts) dynamisch laden
+- `Suspense` Boundaries für async Components
+- Third-Party Scripts mit `next/script` und `strategy="lazyOnload"` laden
+
+## SEO Metadata
+- `metadata` Export auf JEDER Page definieren
+- Unique Title und Description pro Seite
+- Open Graph Tags für Social Media Sharing
+- Structured Data (JSON-LD) für Events, Organisation
+- Canonical URLs setzen
+- `robots.txt` und `sitemap.xml` generieren
+
+## Metadata Template
+```typescript
+import { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "Rallye Club Klostertal | [Seitenname]",
+  description: "[Beschreibung der Seite, 150-160 Zeichen]",
+  openGraph: {
+    title: "Rallye Club Klostertal | [Seitenname]",
+    description: "[Beschreibung]",
+    url: "https://rallyeclub-klostertal.at/[path]",
+    siteName: "Rallye Club Klostertal",
+    locale: "de_AT",
+    type: "website",
+  },
+}
+```
+
+## Performance Best Practices
+- Server Components für statische Inhalte (kein JS zum Client)
+- `React.memo()` nur wenn Profiling zeigt dass es nötig ist
+- Keine unnötigen Re-Renders — State minimal und lokal halten
+- Firestore Queries mit `limit()` paginieren
+- Bilder > 1MB komprimieren oder in Firebase Storage / CDN auslagern
+- Bundle Analyzer (`@next/bundle-analyzer`) zur Analyse nutzen
+- Prefetching: Next.js Link Prefetching ist default aktiviert
+
+## Caching Strategie
+- Static Pages wo möglich (ISR mit `revalidate`)
+- Dynamic Pages nur wenn Echtzeit-Daten nötig
+- API Responses mit `Cache-Control` Headers
+- Firebase Daten mit `getDoc` (gecached) vs `onSnapshot` (realtime) — bewusst wählen
