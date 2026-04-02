@@ -1,0 +1,42 @@
+{
+  "name": "Rallyeclub Klostertal",
+  "industry": "Motorsport / Rallye-Verein",
+  "location": "Klostertal, Vorarlberg, Österreich",
+  "language": "de",
+  "colors": {
+    "primary": "#e63946",
+    "secondary": "#1d3557",
+    "accent": "#f4a261",
+    "background": "#0a0a0b",
+    "surface": "#111114",
+    "text": "#eae7e2",
+    "muted": "#5a5a5e"
+  },
+  "typography": {
+    "heading": "Outfit",
+    "body": "Outfit",
+    "style": "bold, sporty, uppercase headings"
+  },
+  "content": {
+    "tagline": "Motorsport mit Leidenschaft seit dem Klostertal",
+    "heroLine": "Wo Berge auf Benzin treffen",
+    "about": "Der Rallyeclub Klostertal vereint Motorsport-Begeisterte im Herzen Vorarlbergs. Von Autoslaloms bis zu Rallye-Events — hier wird Leidenschaft gelebt.",
+    "sections": ["Home", "Über uns", "Events", "Aktive Fahrer", "Galerie", "Kontakt"],
+    "drivers": [
+      {"name": "Daniel Zimmermann", "car": "Honda Civic"},
+      {"name": "Martin Taumberger", "car": "Peugeot"},
+      {"name": "Christoph Schuler", "car": "Renault 5 GT Turbo"}
+    ],
+    "events": [
+      "Autoslalom St. Gallenkirch",
+      "Jahreshauptversammlung",
+      "Gala Abend"
+    ]
+  },
+  "contact": {
+    "email": "info@rallyeclub-klostertal.at",
+    "facebook": "https://www.facebook.com/pages/Rallyeclub-Klostertal/132632750148150",
+    "website": "http://www.rallyeclub-klostertal.at"
+  },
+  "sponsors": ["motorfreizeittrends", "Kogler Autopflege"]
+}

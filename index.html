@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rallyeclub Klostertal — Motorsport mit Leidenschaft</title>
+<meta name="description" content="Rallyeclub Klostertal — Motorsport-Begeisterte im Herzen Vorarlbergs. Autoslaloms, Rallye-Events und pure Leidenschaft.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<style>
+/* ═══════════════════════════════════════════════
+   DESIGN SYSTEM — Rallyeclub Klostertal
+   ═══════════════════════════════════════════════ */
+:root {
+  --bg: #0a0a0b;
+  --surface: #111114;
+  --surface-2: #18181b;
+  --text: #eae7e2;
+  --muted: #6b6b73;
+  --accent: #e63946;
+  --accent-glow: rgba(230, 57, 70, 0.15);
+  --accent-2: #f4a261;
+  --border: #1e1e22;
+  --radius: 14px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent) var(--bg);
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Outfit', -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+a { color: var(--accent); text-decoration: none; transition: color 0.2s; }
+a:hover { color: var(--accent-2); }
+
+img { max-width: 100%; display: block; }
+
+/* ─── Utility ─── */
+.container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+.section-label {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  border: 1px solid var(--accent-glow);
+  padding: 6px 16px;
+  border-radius: 100px;
+  margin-bottom: 24px;
+}
+.section-title {
+  font-size: clamp(28px, 5vw, 52px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin-bottom: 16px;
+}
+.section-desc {
+  font-size: 17px;
+  color: var(--muted);
+  line-height: 1.6;
+  max-width: 55ch;
+}
+
+/* ═══════════════════════════════════════════════
+   NAVIGATION
+   ═══════════════════════════════════════════════ */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background 0.3s, backdrop-filter 0.3s;
+}
+.nav.scrolled {
+  background: rgba(10, 10, 11, 0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-brand {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.nav-brand .dot {
+  width: 8px; height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.3); }
+}
+.nav-links {
+  display: flex;
+  gap: 32px;
+  list-style: none;
+}
+.nav-links a {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted);
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--text); }
+.nav-menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 24px;
+  cursor: pointer;
+}
+
+/* ═══════════════════════════════════════════════
+   HERO — Curtain Reveal
+   ═══════════════════════════════════════════════ */
+.hero {
+  position: relative;
+  height: 300vh;
+}
+.hero-sticky {
+  position: sticky;
+  top: 0;
+  height: 100dvh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(135deg, rgba(10,10,11,0.3), rgba(10,10,11,0.6)),
+    url('https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=1920&q=80') center/cover no-repeat;
+  transform: scale(1.1);
+  will-change: transform;
+}
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom,
+    rgba(10,10,11,0.2) 0%,
+    rgba(10,10,11,0.1) 40%,
+    rgba(10,10,11,0.7) 80%,
+    rgba(10,10,11,1) 100%
+  );
+  z-index: 1;
+}
+
+/* Curtain panels */
+.curtain-left, .curtain-right {
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 50%;
+  background: var(--bg);
+  z-index: 3;
+  display: flex;
+  align-items: center;
+}
+.curtain-left {
+  left: 0;
+  justify-content: flex-end;
+  padding-right: 16px;
+}
+.curtain-right {
+  right: 0;
+  justify-content: flex-start;
+  padding-left: 16px;
+}
+.curtain-text {
+  font-size: clamp(48px, 10vw, 140px);
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  line-height: 0.9;
+  color: var(--text);
+  text-transform: uppercase;
+}
+.curtain-text .accent { color: var(--accent); }
+
+/* Hero content (behind curtain) */
+.hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 0 24px;
+  max-width: 900px;
+}
+.hero-tag {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 24px;
+  opacity: 0;
+}
+.hero-title {
+  font-size: clamp(36px, 7vw, 80px);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+  margin-bottom: 20px;
+  opacity: 0;
+}
+.hero-title .highlight {
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-subtitle {
+  font-size: clamp(16px, 2vw, 20px);
+  color: var(--muted);
+  line-height: 1.5;
+  max-width: 50ch;
+  margin: 0 auto 36px;
+  opacity: 0;
+}
+.hero-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 36px;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s;
+  opacity: 0;
+}
+.hero-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(230, 57, 70, 0.3);
+  color: #fff;
+}
+.hero-scroll {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 4;
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  animation: float-scroll 2s ease-in-out infinite;
+}
+.hero-scroll .line {
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(to bottom, var(--accent), transparent);
+}
+@keyframes float-scroll {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(8px); }
+}
+
+/* ═══════════════════════════════════════════════
+   ABOUT — Text Reveal
+   ═══════════════════════════════════════════════ */
+.about {
+  padding: 140px 24px;
+  text-align: center;
+}
+.about-inner {
+  max-width: 800px;
+  margin: 0 auto;
+}
+.about-text {
+  font-size: clamp(24px, 4vw, 42px);
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: -0.02em;
+}
+.about-text .word {
+  display: inline-block;
+  opacity: 0.15;
+  transition: opacity 0.3s;
+}
+.about-text .word.active { opacity: 1; }
+
+/* ═══════════════════════════════════════════════
+   STATS — Counter Section
+   ═══════════════════════════════════════════════ */
+.stats {
+  padding: 80px 24px;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 40px;
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: center;
+}
+.stat-item { opacity: 0; transform: translateY(20px); }
+.stat-number {
+  font-size: clamp(36px, 5vw, 56px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--accent);
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.stat-label {
+  font-size: 13px;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ═══════════════════════════════════════════════
+   EVENTS — Sticky Stack Cards
+   ═══════════════════════════════════════════════ */
+.events {
+  padding: 140px 24px;
+}
+.events-header {
+  text-align: center;
+  margin-bottom: 80px;
+}
+.events-stack {
+  position: relative;
+  max-width: 900px;
+  margin: 0 auto;
+}
+.event-card {
+  position: sticky;
+  top: 120px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 48px;
+  margin-bottom: 24px;
+  transition: transform 0.3s, box-shadow 0.3s;
+  opacity: 0;
+  transform: translateY(40px);
+}
+.event-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+}
+.event-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.event-num {
+  font-size: 48px;
+  font-weight: 800;
+  color: var(--accent);
+  line-height: 1;
+  opacity: 0.3;
+}
+.event-tag {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  border: 1px solid var(--accent-glow);
+  padding: 4px 12px;
+  border-radius: 100px;
+}
+.event-title {
+  font-size: clamp(22px, 3vw, 32px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 12px;
+}
+.event-desc {
+  font-size: 16px;
+  color: var(--muted);
+  line-height: 1.6;
+  max-width: 60ch;
+}
+.event-meta {
+  margin-top: 20px;
+  display: flex;
+  gap: 24px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.event-meta span { display: flex; align-items: center; gap: 6px; }
+
+/* ═══════════════════════════════════════════════
+   DRIVERS — Accordion Slider
+   ═══════════════════════════════════════════════ */
+.drivers {
+  padding: 140px 24px;
+}
+.drivers-header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+.accordion {
+  display: flex;
+  gap: 8px;
+  height: 65vh;
+  min-height: 380px;
+  max-height: 550px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.accordion-panel {
+  flex: 1;
+  border-radius: var(--radius);
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  transition: flex 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.accordion-panel:hover,
+.accordion-panel.active { flex: 5; }
+
+.panel-bg {
+  position: absolute; inset: 0;
+  background-size: cover;
+  background-position: center;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.accordion-panel:hover .panel-bg { transform: scale(1.05); }
+
+.panel-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(10,10,11,0.9) 0%, rgba(10,10,11,0.3) 40%, transparent 60%);
+}
+.panel-content {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: 28px 24px;
+  z-index: 2;
+}
+.panel-num {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 8px;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.1s;
+}
+.panel-name-collapsed {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  position: absolute;
+  bottom: 28px; left: 16px;
+  transition: opacity 0.3s;
+}
+.accordion-panel:hover .panel-name-collapsed { opacity: 0; }
+.panel-h3 {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin-bottom: 4px;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.15s;
+}
+.panel-car {
+  font-size: 14px;
+  color: var(--accent-2);
+  font-weight: 500;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.2s;
+}
+.accordion-panel:hover .panel-num,
+.accordion-panel:hover .panel-h3,
+.accordion-panel:hover .panel-car,
+.accordion-panel.active .panel-num,
+.accordion-panel.active .panel-h3,
+.accordion-panel.active .panel-car {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ═══════════════════════════════════════════════
+   GALLERY — Image Grid
+   ═══════════════════════════════════════════════ */
+.gallery {
+  padding: 140px 24px;
+  border-top: 1px solid var(--border);
+}
+.gallery-header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.gallery-item {
+  position: relative;
+  aspect-ratio: 4/3;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(30px);
+}
+.gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.gallery-item:hover img { transform: scale(1.08); }
+.gallery-item::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(10,10,11,0.6) 0%, transparent 50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.gallery-item:hover::after { opacity: 1; }
+
+/* ═══════════════════════════════════════════════
+   SPONSORS
+   ═══════════════════════════════════════════════ */
+.sponsors {
+  padding: 80px 24px;
+  text-align: center;
+  border-top: 1px solid var(--border);
+}
+.sponsors-label {
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 32px;
+}
+.sponsors-list {
+  display: flex;
+  justify-content: center;
+  gap: 48px;
+  flex-wrap: wrap;
+}
+.sponsor-item {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--muted);
+  opacity: 0.5;
+  transition: opacity 0.3s;
+}
+.sponsor-item:hover { opacity: 1; }
+
+/* ═══════════════════════════════════════════════
+   CONTACT / CTA
+   ═══════════════════════════════════════════════ */
+.cta-section {
+  padding: 140px 24px;
+  text-align: center;
+}
+.cta-inner {
+  max-width: 600px;
+  margin: 0 auto;
+}
+.cta-title {
+  font-size: clamp(32px, 5vw, 56px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin-bottom: 20px;
+}
+.cta-desc {
+  font-size: 17px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-bottom: 36px;
+}
+.cta-buttons {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 32px;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(230,57,70,0.3);
+  color: #fff;
+}
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 32px;
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  transition: border-color 0.3s, background 0.3s;
+}
+.btn-secondary:hover {
+  border-color: var(--accent);
+  background: var(--accent-glow);
+  color: var(--text);
+}
+
+/* ═══════════════════════════════════════════════
+   FOOTER
+   ═══════════════════════════════════════════════ */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 48px 24px;
+}
+.footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+.footer-brand {
+  font-size: 16px;
+  font-weight: 600;
+}
+.footer-links {
+  display: flex;
+  gap: 24px;
+  list-style: none;
+}
+.footer-links a {
+  font-size: 13px;
+  color: var(--muted);
+}
+.footer-links a:hover { color: var(--text); }
+.footer-copy {
+  font-size: 12px;
+  color: var(--muted);
+}
+.footer-copy a { color: var(--muted); }
+.footer-copy a:hover { color: var(--accent); }
+
+/* ═══════════════════════════════════════════════
+   KINETIC MARQUEE
+   ═══════════════════════════════════════════════ */
+.marquee-section {
+  padding: 80px 0;
+  overflow: hidden;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.marquee-track {
+  display: flex;
+  gap: 60px;
+  white-space: nowrap;
+  will-change: transform;
+}
+.marquee-item {
+  font-size: clamp(48px, 8vw, 96px);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--border);
+  flex-shrink: 0;
+}
+.marquee-item .filled {
+  -webkit-text-stroke: 0;
+  color: var(--text);
+}
+.marquee-sep {
+  color: var(--accent);
+  -webkit-text-stroke: 0;
+  font-size: clamp(32px, 6vw, 64px);
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+/* ═══════════════════════════════════════════════
+   MOBILE RESPONSIVE
+   ═══════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .nav-menu-btn { display: block; }
+
+  .curtain-text { font-size: clamp(36px, 12vw, 80px); }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px;
+  }
+
+  .accordion {
+    flex-direction: column;
+    height: auto;
+    min-height: auto;
+    max-height: none;
+  }
+  .accordion-panel {
+    height: 60px;
+    flex: none !important;
+  }
+  .accordion-panel:hover,
+  .accordion-panel.active {
+    height: 250px;
+    flex: none !important;
+  }
+  .panel-name-collapsed {
+    writing-mode: horizontal-tb;
+    position: relative;
+    bottom: auto;
+    left: auto;
+    padding: 18px 20px;
+  }
+
+  .gallery-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .event-card { padding: 32px; }
+
+  .footer-inner {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .stats-grid { grid-template-columns: 1fr 1fr; gap: 24px; }
+  .gallery-grid { grid-template-columns: 1fr; }
+  .hero-cta { width: 100%; justify-content: center; }
+  .cta-buttons { flex-direction: column; }
+  .btn-primary, .btn-secondary { width: 100%; justify-content: center; }
+}
+
+/* ─── Reduced Motion ─── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ─── Mobile Menu ─── */
+.mobile-menu {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 99;
+  background: rgba(10,10,11,0.95);
+  backdrop-filter: blur(20px);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+}
+.mobile-menu.open { display: flex; }
+.mobile-menu a {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.mobile-menu-close {
+  position: absolute;
+  top: 20px;
+  right: 24px;
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 28px;
+  cursor: pointer;
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ NAVIGATION ═══ -->
+<nav class="nav" id="nav">
+  <div class="nav-brand">
+    <span class="dot"></span>
+    Rallyeclub Klostertal
+  </div>
+  <ul class="nav-links">
+    <li><a href="#about">Über uns</a></li>
+    <li><a href="#events">Events</a></li>
+    <li><a href="#drivers">Fahrer</a></li>
+    <li><a href="#gallery">Galerie</a></li>
+    <li><a href="#contact">Kontakt</a></li>
+  </ul>
+  <button class="nav-menu-btn" id="menuBtn" aria-label="Menü öffnen">☰</button>
+</nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-menu-close" id="menuClose" aria-label="Menü schließen">✕</button>
+  <a href="#about" onclick="closeMobile()">Über uns</a>
+  <a href="#events" onclick="closeMobile()">Events</a>
+  <a href="#drivers" onclick="closeMobile()">Fahrer</a>
+  <a href="#gallery" onclick="closeMobile()">Galerie</a>
+  <a href="#contact" onclick="closeMobile()">Kontakt</a>
+</div>
+
+<!-- ═══ HERO — Curtain Reveal ═══ -->
+<section class="hero" id="hero">
+  <div class="hero-sticky">
+    <div class="hero-bg" id="heroBg"></div>
+    <div class="hero-overlay"></div>
+
+    <div class="curtain-left" id="curtainLeft">
+      <span class="curtain-text">RALLY<span class="accent">E</span></span>
+    </div>
+    <div class="curtain-right" id="curtainRight">
+      <span class="curtain-text"><span class="accent">C</span>LUB</span>
+    </div>
+
+    <div class="hero-content" id="heroContent">
+      <div class="hero-tag">Klostertal · Vorarlberg · Österreich</div>
+      <h1 class="hero-title">
+        Wo Berge auf<br>
+        <span class="highlight">Benzin</span> treffen
+      </h1>
+      <p class="hero-subtitle">Motorsport-Begeisterte im Herzen Vorarlbergs. Seit Jahren vereint der Rallyeclub Klostertal Leidenschaft, Geschwindigkeit und Kameradschaft.</p>
+      <a href="#events" class="hero-cta">Events entdecken →</a>
+    </div>
+
+    <div class="hero-scroll">
+      <span>Scroll</span>
+      <div class="line"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ ABOUT — Word-by-Word Reveal ═══ -->
+<section class="about" id="about">
+  <div class="about-inner">
+    <div class="section-label">Über uns</div>
+    <p class="about-text" id="aboutText">
+      Der Rallyeclub Klostertal ist mehr als ein Verein — er ist Familie. Wir teilen die Leidenschaft für Motorsport, für das Brummen der Motoren in den Bergen und den Geruch von Benzin am Start. Von Autoslaloms in St. Gallenkirch bis zu geselligen Gala-Abenden — hier wird Motorsport gelebt.
+    </p>
+  </div>
+</section>
+
+<!-- ═══ STATS ═══ -->
+<section class="stats" id="stats">
+  <div class="stats-grid">
+    <div class="stat-item">
+      <div class="stat-number" data-target="20">0</div>
+      <div class="stat-label">Jahre Tradition</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number" data-target="50">0</div>
+      <div class="stat-label">Aktive Mitglieder</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number" data-target="15">0</div>
+      <div class="stat-label">Events pro Jahr</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number" data-target="3">0</div>
+      <div class="stat-label">Aktive Fahrer</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ MARQUEE ═══ -->
+<section class="marquee-section">
+  <div class="marquee-track" id="marquee">
+    <span class="marquee-item"><span class="filled">Rallye</span></span>
+    <span class="marquee-sep">●</span>
+    <span class="marquee-item">Autoslalom</span>
+    <span class="marquee-sep">●</span>
+    <span class="marquee-item"><span class="filled">Klostertal</span></span>
+    <span class="marquee-sep">●</span>
+    <span class="marquee-item">Motorsport</span>
+    <span class="marquee-sep">●</span>
+    <span class="marquee-item"><span class="filled">Rallye</span></span>
+    <span class="marquee-sep">●</span>
+    <span class="marquee-item">Autoslalom</span>
+    <span class="marquee-sep">●</span>
+    <span class="marquee-item"><span class="filled">Klostertal</span></span>
+    <span class="marquee-sep">●</span>
+    <span class="marquee-item">Motorsport</span>
+    <span class="marquee-sep">●</span>
+  </div>
+</section>
+
+<!-- ═══ EVENTS — Sticky Stack ═══ -->
+<section class="events" id="events">
+  <div class="events-header">
+    <div class="section-label">Events</div>
+    <h2 class="section-title">Unsere Highlights</h2>
+    <p class="section-desc">Vom Asphalt bis zur Feier — das ganze Jahr voller Motorsport.</p>
+  </div>
+  <div class="events-stack">
+    <div class="event-card" data-speed="1">
+      <div class="event-card-top">
+        <span class="event-num">01</span>
+        <span class="event-tag">Flaggschiff</span>
+      </div>
+      <h3 class="event-title">Autoslalom St. Gallenkirch</h3>
+      <p class="event-desc">Das Herzstück unseres Kalenders. Auf dem Parcours in St. Gallenkirch messen sich unsere Fahrer in spannenden Wertungsläufen. Zuschauer willkommen — der Eintritt ist frei.</p>
+      <div class="event-meta">
+        <span>📍 St. Gallenkirch</span>
+        <span>📅 Jährlich im Sommer</span>
+      </div>
+    </div>
+    <div class="event-card" data-speed="2">
+      <div class="event-card-top">
+        <span class="event-num">02</span>
+        <span class="event-tag">Tradition</span>
+      </div>
+      <h3 class="event-title">Jahreshauptversammlung</h3>
+      <p class="event-desc">Einmal im Jahr kommen alle Mitglieder zusammen. Rückblick, Vorschau und der legendäre Luftdruckschieß-Wettbewerb. Hier wird geplant, gelacht und gefeiert.</p>
+      <div class="event-meta">
+        <span>📍 Klostertal</span>
+        <span>📅 Jährlich im März</span>
+      </div>
+    </div>
+    <div class="event-card" data-speed="3">
+      <div class="event-card-top">
+        <span class="event-num">03</span>
+        <span class="event-tag">Geselligkeit</span>
+      </div>
+      <h3 class="event-title">Gala Abend</h3>
+      <p class="event-desc">Unser festlicher Höhepunkt — Ehrungen, Rückblicke und das gemeinsame Feiern der Saison. Ein Abend voller Geschichten von der Strecke und unter Freunden.</p>
+      <div class="event-meta">
+        <span>📍 Klostertal</span>
+        <span>📅 Jährlich im Winter</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ DRIVERS — Accordion ═══ -->
+<section class="drivers" id="drivers">
+  <div class="drivers-header">
+    <div class="section-label">Aktive Fahrer</div>
+    <h2 class="section-title">Unsere Piloten</h2>
+    <p class="section-desc">Die Männer und Frauen, die für uns am Steuer sitzen.</p>
+  </div>
+  <div class="accordion">
+    <div class="accordion-panel active">
+      <div class="panel-bg" style="background-image: url('https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=800&h=600&fit=crop');"></div>
+      <div class="panel-overlay"></div>
+      <div class="panel-name-collapsed">Zimmermann</div>
+      <div class="panel-content">
+        <div class="panel-num">Fahrer 01</div>
+        <div class="panel-h3">Daniel Zimmermann</div>
+        <div class="panel-car">Honda Civic</div>
+      </div>
+    </div>
+    <div class="accordion-panel">
+      <div class="panel-bg" style="background-image: url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=800&h=600&fit=crop');"></div>
+      <div class="panel-overlay"></div>
+      <div class="panel-name-collapsed">Taumberger</div>
+      <div class="panel-content">
+        <div class="panel-num">Fahrer 02</div>
+        <div class="panel-h3">Martin Taumberger</div>
+        <div class="panel-car">Peugeot</div>
+      </div>
+    </div>
+    <div class="accordion-panel">
+      <div class="panel-bg" style="background-image: url('https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800&h=600&fit=crop');"></div>
+      <div class="panel-overlay"></div>
+      <div class="panel-name-collapsed">Schuler</div>
+      <div class="panel-content">
+        <div class="panel-num">Fahrer 03</div>
+        <div class="panel-h3">Christoph Schuler</div>
+        <div class="panel-car">Renault 5 GT Turbo</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ GALLERY ═══ -->
+<section class="gallery" id="gallery">
+  <div class="gallery-header">
+    <div class="section-label">Galerie</div>
+    <h2 class="section-title">Momente von der Strecke</h2>
+    <p class="section-desc">Eindrücke aus unseren Events und Veranstaltungen.</p>
+  </div>
+  <div class="gallery-grid">
+    <div class="gallery-item">
+      <img src="https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=600&h=450&fit=crop" alt="Rallye Action" loading="lazy">
+    </div>
+    <div class="gallery-item">
+      <img src="https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=600&h=450&fit=crop" alt="Bergstraße" loading="lazy">
+    </div>
+    <div class="gallery-item">
+      <img src="https://images.unsplash.com/photo-1504215680853-026ed2a45def?w=600&h=450&fit=crop" alt="Motorsport" loading="lazy">
+    </div>
+    <div class="gallery-item">
+      <img src="https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=600&h=450&fit=crop" alt="Sportwagen" loading="lazy">
+    </div>
+    <div class="gallery-item">
+      <img src="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=600&h=450&fit=crop" alt="Fahrzeug" loading="lazy">
+    </div>
+    <div class="gallery-item">
+      <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600&h=450&fit=crop" alt="Classic Car" loading="lazy">
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SPONSORS ═══ -->
+<section class="sponsors">
+  <div class="sponsors-label">Unsere Partner</div>
+  <div class="sponsors-list">
+    <div class="sponsor-item">Motorfreizeittrends</div>
+    <div class="sponsor-item">Kogler Autopflege</div>
+  </div>
+</section>
+
+<!-- ═══ CONTACT / CTA ═══ -->
+<section class="cta-section" id="contact">
+  <div class="cta-inner">
+    <div class="section-label">Mitmachen</div>
+    <h2 class="cta-title">Lust auf<br>Motorsport?</h2>
+    <p class="cta-desc">Egal ob als Fahrer, Helfer oder Fan — bei uns ist jeder willkommen, der Benzin im Blut hat.</p>
+    <div class="cta-buttons">
+      <a href="mailto:info@rallyeclub-klostertal.at" class="btn-primary">Kontakt aufnehmen →</a>
+      <a href="https://www.facebook.com/pages/Rallyeclub-Klostertal/132632750148150" target="_blank" rel="noopener" class="btn-secondary">Facebook besuchen</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">Rallyeclub Klostertal</div>
+    <ul class="footer-links">
+      <li><a href="#about">Über uns</a></li>
+      <li><a href="#events">Events</a></li>
+      <li><a href="#drivers">Fahrer</a></li>
+      <li><a href="mailto:info@rallyeclub-klostertal.at">Kontakt</a></li>
+    </ul>
+    <div class="footer-copy">
+      © 2026 Rallyeclub Klostertal · Klostertal, Vorarlberg<br>
+      <a href="http://www.rallyeclub-klostertal.at" target="_blank" rel="noopener">Originalseite</a> · <a href="#impressum">Impressum</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════════════════════
+   SCRIPTS
+   ═══════════════════════════════════════════════ -->
+<script>
+(function() {
+  'use strict';
+  gsap.registerPlugin(ScrollTrigger);
+
+  // ─── Nav scroll effect ───
+  var nav = document.getElementById('nav');
+  window.addEventListener('scroll', function() {
+    nav.classList.toggle('scrolled', window.scrollY > 80);
+  });
+
+  // ─── Mobile menu ───
+  var menuBtn = document.getElementById('menuBtn');
+  var mobileMenu = document.getElementById('mobileMenu');
+  var menuClose = document.getElementById('menuClose');
+  menuBtn.addEventListener('click', function() { mobileMenu.classList.add('open'); });
+  menuClose.addEventListener('click', function() { mobileMenu.classList.remove('open'); });
+  window.closeMobile = function() { mobileMenu.classList.remove('open'); };
+
+  // ─── Hero: Curtain Reveal ───
+  var heroSection = document.querySelector('.hero');
+  var tl = gsap.timeline({
+    scrollTrigger: {
+      trigger: heroSection,
+      start: 'top top',
+      end: '60% top',
+      scrub: 0.5
+    }
+  });
+  tl.to('#curtainLeft', { xPercent: -100, ease: 'power2.inOut' }, 0);
+  tl.to('#curtainRight', { xPercent: 100, ease: 'power2.inOut' }, 0);
+
+  // Hero content fade in after curtain opens
+  var tl2 = gsap.timeline({
+    scrollTrigger: {
+      trigger: heroSection,
+      start: '30% top',
+      end: '70% top',
+      scrub: 0.5
+    }
+  });
+  tl2.to('.hero-tag', { opacity: 1, duration: 0.3 }, 0);
+  tl2.to('.hero-title', { opacity: 1, duration: 0.3 }, 0.1);
+  tl2.to('.hero-subtitle', { opacity: 1, duration: 0.3 }, 0.2);
+  tl2.to('.hero-cta', { opacity: 1, duration: 0.3 }, 0.3);
+
+  // Hero bg parallax (subtle Ken Burns)
+  gsap.to('#heroBg', {
+    scale: 1.3,
+    ease: 'none',
+    scrollTrigger: {
+      trigger: heroSection,
+      start: 'top top',
+      end: 'bottom top',
+      scrub: true
+    }
+  });
+
+  // ─── About: Word-by-word reveal ───
+  var aboutText = document.getElementById('aboutText');
+  var text = aboutText.textContent.trim();
+  var words = text.split(/\s+/);
+  aboutText.innerHTML = words.map(function(w) {
+    return '<span class="word">' + w + '</span>';
+  }).join(' ');
+
+  var wordEls = aboutText.querySelectorAll('.word');
+  ScrollTrigger.create({
+    trigger: '.about',
+    start: 'top 80%',
+    end: 'bottom 30%',
+    onUpdate: function(self) {
+      var progress = self.progress;
+      var activeCount = Math.floor(progress * wordEls.length);
+      wordEls.forEach(function(el, i) {
+        el.classList.toggle('active', i < activeCount);
+      });
+    }
+  });
+
+  // ─── Stats: Counter animation ───
+  var statItems = document.querySelectorAll('.stat-item');
+  statItems.forEach(function(item) {
+    ScrollTrigger.create({
+      trigger: item,
+      start: 'top 85%',
+      once: true,
+      onEnter: function() {
+        gsap.to(item, { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' });
+        var numEl = item.querySelector('.stat-number');
+        var target = parseInt(numEl.getAttribute('data-target'));
+        var obj = { val: 0 };
+        gsap.to(obj, {
+          val: target,
+          duration: 2,
+          ease: 'power2.out',
+          onUpdate: function() {
+            numEl.textContent = Math.floor(obj.val) + '+';
+          }
+        });
+      }
+    });
+  });
+
+  // ─── Marquee: Continuous scroll ───
+  var marquee = document.getElementById('marquee');
+  var speed = 80; // px per second
+  var totalWidth = marquee.scrollWidth / 2;
+  gsap.to(marquee, {
+    x: -totalWidth,
+    ease: 'none',
+    duration: totalWidth / speed,
+    repeat: -1,
+    modifiers: {
+      x: function(x) {
+        return (parseFloat(x) % totalWidth) + 'px';
+      }
+    }
+  });
+
+  // ─── Events: Staggered entrance ───
+  var cards = document.querySelectorAll('.event-card');
+  cards.forEach(function(card, i) {
+    ScrollTrigger.create({
+      trigger: card,
+      start: 'top 85%',
+      once: true,
+      onEnter: function() {
+        gsap.to(card, {
+          opacity: 1,
+          y: 0,
+          duration: 0.7,
+          delay: i * 0.1,
+          ease: 'power2.out'
+        });
+      }
+    });
+  });
+
+  // ─── Gallery: Staggered entrance ───
+  var galleryItems = document.querySelectorAll('.gallery-item');
+  galleryItems.forEach(function(item, i) {
+    ScrollTrigger.create({
+      trigger: item,
+      start: 'top 90%',
+      once: true,
+      onEnter: function() {
+        gsap.to(item, {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          delay: (i % 3) * 0.1,
+          ease: 'power2.out'
+        });
+      }
+    });
+  });
+
+  // ─── Smooth scroll for nav links ───
+  document.querySelectorAll('a[href^="#"]').forEach(function(link) {
+    link.addEventListener('click', function(e) {
+      var target = document.querySelector(this.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+
+})();
+</script>
+</body>
+</html>
