@@ -3,7 +3,7 @@ import type { SiteContent } from '@/lib/schemas/site-content'
 
 export function UberUnsSection({ site }: { site: SiteContent }) {
   return (
-    <section id="ueber-uns" className="club-zone relative scroll-mt-20 border-t border-white/[0.07] py-20 sm:py-24 lg:py-32">
+    <section id="ueber-uns" className="club-zone club-zone--editorial relative scroll-mt-20 border-t border-white/[0.07] py-20 sm:py-24 lg:py-28">
       <div className="club-zone__mesh" aria-hidden />
       <div className="club-zone__aurora" aria-hidden />
       <div className="club-zone__gridlines" aria-hidden />
@@ -14,10 +14,10 @@ export function UberUnsSection({ site }: { site: SiteContent }) {
           </div>
           <div className="club-hero__inner">
             <div className="flex flex-wrap items-end justify-between gap-4">
-              <h2 id="headline-ueber" className="font-display clip-reveal text-4xl font-bold tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
+              <h2 id="headline-ueber" className="font-display clip-reveal text-3xl font-bold tracking-tight text-white sm:text-4xl md:text-5xl lg:text-6xl">
                 Der Club
               </h2>
-              <p className="font-display text-[10px] font-bold uppercase tracking-[0.4em] text-rally-orange/90 sm:text-xs">Story · Klostertal</p>
+              <p className="font-display text-[10px] font-bold uppercase tracking-[0.4em] text-white/50 sm:text-xs">Story · Klostertal</p>
             </div>
             <p id="club-intro" className="mt-5 max-w-2xl text-base leading-relaxed text-rally-muted sm:text-lg">
               Von der ersten Idee bis zur Startaufstellung: unsere Geschichte in vier Takten — und warum sich’s lohnt, reinzuschauen.
@@ -28,7 +28,7 @@ export function UberUnsSection({ site }: { site: SiteContent }) {
         <blockquote id="club-pullquote" className="club-pullquote club-pullquote--cinema relative z-10 mt-12 max-w-4xl sm:mt-14">
           <p>
             Asphalt, Schotter, Adrenalin — und ein Team, das zusammenhält.
-            <span className="text-rally-orange"> Das ist Rallyeclub Klostertal.</span>
+            <span className="text-white/90"> Das ist Rallyeclub Klostertal.</span>
           </p>
         </blockquote>
 
