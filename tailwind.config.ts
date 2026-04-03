@@ -10,12 +10,13 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        // Restrained club / corporate palette — aligns with hero (deep red, warm neutrals)
         rally: {
-          bg: '#0A0A0F',
+          bg: '#0B0B10',
           card: '#12121A',
-          accent: '#DC2626',
-          orange: '#F97316',
-          muted: '#94A3B8',
+          accent: '#B91C1C',
+          orange: '#C2410C',
+          muted: '#A1A1AA',
         },
       },
       fontFamily: {

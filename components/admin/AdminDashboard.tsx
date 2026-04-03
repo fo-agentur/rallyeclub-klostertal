@@ -571,11 +571,16 @@ export function AdminDashboard() {
               <TabsContent value="termine" className="mt-4 space-y-4">
                 <Card>
                   <CardHeader>
-                    <CardTitle className="text-base">Termine (Kalender &amp; Liste)</CardTitle>
+                    <CardTitle className="text-base">Termine verwalten (Backend)</CardTitle>
+                    <p className="text-sm leading-relaxed text-rally-muted">
+                      Termine liegen in Firestore (Sammlung <span className="font-mono text-white/80">termine</span>) und erscheinen auf der Startseite in Liste und Kalender. Pro
+                      Eintrag: Text für Besucher, optional Kalenderdatum für die Monatsansicht. Speichern nicht vergessen — die
+                      öffentliche Seite aktualisiert sich danach über den Cache.
+                    </p>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <p className="text-xs text-rally-muted">
-                      Jeder Termin wird einzeln gespeichert. Die Vorschau rechts zeigt sofort, wie er auf der Website wirkt.
+                      Die Live-Vorschau rechts zeigt dieselbe Darstellung wie die Website.
                     </p>
                     {termine.map((t) => (
                       <div key={t.id} className="space-y-3 rounded-lg border border-white/10 bg-white/[0.02] p-3">

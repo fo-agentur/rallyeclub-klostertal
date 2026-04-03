@@ -18,7 +18,7 @@ export function HeroSection({ site }: { site: SiteContent }) {
       </div>
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/88 via-black/42 to-black/[0.93]" aria-hidden />
       <div
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_95%_65%_at_50%_22%,rgba(220,38,38,0.14),transparent_58%)]"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_95%_65%_at_50%_22%,rgba(185,28,28,0.12),transparent_58%)]"
         aria-hidden
       />
       <div className="hero-noise pointer-events-none absolute inset-0 opacity-[0.045] mix-blend-soft-light" aria-hidden />
@@ -41,7 +41,7 @@ export function HeroSection({ site }: { site: SiteContent }) {
           <a
             href="#termine"
             data-lenis-scroll
-            className="glow-pulse inline-flex min-h-[48px] min-w-[44px] flex-1 items-center justify-center rounded-full bg-gradient-to-r from-rally-accent to-rally-orange px-8 py-3 text-base font-semibold text-white transition hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:flex-initial"
+            className="glow-pulse inline-flex min-h-[48px] min-w-[44px] flex-1 items-center justify-center rounded-full bg-rally-accent px-8 py-3 text-base font-semibold text-white shadow-lg shadow-black/25 transition hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:flex-initial"
           >
             Zu den Terminen
           </a>

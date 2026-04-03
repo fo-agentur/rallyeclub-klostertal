@@ -35,7 +35,7 @@ export function MitmachenSection() {
           <a
             href="#kontakt"
             data-lenis-scroll
-            className="glow-pulse inline-flex min-h-[48px] min-w-[44px] items-center justify-center rounded-full bg-gradient-to-r from-rally-accent to-rally-orange px-10 py-4 text-lg font-semibold text-white transition hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+            className="glow-pulse inline-flex min-h-[48px] min-w-[44px] items-center justify-center rounded-full bg-rally-accent px-10 py-4 text-lg font-semibold text-white shadow-lg shadow-black/25 transition hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
           >
             Mitglied werden
           </a>

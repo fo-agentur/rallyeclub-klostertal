@@ -1,7 +1,7 @@
-﻿:root {
-  --rally-bg: #0a0a0f;
-  --rally-accent: #dc2626;
-  --rally-orange: #f97316;
+:root {
+  --rally-bg: #0b0b10;
+  --rally-accent: #b91c1c;
+  --rally-orange: #c2410c;
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
 }

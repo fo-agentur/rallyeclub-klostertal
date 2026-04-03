@@ -47,7 +47,7 @@ export function SiteHeader() {
           <a
             href="#mitmachen"
             data-lenis-scroll
-            className="ml-1 inline-flex min-h-[44px] items-center justify-center rounded-full bg-gradient-to-r from-rally-accent to-rally-orange px-4 py-2.5 text-sm font-semibold text-white shadow-lg transition hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rally-orange xl:ml-2 xl:px-5"
+            className="ml-1 inline-flex min-h-[44px] items-center justify-center rounded-full bg-rally-accent px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-black/20 transition hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white xl:ml-2 xl:px-5"
           >
             Mitglied werden
           </a>
@@ -91,7 +91,7 @@ export function SiteHeader() {
           <a
             href="#mitmachen"
             data-lenis-scroll
-            className="mt-2 inline-flex min-h-[44px] items-center justify-center rounded-full bg-gradient-to-r from-rally-accent to-rally-orange px-5 py-3 text-center font-semibold text-white"
+            className="mt-2 inline-flex min-h-[44px] items-center justify-center rounded-full bg-rally-accent px-5 py-3 text-center font-semibold text-white shadow-md shadow-black/20"
             onClick={close}
           >
             Mitglied werden

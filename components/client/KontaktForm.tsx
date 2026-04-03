@@ -54,7 +54,7 @@ export function KontaktForm() {
         </label>
         <button
           type="submit"
-          className="min-h-[48px] w-full rounded-full bg-gradient-to-r from-rally-accent to-rally-orange py-3 text-base font-semibold text-white transition hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+          className="min-h-[48px] w-full rounded-full bg-rally-accent py-3 text-base font-semibold text-white shadow-lg shadow-black/25 transition hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
         >
           Senden
         </button>

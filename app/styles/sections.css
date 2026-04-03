@@ -114,9 +114,9 @@
   pointer-events: none;
   position: absolute;
   inset: 0;
-  opacity: 0.55;
-  background: radial-gradient(ellipse 85% 55% at 85% 5%, rgba(220, 38, 38, 0.11) 0%, transparent 52%),
-    radial-gradient(ellipse 65% 50% at 5% 95%, rgba(249, 115, 22, 0.07) 0%, transparent 48%);
+  opacity: 0.35;
+  background: radial-gradient(ellipse 85% 55% at 85% 5%, rgba(185, 28, 28, 0.08) 0%, transparent 52%),
+    radial-gradient(ellipse 65% 50% at 5% 95%, rgba(255, 255, 255, 0.03) 0%, transparent 48%);
 }
 .highlight-grid {
   perspective: 1200px;
@@ -149,15 +149,15 @@
 }
 .highlight-card--feature .highlight-card-inner {
   border-radius: 1.25rem;
-  border-color: rgba(249, 115, 22, 0.22);
-  box-shadow: 0 0 0 1px rgba(249, 115, 22, 0.08), 0 32px 70px -28px rgba(0, 0, 0, 0.82);
+  border-color: rgba(185, 28, 28, 0.22);
+  box-shadow: 0 0 0 1px rgba(185, 28, 28, 0.06), 0 32px 70px -28px rgba(0, 0, 0, 0.82);
 }
 .highlight-card:hover .highlight-card-inner {
   border-color: rgba(255, 255, 255, 0.16);
   box-shadow: 0 32px 64px -24px rgba(220, 38, 38, 0.12), 0 24px 56px -22px rgba(0, 0, 0, 0.78);
 }
 .highlight-card--feature:hover .highlight-card-inner {
-  border-color: rgba(249, 115, 22, 0.35);
+  border-color: rgba(185, 28, 28, 0.32);
 }
 .highlight-card__media {
   position: absolute;
@@ -239,7 +239,7 @@
   font-weight: 700;
   letter-spacing: 0.42em;
   text-transform: uppercase;
-  color: rgba(249, 115, 22, 0.95);
+  color: rgba(255, 255, 255, 0.55);
 }
 .highlight-card__tag {
   margin-bottom: 0.5rem;
@@ -257,9 +257,9 @@
   color: rgba(255, 255, 255, 0.88);
 }
 .highlight-card--feature .highlight-card__tag {
-  border-color: rgba(249, 115, 22, 0.35);
-  background: rgba(220, 38, 38, 0.12);
-  color: rgba(254, 215, 170, 0.98);
+  border-color: rgba(185, 28, 28, 0.35);
+  background: rgba(185, 28, 28, 0.12);
+  color: rgba(255, 255, 255, 0.92);
 }
 .events-highlights-foot {
   margin-top: 2.5rem;
@@ -282,9 +282,9 @@
   pointer-events: none;
   position: absolute;
   inset: 0;
-  opacity: 0.65;
-  background: radial-gradient(ellipse 75% 55% at 90% 0%, rgba(249, 115, 22, 0.22), transparent 52%),
-    radial-gradient(ellipse 55% 45% at 0% 100%, rgba(220, 38, 38, 0.16), transparent 48%);
+  opacity: 0.35;
+  background: radial-gradient(ellipse 75% 55% at 90% 0%, rgba(185, 28, 28, 0.12), transparent 52%),
+    radial-gradient(ellipse 55% 45% at 0% 100%, rgba(255, 255, 255, 0.04), transparent 48%);
   filter: blur(48px);
 }
 .events-highlight-hero {
@@ -298,24 +298,43 @@
   top: -3rem;
   z-index: 0;
   font-family: 'Orbitron', sans-serif;
-  font-size: clamp(3rem, 16vw, 11rem);
+  font-size: clamp(2.5rem, 12vw, 8rem);
   font-weight: 900;
   line-height: 0.85;
   letter-spacing: -0.05em;
-  color: rgba(249, 115, 22, 0.11);
-  -webkit-text-stroke: 1px rgba(249, 115, 22, 0.35);
+  color: rgba(255, 255, 255, 0.04);
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.08);
   opacity: 1;
 }
 .highlight-grid-wrap {
   position: relative;
-  margin-left: -0.25rem;
-  border-left: 4px solid rgba(249, 115, 22, 0.75);
-  padding-left: 1.25rem;
+  margin-left: 0;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  padding-left: 1rem;
   padding-top: 0.5rem;
+}
+.highlight-grid-wrap--compact {
+  border-left-color: rgba(255, 255, 255, 0.08);
+  padding-left: 0.75rem;
 }
 @media (min-width: 768px) {
   .highlight-grid-wrap {
-    padding-left: 1.75rem;
+    padding-left: 1.25rem;
+  }
+}
+.highlight-grid--compact {
+  perspective: 1000px;
+}
+.highlight-card--compact .highlight-card-inner {
+  border-radius: 0.875rem;
+}
+.highlight-card__body--compact {
+  min-height: 0;
+  padding: 1rem 1rem 1.15rem;
+}
+@media (min-width: 640px) {
+  .highlight-card__body--compact {
+    padding: 1.1rem 1.15rem 1.25rem;
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -332,9 +351,12 @@
   pointer-events: none;
   position: absolute;
   inset: 0;
-  opacity: 0.5;
-        background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(220, 38, 38, 0.14) 0%, transparent 55%),
-    radial-gradient(ellipse 60% 40% at 100% 0%, rgba(249, 115, 22, 0.08) 0%, transparent 45%);
+  opacity: 0.45;
+  background: radial-gradient(ellipse 95% 65% at 50% 22%, rgba(185, 28, 28, 0.1), transparent 58%),
+    radial-gradient(ellipse 60% 40% at 100% 0%, rgba(255, 255, 255, 0.03) 0%, transparent 45%);
+}
+.termine-zone--calm .termine-zone__glow {
+  opacity: 0.32;
 }
 .termine-orb {
   pointer-events: none;
@@ -376,7 +398,7 @@
   transform: scaleY(0);
   transform-origin: center top;
   border-radius: 3px;
-  background: linear-gradient(to bottom, rgba(249, 115, 22, 0.95), rgba(220, 38, 38, 0.85), rgba(220, 38, 38, 0.45));
+  background: linear-gradient(to bottom, rgba(185, 28, 28, 0.85), rgba(185, 28, 28, 0.55), rgba(120, 120, 130, 0.35));
   will-change: transform;
 }
 @media (min-width: 768px) {
@@ -390,7 +412,7 @@
   right: 0;
   height: 40%;
   z-index: 2;
-  background: linear-gradient(to bottom, transparent, rgba(249, 115, 22, 0.45), transparent);
+  background: linear-gradient(to bottom, transparent, rgba(185, 28, 28, 0.28), transparent);
   animation: termine-line-pulse 3.5s ease-in-out infinite;
 }
 @keyframes termine-line-pulse {
@@ -434,7 +456,7 @@
   inset: 0;
   border-radius: inherit;
   padding: 1px;
-  background: linear-gradient(135deg, rgba(220, 38, 38, 0.5), rgba(249, 115, 22, 0.25), transparent);
+  background: linear-gradient(135deg, rgba(185, 28, 28, 0.35), rgba(255, 255, 255, 0.08), transparent);
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
@@ -450,8 +472,8 @@
   box-shadow: 0 24px 48px -20px rgba(220, 38, 38, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.06);
 }
 .termine-card.is-scroll-focus {
-  border-color: rgba(249, 115, 22, 0.45);
-  box-shadow: 0 0 0 1px rgba(249, 115, 22, 0.25), 0 20px 48px -28px rgba(220, 38, 38, 0.35);
+  border-color: rgba(185, 28, 28, 0.4);
+  box-shadow: 0 0 0 1px rgba(185, 28, 28, 0.2), 0 20px 48px -28px rgba(0, 0, 0, 0.45);
 }
 .termine-card.is-scroll-focus::before {
   opacity: 0.65;
