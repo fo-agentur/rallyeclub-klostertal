@@ -1,29 +1,27 @@
 import { getDb, type Event } from "../db";
 
-export function listEvents(): Event[] {
-  return getDb()
-    .prepare("SELECT * FROM events ORDER BY date ASC")
-    .all() as Event[];
+export async function listEvents(): Promise<Event[]> {
+  const db = await getDb();
+  return db.all<Event>("SELECT * FROM events ORDER BY date ASC");
 }
 
-export function listUpcomingEvents(limit?: number): Event[] {
+export async function listUpcomingEvents(limit?: number): Promise<Event[]> {
   const today = new Date().toISOString().slice(0, 10);
-  const db = getDb();
-  const stmt = limit
-    ? db.prepare("SELECT * FROM events WHERE date >= ? ORDER BY date ASC LIMIT ?")
-    : db.prepare("SELECT * FROM events WHERE date >= ? ORDER BY date ASC");
-  return (limit ? stmt.all(today, limit) : stmt.all(today)) as Event[];
+  const db = await getDb();
+  return limit
+    ? db.all<Event>("SELECT * FROM events WHERE date >= ? ORDER BY date ASC LIMIT ?", [today, limit])
+    : db.all<Event>("SELECT * FROM events WHERE date >= ? ORDER BY date ASC", [today]);
 }
 
-export function listPastEvents(): Event[] {
+export async function listPastEvents(): Promise<Event[]> {
   const today = new Date().toISOString().slice(0, 10);
-  return getDb()
-    .prepare("SELECT * FROM events WHERE date < ? ORDER BY date DESC")
-    .all(today) as Event[];
+  const db = await getDb();
+  return db.all<Event>("SELECT * FROM events WHERE date < ? ORDER BY date DESC", [today]);
 }
 
-export function getEventById(id: number): Event | null {
-  return (getDb().prepare("SELECT * FROM events WHERE id = ?").get(id) as Event) ?? null;
+export async function getEventById(id: number): Promise<Event | null> {
+  const db = await getDb();
+  return db.first<Event>("SELECT * FROM events WHERE id = ?", [id]);
 }
 
 export type EventInput = {
@@ -34,39 +32,27 @@ export type EventInput = {
   description?: string | null;
 };
 
-export function createEvent(input: EventInput): number {
-  const info = getDb()
-    .prepare(
-      `INSERT INTO events (title, date, end_date, location, description)
-       VALUES (?, ?, ?, ?, ?)`
-    )
-    .run(
-      input.title,
-      input.date,
-      input.end_date ?? null,
-      input.location ?? null,
-      input.description ?? null
-    );
-  return Number(info.lastInsertRowid);
+export async function createEvent(input: EventInput): Promise<number> {
+  const db = await getDb();
+  const { lastInsertRowid } = await db.run(
+    `INSERT INTO events (title, date, end_date, location, description)
+     VALUES (?, ?, ?, ?, ?)`,
+    [input.title, input.date, input.end_date ?? null, input.location ?? null, input.description ?? null],
+  );
+  return lastInsertRowid;
 }
 
-export function updateEvent(id: number, input: EventInput): void {
-  getDb()
-    .prepare(
-      `UPDATE events
-       SET title = ?, date = ?, end_date = ?, location = ?, description = ?
-       WHERE id = ?`
-    )
-    .run(
-      input.title,
-      input.date,
-      input.end_date ?? null,
-      input.location ?? null,
-      input.description ?? null,
-      id
-    );
+export async function updateEvent(id: number, input: EventInput): Promise<void> {
+  const db = await getDb();
+  await db.run(
+    `UPDATE events
+     SET title = ?, date = ?, end_date = ?, location = ?, description = ?
+     WHERE id = ?`,
+    [input.title, input.date, input.end_date ?? null, input.location ?? null, input.description ?? null, id],
+  );
 }
 
-export function deleteEvent(id: number): void {
-  getDb().prepare("DELETE FROM events WHERE id = ?").run(id);
+export async function deleteEvent(id: number): Promise<void> {
+  const db = await getDb();
+  await db.run("DELETE FROM events WHERE id = ?", [id]);
 }

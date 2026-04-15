@@ -8,16 +8,16 @@ type Props = { params: Promise<{ slug: string }> };
 
 export async function generateMetadata({ params }: Props) {
   const { slug } = await params;
-  const album = getAlbumBySlug(slug);
+  const album = await getAlbumBySlug(slug);
   if (!album) return { title: "Album nicht gefunden" };
   return { title: album.title, description: album.description ?? undefined };
 }
 
 export default async function AlbumPage({ params }: Props) {
   const { slug } = await params;
-  const album = getAlbumBySlug(slug);
+  const album = await getAlbumBySlug(slug);
   if (!album) notFound();
-  const photos = getAlbumPhotos(album.id);
+  const photos = await getAlbumPhotos(album.id);
 
   return (
     <article>
@@ -66,5 +66,5 @@ export default async function AlbumPage({ params }: Props) {
 }
 
 export async function generateStaticParams() {
-  return listAlbums().map((a) => ({ slug: a.slug }));
+  return (await listAlbums()).map((a) => ({ slug: a.slug }));
 }

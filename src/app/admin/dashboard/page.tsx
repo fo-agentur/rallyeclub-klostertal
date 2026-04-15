@@ -9,9 +9,10 @@ import { logout } from "../actions";
 export default async function DashboardPage() {
   if (!(await isAuthenticated())) redirect("/admin");
 
-  const postCount = listPosts().length;
-  const eventCount = listEvents().length;
-  const albumCount = listAlbums().length;
+  const [posts, events, albums] = await Promise.all([listPosts(), listEvents(), listAlbums()]);
+  const postCount = posts.length;
+  const eventCount = events.length;
+  const albumCount = albums.length;
 
   const tiles = [
     {

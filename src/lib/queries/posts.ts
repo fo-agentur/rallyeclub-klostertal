@@ -1,22 +1,21 @@
 import { getDb, type Post } from "../db";
 import { slugify } from "../utils";
 
-export function listPosts(limit?: number): Post[] {
-  const db = getDb();
-  const stmt = limit
-    ? db.prepare("SELECT * FROM posts ORDER BY published_at DESC LIMIT ?")
-    : db.prepare("SELECT * FROM posts ORDER BY published_at DESC");
-  return (limit ? stmt.all(limit) : stmt.all()) as Post[];
+export async function listPosts(limit?: number): Promise<Post[]> {
+  const db = await getDb();
+  return limit
+    ? db.all<Post>("SELECT * FROM posts ORDER BY published_at DESC LIMIT ?", [limit])
+    : db.all<Post>("SELECT * FROM posts ORDER BY published_at DESC");
 }
 
-export function getPostBySlug(slug: string): Post | null {
-  const db = getDb();
-  return (db.prepare("SELECT * FROM posts WHERE slug = ?").get(slug) as Post) ?? null;
+export async function getPostBySlug(slug: string): Promise<Post | null> {
+  const db = await getDb();
+  return db.first<Post>("SELECT * FROM posts WHERE slug = ?", [slug]);
 }
 
-export function getPostById(id: number): Post | null {
-  const db = getDb();
-  return (db.prepare("SELECT * FROM posts WHERE id = ?").get(id) as Post) ?? null;
+export async function getPostById(id: number): Promise<Post | null> {
+  const db = await getDb();
+  return db.first<Post>("SELECT * FROM posts WHERE id = ?", [id]);
 }
 
 export type PostInput = {
@@ -28,52 +27,39 @@ export type PostInput = {
   slug?: string;
 };
 
-export function createPost(input: PostInput): number {
-  const db = getDb();
-  const slug = input.slug || ensureUniqueSlug(slugify(input.title));
-  const info = db
-    .prepare(
-      `INSERT INTO posts (slug, title, excerpt, content, cover_image, published_at)
-       VALUES (?, ?, ?, ?, ?, ?)`
-    )
-    .run(
-      slug,
-      input.title,
-      input.excerpt ?? null,
-      input.content,
-      input.cover_image ?? null,
-      input.published_at
-    );
-  return Number(info.lastInsertRowid);
+export async function createPost(input: PostInput): Promise<number> {
+  const db = await getDb();
+  const slug = input.slug || (await ensureUniqueSlug(db, slugify(input.title)));
+  const { lastInsertRowid } = await db.run(
+    `INSERT INTO posts (slug, title, excerpt, content, cover_image, published_at)
+     VALUES (?, ?, ?, ?, ?, ?)`,
+    [slug, input.title, input.excerpt ?? null, input.content, input.cover_image ?? null, input.published_at],
+  );
+  return lastInsertRowid;
 }
 
-export function updatePost(id: number, input: PostInput): void {
-  const db = getDb();
+export async function updatePost(id: number, input: PostInput): Promise<void> {
+  const db = await getDb();
   const slug = input.slug || slugify(input.title);
-  db.prepare(
+  await db.run(
     `UPDATE posts
      SET slug = ?, title = ?, excerpt = ?, content = ?, cover_image = ?, published_at = ?
-     WHERE id = ?`
-  ).run(
-    slug,
-    input.title,
-    input.excerpt ?? null,
-    input.content,
-    input.cover_image ?? null,
-    input.published_at,
-    id
+     WHERE id = ?`,
+    [slug, input.title, input.excerpt ?? null, input.content, input.cover_image ?? null, input.published_at, id],
   );
 }
 
-export function deletePost(id: number): void {
-  getDb().prepare("DELETE FROM posts WHERE id = ?").run(id);
+export async function deletePost(id: number): Promise<void> {
+  const db = await getDb();
+  await db.run("DELETE FROM posts WHERE id = ?", [id]);
 }
 
-function ensureUniqueSlug(base: string): string {
-  const db = getDb();
+type Db = Awaited<ReturnType<typeof getDb>>;
+
+async function ensureUniqueSlug(db: Db, base: string): Promise<string> {
   let slug = base;
   let n = 2;
-  while (db.prepare("SELECT 1 FROM posts WHERE slug = ?").get(slug)) {
+  while (await db.first("SELECT 1 FROM posts WHERE slug = ?", [slug])) {
     slug = `${base}-${n++}`;
   }
   return slug;

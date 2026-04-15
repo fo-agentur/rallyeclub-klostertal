@@ -7,9 +7,8 @@ export const metadata = {
   description: "Kommende und vergangene Veranstaltungen des Rallyeclub Klostertal.",
 };
 
-export default function EventsPage() {
-  const upcoming = listUpcomingEvents();
-  const past = listPastEvents();
+export default async function EventsPage() {
+  const [upcoming, past] = await Promise.all([listUpcomingEvents(), listPastEvents()]);
 
   return (
     <div className="section">

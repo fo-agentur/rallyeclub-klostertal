@@ -8,10 +8,13 @@ import { listPosts } from "@/lib/queries/posts";
 import { listUpcomingEvents } from "@/lib/queries/events";
 import { listAlbums } from "@/lib/queries/albums";
 
-export default function HomePage() {
-  const posts = listPosts(3);
-  const upcoming = listUpcomingEvents(3);
-  const albums = listAlbums().slice(0, 3);
+export default async function HomePage() {
+  const [posts, upcoming, allAlbums] = await Promise.all([
+    listPosts(3),
+    listUpcomingEvents(3),
+    listAlbums(),
+  ]);
+  const albums = allAlbums.slice(0, 3);
 
   return (
     <>

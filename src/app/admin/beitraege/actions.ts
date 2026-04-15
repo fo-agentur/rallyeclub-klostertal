@@ -55,9 +55,9 @@ export async function savePostAction(
   const coverFile = formData.get("cover") as File | null;
 
   let coverPath: string | null = null;
-  let existing = id ? getPostById(id) : null;
+  const existing = id ? await getPostById(id) : null;
 
-  if (id && existing) {
+  if (existing) {
     coverPath = existing.cover_image;
   }
 
@@ -81,9 +81,9 @@ export async function savePostAction(
   };
 
   if (id && existing) {
-    updatePost(id, payload);
+    await updatePost(id, payload);
   } else {
-    createPost(payload);
+    await createPost(payload);
   }
 
   revalidatePath("/news");
@@ -96,9 +96,9 @@ export async function deletePostAction(formData: FormData): Promise<void> {
   await requireAuth();
   const id = Number(formData.get("id"));
   if (!id) return;
-  const p = getPostById(id);
+  const p = await getPostById(id);
   if (p?.cover_image) await deleteUpload(p.cover_image);
-  deletePost(id);
+  await deletePost(id);
   revalidatePath("/news");
   revalidatePath("/");
   revalidatePath("/admin/beitraege");

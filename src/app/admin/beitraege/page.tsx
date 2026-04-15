@@ -7,7 +7,7 @@ import { deletePostAction } from "./actions";
 
 export default async function AdminPostsPage() {
   if (!(await isAuthenticated())) redirect("/admin");
-  const posts = listPosts();
+  const posts = await listPosts();
 
   return (
     <div className="section">

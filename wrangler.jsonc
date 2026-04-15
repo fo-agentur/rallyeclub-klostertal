@@ -1,7 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "main": ".open-next/worker.js",
-  // Muss exakt zum Worker-Namen in Cloudflare / Pages passen (nicht package.json-Name)
   "name": "rallyeclub-klostertal",
   "compatibility_date": "2026-04-15",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
@@ -15,6 +14,14 @@
       "service": "rallyeclub-klostertal",
     },
   ],
-  "images": { "binding": "IMAGES" },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "rallyeclub-klostertal-db",
+      "database_id": "70254347-3d57-4eae-afd3-ac90479199e8",
+    },
+  ],
+  // R2 bucket can be added after enabling R2 in the Cloudflare Dashboard:
+  // "r2_buckets": [{ "binding": "BUCKET", "bucket_name": "rallyeclub-uploads" }],
   "observability": { "enabled": true },
 }

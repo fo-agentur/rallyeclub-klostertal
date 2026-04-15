@@ -7,7 +7,7 @@ import { deleteEventAction } from "./actions";
 
 export default async function AdminEventsPage() {
   if (!(await isAuthenticated())) redirect("/admin");
-  const events = listEvents();
+  const events = await listEvents();
   const today = new Date().toISOString().slice(0, 10);
 
   return (

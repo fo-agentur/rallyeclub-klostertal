@@ -13,9 +13,9 @@ export default async function EditAlbumPage({ params }: Props) {
   if (!(await isAuthenticated())) redirect("/admin");
   const { id } = await params;
   const albumId = Number(id);
-  const album = getAlbumById(albumId);
+  const album = await getAlbumById(albumId);
   if (!album) notFound();
-  const photos = getAlbumPhotos(albumId);
+  const photos = await getAlbumPhotos(albumId);
 
   return (
     <div className="section">

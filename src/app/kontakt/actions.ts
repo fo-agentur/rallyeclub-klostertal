@@ -40,13 +40,18 @@ export async function submitContact(
   }
 
   try {
-    const db = getDb();
-    db.prepare(
+    const db = await getDb();
+    await db.run(
       "INSERT INTO messages (name, email, phone, body) VALUES (?, ?, ?, ?)",
-    ).run(parsed.data.name, parsed.data.email, parsed.data.phone || null, parsed.data.body);
+      [parsed.data.name, parsed.data.email, parsed.data.phone || null, parsed.data.body],
+    );
   } catch (err) {
     console.error("contact save failed", err);
-    return { status: "error", error: "Speichern fehlgeschlagen — bitte später erneut versuchen.", values: raw };
+    return {
+      status: "error",
+      error: "Speichern fehlgeschlagen — bitte später erneut versuchen.",
+      values: raw,
+    };
   }
 
   return { status: "success" };

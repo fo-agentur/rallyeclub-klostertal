@@ -7,8 +7,8 @@ export const metadata = {
   description: "Aktuelle Nachrichten, Berichte und Ergebnisse des Rallyeclub Klostertal.",
 };
 
-export default function NewsPage() {
-  const posts = listPosts();
+export default async function NewsPage() {
+  const posts = await listPosts();
 
   return (
     <div className="section">

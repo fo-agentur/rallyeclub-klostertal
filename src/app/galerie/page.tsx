@@ -7,8 +7,8 @@ export const metadata = {
   description: "Fotos aus den Veranstaltungen des Rallyeclub Klostertal.",
 };
 
-export default function GalleryPage() {
-  const albums = listAlbums();
+export default async function GalleryPage() {
+  const albums = await listAlbums();
 
   return (
     <div className="section">

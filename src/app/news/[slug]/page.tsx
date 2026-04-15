@@ -10,7 +10,7 @@ type Props = { params: Promise<{ slug: string }> };
 
 export async function generateMetadata({ params }: Props) {
   const { slug } = await params;
-  const post = getPostBySlug(slug);
+  const post = await getPostBySlug(slug);
   if (!post) return { title: "Beitrag nicht gefunden" };
   return {
     title: post.title,
@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: Props) {
 
 export default async function PostPage({ params }: Props) {
   const { slug } = await params;
-  const post = getPostBySlug(slug);
+  const post = await getPostBySlug(slug);
   if (!post) notFound();
 
   return (
@@ -79,5 +79,5 @@ export default async function PostPage({ params }: Props) {
 }
 
 export async function generateStaticParams() {
-  return listPosts().map((p) => ({ slug: p.slug }));
+  return (await listPosts()).map((p) => ({ slug: p.slug }));
 }

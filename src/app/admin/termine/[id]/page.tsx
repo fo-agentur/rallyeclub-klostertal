@@ -9,7 +9,7 @@ type Props = { params: Promise<{ id: string }> };
 export default async function EditEventPage({ params }: Props) {
   if (!(await isAuthenticated())) redirect("/admin");
   const { id } = await params;
-  const event = getEventById(Number(id));
+  const event = await getEventById(Number(id));
   if (!event) notFound();
 
   return (

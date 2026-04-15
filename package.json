@@ -15,6 +15,7 @@
     "lint": "next lint",
     "scrape": "tsx scripts/scrape-legacy.ts",
     "seed": "tsx scripts/seed.ts",
+    "seed:d1": "tsx scripts/generate-d1-seed.ts && npx wrangler d1 execute rallyeclub-klostertal-db --file=scripts/d1-seed.sql --remote",
     "hash-password": "tsx scripts/hash-password.ts"
   },
   "dependencies": {
@@ -31,7 +32,11 @@
     "yet-another-react-lightbox": "^3.21.7",
     "zod": "^3.23.8"
   },
+  "overrides": {
+    "@dotenvx/dotenvx": "^1.61.0"
+  },
   "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260415.1",
     "@opennextjs/cloudflare": "^1.19.1",
     "@tailwindcss/typography": "^0.5.19",
     "@types/bcryptjs": "^2.4.6",

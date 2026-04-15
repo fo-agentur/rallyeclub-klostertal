@@ -9,7 +9,7 @@ type Props = { params: Promise<{ id: string }> };
 export default async function EditPostPage({ params }: Props) {
   if (!(await isAuthenticated())) redirect("/admin");
   const { id } = await params;
-  const post = getPostById(Number(id));
+  const post = await getPostById(Number(id));
   if (!post) notFound();
 
   return (

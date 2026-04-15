@@ -3,30 +3,33 @@ import { slugify } from "../utils";
 
 export type AlbumWithCount = Album & { photo_count: number };
 
-export function listAlbums(): AlbumWithCount[] {
-  return getDb()
-    .prepare(
-      `SELECT a.*, COUNT(p.id) as photo_count
-       FROM albums a
-       LEFT JOIN photos p ON p.album_id = a.id
-       GROUP BY a.id
-       ORDER BY a.date DESC, a.created_at DESC`
-    )
-    .all() as AlbumWithCount[];
+export async function listAlbums(): Promise<AlbumWithCount[]> {
+  const db = await getDb();
+  return db.all<AlbumWithCount>(
+    `SELECT a.*, COUNT(p.id) as photo_count
+     FROM albums a
+     LEFT JOIN photos p ON p.album_id = a.id
+     GROUP BY a.id
+     ORDER BY a.date DESC, a.created_at DESC`,
+  );
 }
 
-export function getAlbumBySlug(slug: string): Album | null {
-  return (getDb().prepare("SELECT * FROM albums WHERE slug = ?").get(slug) as Album) ?? null;
+export async function getAlbumBySlug(slug: string): Promise<Album | null> {
+  const db = await getDb();
+  return db.first<Album>("SELECT * FROM albums WHERE slug = ?", [slug]);
 }
 
-export function getAlbumById(id: number): Album | null {
-  return (getDb().prepare("SELECT * FROM albums WHERE id = ?").get(id) as Album) ?? null;
+export async function getAlbumById(id: number): Promise<Album | null> {
+  const db = await getDb();
+  return db.first<Album>("SELECT * FROM albums WHERE id = ?", [id]);
 }
 
-export function getAlbumPhotos(albumId: number): Photo[] {
-  return getDb()
-    .prepare("SELECT * FROM photos WHERE album_id = ? ORDER BY sort_order ASC, id ASC")
-    .all(albumId) as Photo[];
+export async function getAlbumPhotos(albumId: number): Promise<Photo[]> {
+  const db = await getDb();
+  return db.all<Photo>(
+    "SELECT * FROM photos WHERE album_id = ? ORDER BY sort_order ASC, id ASC",
+    [albumId],
+  );
 }
 
 export type AlbumInput = {
@@ -37,73 +40,60 @@ export type AlbumInput = {
   slug?: string;
 };
 
-export function createAlbum(input: AlbumInput): number {
-  const db = getDb();
-  const slug = input.slug || ensureUniqueSlug(slugify(input.title));
-  const info = db
-    .prepare(
-      `INSERT INTO albums (slug, title, description, cover_image, date)
-       VALUES (?, ?, ?, ?, ?)`
-    )
-    .run(
-      slug,
-      input.title,
-      input.description ?? null,
-      input.cover_image ?? null,
-      input.date ?? null
-    );
-  return Number(info.lastInsertRowid);
+export async function createAlbum(input: AlbumInput): Promise<number> {
+  const db = await getDb();
+  const slug = input.slug || (await ensureUniqueSlug(db, slugify(input.title)));
+  const { lastInsertRowid } = await db.run(
+    `INSERT INTO albums (slug, title, description, cover_image, date)
+     VALUES (?, ?, ?, ?, ?)`,
+    [slug, input.title, input.description ?? null, input.cover_image ?? null, input.date ?? null],
+  );
+  return lastInsertRowid;
 }
 
-export function updateAlbum(id: number, input: AlbumInput): void {
-  const db = getDb();
-  db.prepare(
-    `UPDATE albums
-     SET title = ?, description = ?, cover_image = ?, date = ?
-     WHERE id = ?`
-  ).run(
-    input.title,
-    input.description ?? null,
-    input.cover_image ?? null,
-    input.date ?? null,
-    id
+export async function updateAlbum(id: number, input: AlbumInput): Promise<void> {
+  const db = await getDb();
+  await db.run(
+    `UPDATE albums SET title = ?, description = ?, cover_image = ?, date = ? WHERE id = ?`,
+    [input.title, input.description ?? null, input.cover_image ?? null, input.date ?? null, id],
   );
 }
 
-export function deleteAlbum(id: number): void {
-  getDb().prepare("DELETE FROM albums WHERE id = ?").run(id);
+export async function deleteAlbum(id: number): Promise<void> {
+  const db = await getDb();
+  await db.run("DELETE FROM albums WHERE id = ?", [id]);
 }
 
-export function addPhoto(albumId: number, url: string, caption?: string): number {
-  const db = getDb();
-  const max = db
-    .prepare("SELECT MAX(sort_order) as m FROM photos WHERE album_id = ?")
-    .get(albumId) as { m: number | null };
-  const sortOrder = (max?.m ?? 0) + 1;
-  const info = db
-    .prepare(
-      `INSERT INTO photos (album_id, url, caption, sort_order)
-       VALUES (?, ?, ?, ?)`
-    )
-    .run(albumId, url, caption ?? null, sortOrder);
-
-  // If the album has no cover, set this photo as cover
-  const album = getAlbumById(albumId);
+export async function addPhoto(albumId: number, url: string, caption?: string): Promise<number> {
+  const db = await getDb();
+  const maxRow = await db.first<{ m: number | null }>(
+    "SELECT MAX(sort_order) as m FROM photos WHERE album_id = ?",
+    [albumId],
+  );
+  const sortOrder = (maxRow?.m ?? 0) + 1;
+  const { lastInsertRowid } = await db.run(
+    `INSERT INTO photos (album_id, url, caption, sort_order) VALUES (?, ?, ?, ?)`,
+    [albumId, url, caption ?? null, sortOrder],
+  );
+  // Set as cover if album has none
+  const album = await getAlbumById(albumId);
   if (album && !album.cover_image) {
-    db.prepare("UPDATE albums SET cover_image = ? WHERE id = ?").run(url, albumId);
+    await db.run("UPDATE albums SET cover_image = ? WHERE id = ?", [url, albumId]);
   }
-  return Number(info.lastInsertRowid);
+  return lastInsertRowid;
 }
 
-export function deletePhoto(photoId: number): void {
-  getDb().prepare("DELETE FROM photos WHERE id = ?").run(photoId);
+export async function deletePhoto(photoId: number): Promise<void> {
+  const db = await getDb();
+  await db.run("DELETE FROM photos WHERE id = ?", [photoId]);
 }
 
-function ensureUniqueSlug(base: string): string {
-  const db = getDb();
+type Db = Awaited<ReturnType<typeof getDb>>;
+
+async function ensureUniqueSlug(db: Db, base: string): Promise<string> {
   let slug = base;
   let n = 2;
-  while (db.prepare("SELECT 1 FROM albums WHERE slug = ?").get(slug)) {
+  while (await db.first("SELECT 1 FROM albums WHERE slug = ?", [slug])) {
     slug = `${base}-${n++}`;
   }
   return slug;

@@ -60,14 +60,15 @@ export async function saveAlbumAction(
     description: parsed.data.description || null,
   };
 
-  if (id && getAlbumById(id)) {
-    updateAlbum(id, payload);
+  if (id && (await getAlbumById(id))) {
+    await updateAlbum(id, payload);
+    const album = await getAlbumById(id);
     revalidatePath("/galerie");
-    revalidatePath(`/galerie/${getAlbumById(id)!.slug}`);
+    if (album) revalidatePath(`/galerie/${album.slug}`);
     revalidatePath("/admin/galerie");
     redirect(`/admin/galerie/${id}`);
   } else {
-    const newId = createAlbum(payload);
+    const newId = await createAlbum(payload);
     revalidatePath("/galerie");
     revalidatePath("/admin/galerie");
     redirect(`/admin/galerie/${newId}`);
@@ -78,15 +79,15 @@ export async function deleteAlbumAction(formData: FormData): Promise<void> {
   await requireAuth();
   const id = Number(formData.get("id"));
   if (!id) return;
-  const photos = getAlbumPhotos(id);
+  const photos = await getAlbumPhotos(id);
   for (const p of photos) {
     await deleteUpload(p.url);
   }
-  const album = getAlbumById(id);
+  const album = await getAlbumById(id);
   if (album?.cover_image && !photos.some((p) => p.url === album.cover_image)) {
     await deleteUpload(album.cover_image);
   }
-  deleteAlbum(id);
+  await deleteAlbum(id);
   revalidatePath("/galerie");
   revalidatePath("/admin/galerie");
   redirect("/admin/galerie");
@@ -95,16 +96,17 @@ export async function deleteAlbumAction(formData: FormData): Promise<void> {
 export async function uploadPhotosAction(formData: FormData): Promise<void> {
   await requireAuth();
   const albumId = Number(formData.get("album_id"));
-  if (!albumId || !getAlbumById(albumId)) return;
+  const album = await getAlbumById(albumId);
+  if (!albumId || !album) return;
 
   const files = formData.getAll("photos") as File[];
   for (const f of files) {
     if (!f || !(f instanceof File) || f.size === 0) continue;
     const url = await saveImage(f, "galerie", { maxWidth: 1920 });
-    addPhoto(albumId, url);
+    await addPhoto(albumId, url);
   }
 
-  revalidatePath(`/galerie/${getAlbumById(albumId)!.slug}`);
+  revalidatePath(`/galerie/${album.slug}`);
   revalidatePath("/galerie");
   revalidatePath(`/admin/galerie/${albumId}`);
   redirect(`/admin/galerie/${albumId}`);
@@ -115,25 +117,26 @@ export async function deletePhotoAction(formData: FormData): Promise<void> {
   const photoId = Number(formData.get("photo_id"));
   const albumId = Number(formData.get("album_id"));
   if (!photoId) return;
-  const db = getDb();
-  const photo = db.prepare("SELECT url FROM photos WHERE id = ?").get(photoId) as
-    | { url: string }
-    | undefined;
+
+  const db = await getDb();
+  const photo = await db.first<{ url: string }>("SELECT url FROM photos WHERE id = ?", [photoId]);
   if (photo) {
     await deleteUpload(photo.url);
-    const album = getAlbumById(albumId);
+    const album = await getAlbumById(albumId);
     if (album?.cover_image === photo.url) {
-      db.prepare("UPDATE albums SET cover_image = NULL WHERE id = ?").run(albumId);
+      await db.run("UPDATE albums SET cover_image = NULL WHERE id = ?", [albumId]);
     }
   }
-  deletePhoto(photoId);
-  const album = getAlbumById(albumId);
+  await deletePhoto(photoId);
+
+  const album = await getAlbumById(albumId);
   if (album && !album.cover_image) {
-    const next = db
-      .prepare("SELECT url FROM photos WHERE album_id = ? ORDER BY sort_order ASC LIMIT 1")
-      .get(albumId) as { url: string } | undefined;
+    const next = await db.first<{ url: string }>(
+      "SELECT url FROM photos WHERE album_id = ? ORDER BY sort_order ASC LIMIT 1",
+      [albumId],
+    );
     if (next) {
-      db.prepare("UPDATE albums SET cover_image = ? WHERE id = ?").run(next.url, albumId);
+      await db.run("UPDATE albums SET cover_image = ? WHERE id = ?", [next.url, albumId]);
     }
   }
   revalidatePath(`/galerie/${album?.slug ?? ""}`);
@@ -147,13 +150,13 @@ export async function setCoverAction(formData: FormData): Promise<void> {
   const photoId = Number(formData.get("photo_id"));
   const albumId = Number(formData.get("album_id"));
   if (!photoId || !albumId) return;
-  const db = getDb();
-  const photo = db.prepare("SELECT url FROM photos WHERE id = ?").get(photoId) as
-    | { url: string }
-    | undefined;
+
+  const db = await getDb();
+  const photo = await db.first<{ url: string }>("SELECT url FROM photos WHERE id = ?", [photoId]);
   if (!photo) return;
-  db.prepare("UPDATE albums SET cover_image = ? WHERE id = ?").run(photo.url, albumId);
-  const album = getAlbumById(albumId);
+  await db.run("UPDATE albums SET cover_image = ? WHERE id = ?", [photo.url, albumId]);
+
+  const album = await getAlbumById(albumId);
   revalidatePath(`/galerie/${album?.slug ?? ""}`);
   revalidatePath("/galerie");
   revalidatePath(`/admin/galerie/${albumId}`);

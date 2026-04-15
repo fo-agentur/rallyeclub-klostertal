@@ -8,7 +8,7 @@ import { deleteAlbumAction } from "./actions";
 
 export default async function AdminAlbumsPage() {
   if (!(await isAuthenticated())) redirect("/admin");
-  const albums = listAlbums();
+  const albums = await listAlbums();
 
   return (
     <div className="section">

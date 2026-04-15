@@ -57,10 +57,10 @@ export async function saveEventAction(
     description: parsed.data.description || null,
   };
 
-  if (id && getEventById(id)) {
-    updateEvent(id, payload);
+  if (id && (await getEventById(id))) {
+    await updateEvent(id, payload);
   } else {
-    createEvent(payload);
+    await createEvent(payload);
   }
 
   revalidatePath("/veranstaltungen");
@@ -73,7 +73,7 @@ export async function deleteEventAction(formData: FormData): Promise<void> {
   await requireAuth();
   const id = Number(formData.get("id"));
   if (!id) return;
-  deleteEvent(id);
+  await deleteEvent(id);
   revalidatePath("/veranstaltungen");
   revalidatePath("/");
   revalidatePath("/admin/termine");
