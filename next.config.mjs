@@ -1,5 +1,11 @@
 import path from "path";
 import { fileURLToPath } from "url";
+import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
+
+// Nur bei `npm run dev` – sonst bricht `next build` / Docker mit Miniflare ab
+if (process.env.npm_lifecycle_event === "dev") {
+  initOpenNextCloudflareForDev();
+}
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 

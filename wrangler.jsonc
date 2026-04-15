@@ -1,0 +1,20 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "main": ".open-next/worker.js",
+  // Muss exakt zum Worker-Namen in Cloudflare / Pages passen (nicht package.json-Name)
+  "name": "rallyeclub-klostertal",
+  "compatibility_date": "2026-04-15",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS",
+  },
+  "services": [
+    {
+      "binding": "WORKER_SELF_REFERENCE",
+      "service": "rallyeclub-klostertal",
+    },
+  ],
+  "images": { "binding": "IMAGES" },
+  "observability": { "enabled": true },
+}

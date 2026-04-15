@@ -17,3 +17,8 @@ next-env.d.ts
 .data
 public/uploads
 /tmp
+
+# Cloudflare Workers / OpenNext
+.open-next
+.dev.vars
+.wrangler
