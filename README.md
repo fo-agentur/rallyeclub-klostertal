@@ -59,7 +59,9 @@ supabase/migrations/  → Postgres-Schema für Supabase SQL Editor
 | Schritt | Befehl |
 |--------|--------|
 | **Build command** | `npm run cf:build` |
-| **Deploy command** | `npx wrangler deploy` |
+| **Deploy command** | `npx wrangler deploy --keep-vars` (oder `npm run cf:deploy`) |
+
+**Wichtig:** Ohne `--keep-vars` **löscht Wrangler** bei jedem Deploy alle im Dashboard gesetzten Variablen, wenn sie nicht in `wrangler.jsonc` stehen — danach fehlen `SUPABASE_*` / `AUTH_SECRET` und die Seite liefert **500**. Alternativ: Variablen dauerhaft in der Wrangler-Config pflegen (nicht empfohlen für Secrets).
 
 **Secrets im Worker:** Exakt diese **Namen** (Groß/Klein wie hier), jeweils als **Secret** oder Variable:
 
@@ -85,7 +87,7 @@ Nutzt lokale SQLite + `public/uploads` (siehe `Dockerfile`).
 | Variable | Zweck |
 |---|---|
 | `ADMIN_PASSWORD_HASH` | bcrypt-Hash des Admin-Passworts |
-| `AUTH_SECRET` | Zufallsstring (≥32 Byte) für Cookie-HMAC |
+| `AUTH_SECRET` | Eigenes Geheimnis für Cookie-HMAC (`openssl rand -base64 32`) — **nicht** der Supabase-`sb_secret` |
 | `SUPABASE_URL` | Projekt-URL (`https://xxx.supabase.co`) |
 | `SUPABASE_SERVICE_ROLE_KEY` | **Nur Server** — niemals `NEXT_PUBLIC_` |
 

@@ -1,5 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
+  // Deploy: immer `wrangler deploy --keep-vars` (oder npm run cf:deploy), sonst werden
+  // im Dashboard gesetzte Variablen bei jedem Deploy gelöscht (leerer Worker → 500).
   "main": ".open-next/worker.js",
   "name": "rallyeclub-klostertal",
   "compatibility_date": "2026-04-15",
