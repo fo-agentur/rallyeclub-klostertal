@@ -21,7 +21,9 @@ Default-Passwort: `rallyeclub2026` (sofort ändern mit `npm run hash-password`)
 | Befehl | Zweck |
 |---|---|
 | `npm run dev` | Dev-Server (Hot Reload) |
-| `npm run build` | Production-Build |
+| `npm run build` | Production-Build (nur Next.js — für **Cloudflare** unten `cf:build` nutzen) |
+| `npm run cf:build` | OpenNext + Next.js — erzeugt `.open-next/` für Cloudflare Workers |
+| `npm run cf:deploy` | Lokal: `cf:build` + Deploy (Wrangler) |
 | `npm run start` | Production-Server (nach Build) |
 | `npm run scrape` | Bilder + Posts von alter Joomla-Seite ziehen |
 | `npm run seed` | DB initialisieren + Seeds aus `scripts/data/` importieren |
@@ -71,6 +73,23 @@ wird in einem HTTP-only-Cookie mit HMAC-SHA256-Signatur abgelegt (14 Tage).
 npm run hash-password 'neuesPasswort123'
 # Ausgabe in .env als ADMIN_PASSWORD_HASH einfügen und Server neu starten.
 ```
+
+## Cloudflare Workers (Dashboard-Build)
+
+Wenn du das Repo per **Git-Integration** in Cloudflare verbindest, darf der Build **nicht** nur `npm run build` sein — sonst fehlt das OpenNext-Bundle und `wrangler deploy` meldet: *Could not find compiled Open Next config*.
+
+Im Worker unter **Settings → Builds** (bzw. Build-Konfiguration):
+
+| Schritt | Befehl |
+|--------|--------|
+| **Build command** | `npm run cf:build` |
+| **Deploy command** | `npx wrangler deploy` |
+
+`npm run build` führt nur `next build` aus; `npm run cf:build` ruft `opennextjs-cloudflare build` auf und legt u. a. `.open-next/worker.js` an (siehe `wrangler.jsonc` → `main`).
+
+**D1:** In `wrangler.jsonc` muss dieselbe D1-Instanz wie im Cloudflare-Konto existieren (`database_id`). Eine **leere** D1 verhindert den Deploy normalerweise nicht — danach Migration/Seed auf die **remote** D1 ausführen (`npm run seed:d1` o. ä.), sonst sind Tabellen leer.
+
+**Secrets:** `ADMIN_PASSWORD_HASH` und `AUTH_SECRET` unter Worker **Settings → Variables and Secrets** als **Secrets** setzen (wie lokal in `.env`).
 
 ## Docker (für Droplet-Deployment)
 
