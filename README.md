@@ -1,64 +1,104 @@
-# Rallye Club Klostertal — Webseite
+# Rallyeclub Klostertal — Webseite (v3)
 
-> Erstellt von FO Agentur
+Öffentliche Vereinsseite mit schlankem Admin-Panel. Stack: **Next.js 15** (App Router) +
+**Tailwind** + **SQLite** (`node:sqlite`) + **lokales Filesystem**. Keine externen Services,
+100% selbst-hostbar.
 
-## Setup
+## Lokal starten
 
 ```bash
 npm install
-npm run dev
+cp .env.example .env    # Passwort-Hash + AUTH_SECRET anpassen
+npm run seed            # DB anlegen + Inhalte importieren
+npm run dev             # → http://localhost:3000
 ```
 
-Öffne [http://localhost:3000](http://localhost:3000)
+Admin: `http://localhost:3000/admin`
+Default-Passwort: `rallyeclub2026` (sofort ändern mit `npm run hash-password`)
 
-## Umgebungsvariablen
+## Scripts
 
-Kopiere `.env.example` zu `.env.local` und fülle die Werte aus. Namen sind bewusst lesbar (`NEXT_PUBLIC_FIREBASE_WEB_*`, `FIREBASE_ADMIN_SERVICE_ACCOUNT_JSON`); ältere Kurznamen aus `.env.example` funktionieren weiterhin als Fallback.
+| Befehl | Zweck |
+|---|---|
+| `npm run dev` | Dev-Server (Hot Reload) |
+| `npm run build` | Production-Build |
+| `npm run start` | Production-Server (nach Build) |
+| `npm run scrape` | Bilder + Posts von alter Joomla-Seite ziehen |
+| `npm run seed` | DB initialisieren + Seeds aus `scripts/data/` importieren |
+| `npm run hash-password` | neues Admin-Passwort hashen (bcrypt) |
 
-**Wichtig:** Service-Account-JSON nur in `.env.local` oder sicherem Secret-Store — nie ins Git. Wurde ein Schlüssel geleakt (Chat, Screenshot), in der Google Cloud Console unter dem Dienstkonto den **Schlüssel widerrufen** und einen **neuen** erzeugen.
+## Projektstruktur
 
-## Admin (nicht verlinkt)
+```
+src/
+├── app/
+│   ├── (public)      → /, /news, /veranstaltungen, /galerie,
+│   │                    /mitglieder, /fahrer, /reglement,
+│   │                    /kontakt, /impressum
+│   └── admin/        → /admin, /admin/dashboard,
+│                        /admin/beitraege, /admin/galerie,
+│                        /admin/termine
+├── lib/
+│   ├── db.ts         → SQLite (node:sqlite) + Migrations
+│   ├── auth.ts       → Cookie-Session (HMAC) + bcrypt
+│   ├── upload.ts     → Bild-Upload + sharp-Resize
+│   └── queries/      → posts, events, albums
+├── components/       → SiteHeader, SiteFooter, Hero, Cards …
+└── content/          → Mitglieder, Fahrer, Reglement (statisch)
 
-- URL-Pfad: `/rck-mgmt-k9x2wp4m` (Ordnername unter `app/` bei Bedarf ändern — nicht in der Navigation verlinken).
-- Zugriff: Firebase Auth + Custom Claim `admin: true`.
-- Claim setzen (einmalig, mit Service Account):
+public/
+├── hero/, mitglieder/, fahrer/, sponsors/   → von Altseite übernommen
+└── uploads/          → vom Admin hochgeladene Bilder (Volume)
+
+.data/rck.db           → SQLite-Datei (Volume)
+```
+
+## Admin
+
+Vier Bereiche, mehr nicht:
+
+- **Beiträge** — News mit Markdown-Body + Titelbild
+- **Galerie** — Alben mit Multi-Foto-Upload
+- **Termine** — Veranstaltungen
+- **Logout**
+
+Login läuft über ein bcrypt-gehashtes Passwort in `.env` (`ADMIN_PASSWORD_HASH`). Session
+wird in einem HTTP-only-Cookie mit HMAC-SHA256-Signatur abgelegt (14 Tage).
+
+## Passwort ändern
 
 ```bash
-npm run set-admin-claim -- <USER_UID>
+npm run hash-password 'neuesPasswort123'
+# Ausgabe in .env als ADMIN_PASSWORD_HASH einfügen und Server neu starten.
 ```
 
-Optional dritter Parameter: Pfad zur Service-Account-JSON-Datei, falls weder `FIREBASE_ADMIN_SERVICE_ACCOUNT_JSON` noch `FIREBASE_SERVICE_ACCOUNT_JSON` gesetzt ist.
-
-## Firebase Rules
+## Docker (für Droplet-Deployment)
 
 ```bash
-firebase deploy --only firestore:rules,storage
+docker compose up -d --build
 ```
 
-(`firebase.json` ist angelegt.) Nach Änderungen an `storage.rules` unbedingt deployen — dort ist u. a. **max. 2 MB pro Bild** und nur `image/*` für `cms/**` hinterlegt.
+Zwei Volumes bleiben persistent:
 
-## CMS-Limits (Kosten / Speicher)
+- `./.data` → SQLite-Datenbank
+- `./public/uploads` → Vom Admin hochgeladene Bilder
 
-Im Admin gelten feste Obergrenzen (siehe `lib/cms-limits.ts`): Anzahl Hero-Slides, Team, Galerie, Club-Streifen, Highlights, Termine sowie **max. Bildgröße pro Upload**. Überschüssige Inhalte werden auf der **öffentlichen Seite abgeschnitten**, bis du im CMS reduzierst. **API-Keys und Service-Account-JSON gehören nur in `.env.local`**, niemals ins Repository.
+Backup:
 
-## Struktur
+```bash
+tar czf rck-backup-$(date +%F).tgz .data public/uploads
+```
 
-- `app/(main)/` — öffentliche Startseite (App Router)
-- `app/rck-mgmt-k9x2wp4m/` — Admin-UI
-- `app/styles/` — ausgelagertes CSS (`base`, `cursor`, `sections`), eingebunden in `app/globals.css`
-- `components/sections/` — Seiten-Sektionen
-- `components/admin/` — Admin-Dashboard
-- `lib/schemas/` — Zod-Schemas (Site-Content, Termine)
-- `public/images/` — statische Medien
-- `legacy/` — archivierte monolithische `index.html` (Referenz)
+## Environment-Variablen
 
-## Deployment
+| Variable | Zweck |
+|---|---|
+| `ADMIN_PASSWORD_HASH` | bcrypt-Hash des Admin-Passworts |
+| `AUTH_SECRET` | Zufallsstring (≥32 Byte) für Cookie-HMAC |
 
-Next.js benötigt Node-Hosting (z. B. Vercel, Firebase App Hosting) oder einen passenden Hostinger-Plan mit Node. `npm run build` && `npm run start`.
+Beide **müssen** in Produktion gesetzt werden.
 
-## Projekt-Info
+## Lizenz / Inhalte
 
-- **Kunde:** Rallye Club Klostertal
-- **Website:** http://www.rallyeclub-klostertal.at
-- **Techstack:** Next.js, Tailwind CSS, Firebase (Auth, Firestore, Storage), Hostinger (Zielhosting klären)
-- **Branch-Strategie:** main = live, dev = Entwicklung
+Alle Inhalte (Bilder, Texte, News, Galerie) gehören dem Rallyeclub Klostertal.
+Der Code ist für den Vereinsgebrauch; keine öffentliche Lizenz.

@@ -1,5 +1,5 @@
 {
-  "name": "rallyeclub-klostertal",
+  "name": "rallyeclub-klostertal-v3",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -7,36 +7,34 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "set-admin-claim": "node scripts/set-admin-claim.mjs"
+    "scrape": "tsx scripts/scrape-legacy.ts",
+    "seed": "tsx scripts/seed.ts",
+    "hash-password": "tsx scripts/hash-password.ts"
   },
   "dependencies": {
-    "@hookform/resolvers": "^3.9.0",
-    "@radix-ui/react-label": "^2.1.0",
-    "@radix-ui/react-slot": "^1.1.0",
-    "@radix-ui/react-tabs": "^1.1.0",
-    "class-variance-authority": "^0.7.0",
+    "bcryptjs": "^2.4.3",
     "clsx": "^2.1.1",
-    "firebase": "^10.14.0",
-    "firebase-admin": "^12.6.0",
-    "gsap": "^3.12.5",
-    "lenis": "^1.1.14",
-    "lucide-react": "^0.460.0",
-    "next": "^14.2.18",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-hook-form": "^7.53.0",
+    "date-fns": "^4.1.0",
+    "next": "^15.1.6",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-markdown": "^9.0.1",
+    "remark-gfm": "^4.0.0",
+    "sharp": "^0.33.5",
     "tailwind-merge": "^2.5.4",
+    "yet-another-react-lightbox": "^3.21.7",
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@types/node": "^20.14.0",
-    "@types/react": "^18.3.3",
-    "@types/react-dom": "^18.3.0",
+    "@tailwindcss/typography": "^0.5.19",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/node": "^22.9.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
     "autoprefixer": "^10.4.20",
-    "eslint": "^8.57.0",
-    "eslint-config-next": "^14.2.18",
-    "postcss": "^8.4.47",
+    "postcss": "^8.4.49",
     "tailwindcss": "^3.4.14",
-    "typescript": "^5.6.0"
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3"
   }
 }

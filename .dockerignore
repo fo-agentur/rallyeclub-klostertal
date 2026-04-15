@@ -1,0 +1,15 @@
+node_modules
+.next
+.git
+.gitignore
+.env
+.env.local
+.env*.local
+.data
+public/uploads
+npm-debug.log*
+*.tsbuildinfo
+.vscode
+.idea
+scripts/data
+.claude

@@ -1,0 +1,15 @@
+services:
+  web:
+    build: .
+    image: rallyeclub-klostertal
+    container_name: rallyeclub-klostertal
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./.data:/app/.data
+      - ./public/uploads:/app/public/uploads
+    environment:
+      - ADMIN_PASSWORD_HASH=${ADMIN_PASSWORD_HASH}
+      - AUTH_SECRET=${AUTH_SECRET}
+      - NODE_ENV=production
+    restart: unless-stopped

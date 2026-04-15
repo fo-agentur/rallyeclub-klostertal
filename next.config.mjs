@@ -1,12 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: "standalone",
   images: {
-    remotePatterns: [
-      { protocol: 'https', hostname: 'firebasestorage.googleapis.com', pathname: '/**' },
-      { protocol: 'https', hostname: '*.firebasestorage.app', pathname: '/**' },
-      { protocol: 'https', hostname: 'placehold.co', pathname: '/**' },
-    ],
+    formats: ["image/avif", "image/webp"],
   },
-}
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "15mb",
+    },
+  },
+};
 
-export default nextConfig
+export default nextConfig;
