@@ -91,6 +91,20 @@ Im Worker unter **Settings → Builds** (bzw. Build-Konfiguration):
 
 **Secrets:** `ADMIN_PASSWORD_HASH` und `AUTH_SECRET` unter Worker **Settings → Variables and Secrets** als **Secrets** setzen (wie lokal in `.env`).
 
+**500 Internal Server Error** nach dem Deploy: Die Startseite fragt D1 ab (`posts`, `events`, `albums`). Ohne Tabellen schlagen die Queries fehl. Lokal eingeloggt (`npx wrangler login`), dann **Schema auf die remote D1** anwenden:
+
+```bash
+npx wrangler d1 execute rallyeclub-klostertal-db --file=scripts/d1-migration.sql --remote
+```
+
+Optional Demo-/Import-Daten (generiert `d1-seed.sql` und führt sie aus):
+
+```bash
+npm run seed:d1
+```
+
+Wenn es weiterhin knallt: **Workers → Observability / Logs** (oder „Real-time Logs“) öffnen — dort steht die echte Fehlermeldung (z. B. „no such table“).
+
 ## Docker (für Droplet-Deployment)
 
 ```bash
