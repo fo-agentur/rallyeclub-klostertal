@@ -13,6 +13,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# Cursor / local agent settings
+.claude/
+
 # project-specific
 .data
 public/uploads
