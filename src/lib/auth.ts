@@ -1,12 +1,13 @@
 import bcrypt from "bcryptjs";
 import { cookies } from "next/headers";
 import crypto from "node:crypto";
+import { getEnv } from "@/lib/env";
 
 const COOKIE_NAME = "rck_session";
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 14; // 14 days
 
 function getSecret(): string {
-  const s = process.env.AUTH_SECRET;
+  const s = getEnv("AUTH_SECRET");
   if (!s) throw new Error("AUTH_SECRET not set in environment");
   return s;
 }
@@ -28,7 +29,7 @@ function verify(signed: string): string | null {
 }
 
 export async function verifyPassword(password: string): Promise<boolean> {
-  const hash = process.env.ADMIN_PASSWORD_HASH;
+  const hash = getEnv("ADMIN_PASSWORD_HASH");
   if (!hash) return false;
   return bcrypt.compare(password, hash);
 }

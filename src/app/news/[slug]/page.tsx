@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { getEnv } from "@/lib/env";
 import { getPostBySlug, listPosts } from "@/lib/queries/posts";
 import { formatDate } from "@/lib/utils";
 
@@ -79,7 +80,7 @@ export default async function PostPage({ params }: Props) {
 }
 
 export async function generateStaticParams() {
-  if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) return [];
+  if (!getEnv("SUPABASE_URL") || !getEnv("SUPABASE_SERVICE_ROLE_KEY")) return [];
   try {
     return (await listPosts()).map((p) => ({ slug: p.slug }));
   } catch {

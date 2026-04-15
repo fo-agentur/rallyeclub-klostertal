@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { getEnv } from "@/lib/env";
 import { getAlbumBySlug, getAlbumPhotos, listAlbums } from "@/lib/queries/albums";
 import { AlbumLightbox } from "@/components/album-lightbox";
 import { formatDate } from "@/lib/utils";
@@ -66,7 +67,7 @@ export default async function AlbumPage({ params }: Props) {
 }
 
 export async function generateStaticParams() {
-  if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) return [];
+  if (!getEnv("SUPABASE_URL") || !getEnv("SUPABASE_SERVICE_ROLE_KEY")) return [];
   try {
     return (await listAlbums()).map((a) => ({ slug: a.slug }));
   } catch {

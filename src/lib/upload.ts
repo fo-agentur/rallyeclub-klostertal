@@ -1,4 +1,5 @@
 import crypto from "node:crypto";
+import { getEnv } from "@/lib/env";
 import { getSupabaseAdmin } from "@/lib/supabase/admin";
 
 type UploadDir = "posts" | "galerie" | "covers";
@@ -13,7 +14,7 @@ function isCloudflareWorker(): boolean {
 }
 
 function useSupabaseStorage(): boolean {
-  return !!(process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY);
+  return !!(getEnv("SUPABASE_URL") && getEnv("SUPABASE_SERVICE_ROLE_KEY"));
 }
 
 /** Extract object path inside bucket from Supabase public URL. */

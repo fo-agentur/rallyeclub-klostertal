@@ -61,7 +61,14 @@ supabase/migrations/  → Postgres-Schema für Supabase SQL Editor
 | **Build command** | `npm run cf:build` |
 | **Deploy command** | `npx wrangler deploy` |
 
-**Secrets im Worker:** `ADMIN_PASSWORD_HASH`, `AUTH_SECRET`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` (wie in `.env.local`).
+**Secrets im Worker:** Exakt diese **Namen** (Groß/Klein wie hier), jeweils als **Secret** oder Variable:
+
+- `SUPABASE_URL`
+- `SUPABASE_SERVICE_ROLE_KEY` (vollständiger Name, nicht abgekürzt)
+- `ADMIN_PASSWORD_HASH`
+- `AUTH_SECRET`
+
+Werte wie in `.env.local`. OpenNext kopiert nicht alle Bindings nach `process.env`; der Code liest zusätzlich den Worker-`env`-Context aus.
 
 Ohne gültige Supabase-Variablen schlagen Seiten mit Datenbankzugriff fehl — **Logs** unter Workers → Observability prüfen.
 
