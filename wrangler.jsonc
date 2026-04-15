@@ -14,13 +14,6 @@
       "service": "rallyeclub-klostertal",
     },
   ],
-  "d1_databases": [
-    {
-      "binding": "DB",
-      "database_name": "rallyeclub-klostertal-db",
-      "database_id": "70254347-3d57-4eae-afd3-ac90479199e8",
-    },
-  ],
   // R2 bucket can be added after enabling R2 in the Cloudflare Dashboard:
   // "r2_buckets": [{ "binding": "BUCKET", "bucket_name": "rallyeclub-uploads" }],
   "observability": { "enabled": true },

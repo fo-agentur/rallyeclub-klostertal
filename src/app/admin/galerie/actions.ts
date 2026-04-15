@@ -12,9 +12,11 @@ import {
   deletePhoto,
   getAlbumById,
   getAlbumPhotos,
+  getFirstPhotoUrlForAlbum,
+  getPhotoUrlById,
+  setAlbumCoverImage,
   updateAlbum,
 } from "@/lib/queries/albums";
-import { getDb } from "@/lib/db";
 import { slugify } from "@/lib/utils";
 
 async function requireAuth() {
@@ -118,25 +120,21 @@ export async function deletePhotoAction(formData: FormData): Promise<void> {
   const albumId = Number(formData.get("album_id"));
   if (!photoId) return;
 
-  const db = await getDb();
-  const photo = await db.first<{ url: string }>("SELECT url FROM photos WHERE id = ?", [photoId]);
-  if (photo) {
-    await deleteUpload(photo.url);
+  const photoUrl = await getPhotoUrlById(photoId);
+  if (photoUrl) {
+    await deleteUpload(photoUrl);
     const album = await getAlbumById(albumId);
-    if (album?.cover_image === photo.url) {
-      await db.run("UPDATE albums SET cover_image = NULL WHERE id = ?", [albumId]);
+    if (album?.cover_image === photoUrl) {
+      await setAlbumCoverImage(albumId, null);
     }
   }
   await deletePhoto(photoId);
 
   const album = await getAlbumById(albumId);
   if (album && !album.cover_image) {
-    const next = await db.first<{ url: string }>(
-      "SELECT url FROM photos WHERE album_id = ? ORDER BY sort_order ASC LIMIT 1",
-      [albumId],
-    );
+    const next = await getFirstPhotoUrlForAlbum(albumId);
     if (next) {
-      await db.run("UPDATE albums SET cover_image = ? WHERE id = ?", [next.url, albumId]);
+      await setAlbumCoverImage(albumId, next);
     }
   }
   revalidatePath(`/galerie/${album?.slug ?? ""}`);
@@ -151,10 +149,9 @@ export async function setCoverAction(formData: FormData): Promise<void> {
   const albumId = Number(formData.get("album_id"));
   if (!photoId || !albumId) return;
 
-  const db = await getDb();
-  const photo = await db.first<{ url: string }>("SELECT url FROM photos WHERE id = ?", [photoId]);
-  if (!photo) return;
-  await db.run("UPDATE albums SET cover_image = ? WHERE id = ?", [photo.url, albumId]);
+  const url = await getPhotoUrlById(photoId);
+  if (!url) return;
+  await setAlbumCoverImage(albumId, url);
 
   const album = await getAlbumById(albumId);
   revalidatePath(`/galerie/${album?.slug ?? ""}`);

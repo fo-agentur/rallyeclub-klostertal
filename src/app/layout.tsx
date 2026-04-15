@@ -17,6 +17,8 @@ const bebas = Bebas_Neue({
   display: "swap",
 });
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   metadataBase: new URL("https://rallyeclub-klostertal.at"),
   title: {

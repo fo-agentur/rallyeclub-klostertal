@@ -15,10 +15,10 @@
     "lint": "next lint",
     "scrape": "tsx scripts/scrape-legacy.ts",
     "seed": "tsx scripts/seed.ts",
-    "seed:d1": "tsx scripts/generate-d1-seed.ts && npx wrangler d1 execute rallyeclub-klostertal-db --file=scripts/d1-seed.sql --remote",
     "hash-password": "tsx scripts/hash-password.ts"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.103.2",
     "bcryptjs": "^2.4.3",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",

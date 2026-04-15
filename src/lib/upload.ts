@@ -1,47 +1,85 @@
 import crypto from "node:crypto";
+import { getSupabaseAdmin } from "@/lib/supabase/admin";
 
 type UploadDir = "posts" | "galerie" | "covers";
 
+const STORAGE_BUCKET = "uploads";
+
 function isCloudflareWorker(): boolean {
-  // Cloudflare Workers expose a global `navigator.userAgent` starting with "Cloudflare-Workers"
-  // and do NOT have `process.versions.node`
   return (
     typeof navigator !== "undefined" &&
     navigator.userAgent?.startsWith("Cloudflare-Workers")
   );
 }
 
+function useSupabaseStorage(): boolean {
+  return !!(process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY);
+}
+
+/** Extract object path inside bucket from Supabase public URL. */
+function pathFromSupabasePublicUrl(url: string): string | null {
+  const marker = "/object/public/uploads/";
+  const i = url.indexOf(marker);
+  if (i === -1) return null;
+  return decodeURIComponent(url.slice(i + marker.length));
+}
+
+async function uploadToSupabase(objectPath: string, data: Buffer, contentType: string): Promise<string> {
+  const supabase = getSupabaseAdmin();
+  const { error } = await supabase.storage.from(STORAGE_BUCKET).upload(objectPath, data, {
+    contentType,
+    upsert: true,
+  });
+  if (error) throw error;
+  const { data: pub } = supabase.storage.from(STORAGE_BUCKET).getPublicUrl(objectPath);
+  return pub.publicUrl;
+}
+
 export async function saveImage(
   file: File,
   subdir: UploadDir,
-  opts?: { maxWidth?: number; quality?: number }
+  opts?: { maxWidth?: number; quality?: number },
 ): Promise<string> {
-  if (isCloudflareWorker()) {
-    // TODO: replace with R2 upload once the bucket is set up in the Cloudflare Dashboard.
-    // For now, return a placeholder path so the admin flow doesn't hard-crash.
-    throw new Error(
-      "Bild-Upload auf Cloudflare noch nicht konfiguriert. Bitte R2-Bucket im Dashboard aktivieren."
-    );
+  const maxWidth = opts?.maxWidth ?? 1920;
+  const quality = opts?.quality ?? 85;
+
+  const hash = crypto.randomBytes(6).toString("hex");
+  const base = slugifyFilename(file.name.replace(/\.[^.]+$/, "")) || "bild";
+  const filename = `${Date.now()}-${hash}-${base}.jpg`;
+
+  if (useSupabaseStorage()) {
+    const buf = Buffer.from(await file.arrayBuffer());
+    let out: Buffer;
+    let contentType = "image/jpeg";
+
+    if (isCloudflareWorker()) {
+      // No sharp on Workers — upload as-is (still JPEG filename; browser-sent JPEG/PNG OK)
+      out = buf;
+      if (file.type === "image/png") contentType = "image/png";
+      else if (file.type === "image/webp") contentType = "image/webp";
+    } else {
+      const { default: sharp } = await import("sharp");
+      out = await sharp(buf)
+        .rotate()
+        .resize({ width: maxWidth, withoutEnlargement: true })
+        .jpeg({ quality, mozjpeg: true })
+        .toBuffer();
+    }
+
+    const objectPath = `${subdir}/${filename}`;
+    return uploadToSupabase(objectPath, out, contentType);
   }
 
-  // Local / Docker path: use sharp + filesystem
   const [{ default: sharp }, { default: fs }, { default: path }] = await Promise.all([
     import("sharp"),
     import("node:fs/promises"),
     import("node:path"),
   ]);
 
-  const maxWidth = opts?.maxWidth ?? 1920;
-  const quality = opts?.quality ?? 85;
-
   const buf = Buffer.from(await file.arrayBuffer());
   const uploadsRoot = path.join(process.cwd(), "public", "uploads");
   const dir = path.join(uploadsRoot, subdir);
   await fs.mkdir(dir, { recursive: true });
-
-  const hash = crypto.randomBytes(6).toString("hex");
-  const base = slugifyFilename(file.name.replace(/\.[^.]+$/, "")) || "bild";
-  const filename = `${Date.now()}-${hash}-${base}.jpg`;
   const outPath = path.join(dir, filename);
 
   await sharp(buf)
@@ -54,7 +92,16 @@ export async function saveImage(
 }
 
 export async function deleteUpload(publicPath: string): Promise<void> {
-  if (isCloudflareWorker()) return; // No-op on Cloudflare until R2 is wired up
+  if (publicPath.includes("supabase.co") && publicPath.includes("/storage/")) {
+    if (!useSupabaseStorage()) return;
+    const objectPath = pathFromSupabasePublicUrl(publicPath);
+    if (!objectPath) return;
+    const supabase = getSupabaseAdmin();
+    await supabase.storage.from(STORAGE_BUCKET).remove([objectPath]);
+    return;
+  }
+
+  if (isCloudflareWorker()) return;
 
   if (!publicPath.startsWith("/uploads/")) return;
   const { default: fs } = await import("node:fs/promises");

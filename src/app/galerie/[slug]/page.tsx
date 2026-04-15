@@ -66,5 +66,10 @@ export default async function AlbumPage({ params }: Props) {
 }
 
 export async function generateStaticParams() {
-  return (await listAlbums()).map((a) => ({ slug: a.slug }));
+  if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) return [];
+  try {
+    return (await listAlbums()).map((a) => ({ slug: a.slug }));
+  } catch {
+    return [];
+  }
 }

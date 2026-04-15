@@ -79,5 +79,10 @@ export default async function PostPage({ params }: Props) {
 }
 
 export async function generateStaticParams() {
-  return (await listPosts()).map((p) => ({ slug: p.slug }));
+  if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) return [];
+  try {
+    return (await listPosts()).map((p) => ({ slug: p.slug }));
+  } catch {
+    return [];
+  }
 }

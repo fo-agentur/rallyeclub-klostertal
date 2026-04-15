@@ -1,7 +1,7 @@
 "use server";
 
 import { z } from "zod";
-import { getDb } from "@/lib/db";
+import { getSupabaseAdmin } from "@/lib/supabase/admin";
 
 const schema = z.object({
   name: z.string().min(2, "Bitte Namen angeben").max(120),
@@ -40,11 +40,14 @@ export async function submitContact(
   }
 
   try {
-    const db = await getDb();
-    await db.run(
-      "INSERT INTO messages (name, email, phone, body) VALUES (?, ?, ?, ?)",
-      [parsed.data.name, parsed.data.email, parsed.data.phone || null, parsed.data.body],
-    );
+    const supabase = getSupabaseAdmin();
+    const { error } = await supabase.from("messages").insert({
+      name: parsed.data.name,
+      email: parsed.data.email,
+      phone: parsed.data.phone || null,
+      body: parsed.data.body,
+    });
+    if (error) throw error;
   } catch (err) {
     console.error("contact save failed", err);
     return {

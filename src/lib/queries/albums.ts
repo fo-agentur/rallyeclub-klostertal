@@ -1,35 +1,72 @@
-import { getDb, type Album, type Photo } from "../db";
+import { getSupabaseAdmin } from "../supabase/admin";
+import type { Album, Photo } from "../db";
 import { slugify } from "../utils";
+
+function mapAlbum(row: Record<string, unknown>): Album {
+  return {
+    id: Number(row.id),
+    slug: String(row.slug),
+    title: String(row.title),
+    description: row.description != null ? String(row.description) : null,
+    cover_image: row.cover_image != null ? String(row.cover_image) : null,
+    date: row.date != null ? String(row.date) : null,
+    created_at: String(row.created_at),
+  };
+}
+
+function mapPhoto(row: Record<string, unknown>): Photo {
+  return {
+    id: Number(row.id),
+    album_id: Number(row.album_id),
+    url: String(row.url),
+    caption: row.caption != null ? String(row.caption) : null,
+    sort_order: Number(row.sort_order ?? 0),
+    created_at: String(row.created_at),
+  };
+}
 
 export type AlbumWithCount = Album & { photo_count: number };
 
 export async function listAlbums(): Promise<AlbumWithCount[]> {
-  const db = await getDb();
-  return db.all<AlbumWithCount>(
-    `SELECT a.*, COUNT(p.id) as photo_count
-     FROM albums a
-     LEFT JOIN photos p ON p.album_id = a.id
-     GROUP BY a.id
-     ORDER BY a.date DESC, a.created_at DESC`,
-  );
+  const supabase = getSupabaseAdmin();
+  const { data, error } = await supabase
+    .from("album_list")
+    .select("*")
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return (data ?? []).map((row) => {
+    const a = mapAlbum(row as Record<string, unknown>);
+    const photo_count = Number((row as { photo_count?: number }).photo_count ?? 0);
+    return { ...a, photo_count };
+  });
 }
 
 export async function getAlbumBySlug(slug: string): Promise<Album | null> {
-  const db = await getDb();
-  return db.first<Album>("SELECT * FROM albums WHERE slug = ?", [slug]);
+  const supabase = getSupabaseAdmin();
+  const { data, error } = await supabase.from("albums").select("*").eq("slug", slug).maybeSingle();
+  if (error) throw error;
+  if (!data) return null;
+  return mapAlbum(data as Record<string, unknown>);
 }
 
 export async function getAlbumById(id: number): Promise<Album | null> {
-  const db = await getDb();
-  return db.first<Album>("SELECT * FROM albums WHERE id = ?", [id]);
+  const supabase = getSupabaseAdmin();
+  const { data, error } = await supabase.from("albums").select("*").eq("id", id).maybeSingle();
+  if (error) throw error;
+  if (!data) return null;
+  return mapAlbum(data as Record<string, unknown>);
 }
 
 export async function getAlbumPhotos(albumId: number): Promise<Photo[]> {
-  const db = await getDb();
-  return db.all<Photo>(
-    "SELECT * FROM photos WHERE album_id = ? ORDER BY sort_order ASC, id ASC",
-    [albumId],
-  );
+  const supabase = getSupabaseAdmin();
+  const { data, error } = await supabase
+    .from("photos")
+    .select("*")
+    .eq("album_id", albumId)
+    .order("sort_order", { ascending: true })
+    .order("id", { ascending: true });
+  if (error) throw error;
+  return (data ?? []).map((row) => mapPhoto(row as Record<string, unknown>));
 }
 
 export type AlbumInput = {
@@ -41,60 +78,123 @@ export type AlbumInput = {
 };
 
 export async function createAlbum(input: AlbumInput): Promise<number> {
-  const db = await getDb();
-  const slug = input.slug || (await ensureUniqueSlug(db, slugify(input.title)));
-  const { lastInsertRowid } = await db.run(
-    `INSERT INTO albums (slug, title, description, cover_image, date)
-     VALUES (?, ?, ?, ?, ?)`,
-    [slug, input.title, input.description ?? null, input.cover_image ?? null, input.date ?? null],
-  );
-  return lastInsertRowid;
+  const supabase = getSupabaseAdmin();
+  const slug = input.slug || (await ensureUniqueSlug(slugify(input.title)));
+  const { data, error } = await supabase
+    .from("albums")
+    .insert({
+      slug,
+      title: input.title,
+      description: input.description ?? null,
+      cover_image: input.cover_image ?? null,
+      date: input.date ?? null,
+    })
+    .select("id")
+    .single();
+  if (error) throw error;
+  return Number((data as { id: number }).id);
 }
 
 export async function updateAlbum(id: number, input: AlbumInput): Promise<void> {
-  const db = await getDb();
-  await db.run(
-    `UPDATE albums SET title = ?, description = ?, cover_image = ?, date = ? WHERE id = ?`,
-    [input.title, input.description ?? null, input.cover_image ?? null, input.date ?? null, id],
-  );
+  const supabase = getSupabaseAdmin();
+  const { error } = await supabase
+    .from("albums")
+    .update({
+      title: input.title,
+      description: input.description ?? null,
+      cover_image: input.cover_image ?? null,
+      date: input.date ?? null,
+      ...(input.slug !== undefined ? { slug: input.slug } : {}),
+    })
+    .eq("id", id);
+  if (error) throw error;
 }
 
 export async function deleteAlbum(id: number): Promise<void> {
-  const db = await getDb();
-  await db.run("DELETE FROM albums WHERE id = ?", [id]);
+  const supabase = getSupabaseAdmin();
+  const { error } = await supabase.from("albums").delete().eq("id", id);
+  if (error) throw error;
 }
 
 export async function addPhoto(albumId: number, url: string, caption?: string): Promise<number> {
-  const db = await getDb();
-  const maxRow = await db.first<{ m: number | null }>(
-    "SELECT MAX(sort_order) as m FROM photos WHERE album_id = ?",
-    [albumId],
-  );
-  const sortOrder = (maxRow?.m ?? 0) + 1;
-  const { lastInsertRowid } = await db.run(
-    `INSERT INTO photos (album_id, url, caption, sort_order) VALUES (?, ?, ?, ?)`,
-    [albumId, url, caption ?? null, sortOrder],
-  );
-  // Set as cover if album has none
-  const album = await getAlbumById(albumId);
-  if (album && !album.cover_image) {
-    await db.run("UPDATE albums SET cover_image = ? WHERE id = ?", [url, albumId]);
+  const supabase = getSupabaseAdmin();
+  const { data: maxRows, error: maxErr } = await supabase
+    .from("photos")
+    .select("sort_order")
+    .eq("album_id", albumId)
+    .order("sort_order", { ascending: false })
+    .limit(1);
+  if (maxErr) throw maxErr;
+  const maxOrder = maxRows?.[0] ? Number((maxRows[0] as { sort_order: number }).sort_order) : 0;
+  const sortOrder = maxOrder + 1;
+
+  const { data, error } = await supabase
+    .from("photos")
+    .insert({
+      album_id: albumId,
+      url,
+      caption: caption ?? null,
+      sort_order: sortOrder,
+    })
+    .select("id")
+    .single();
+  if (error) throw error;
+  const photoId = Number((data as { id: number }).id);
+
+  const { data: album } = await supabase.from("albums").select("cover_image").eq("id", albumId).maybeSingle();
+  const cover = album ? (album as { cover_image: string | null }).cover_image : null;
+  if (!cover) {
+    await supabase.from("albums").update({ cover_image: url }).eq("id", albumId);
   }
-  return lastInsertRowid;
+
+  return photoId;
 }
 
 export async function deletePhoto(photoId: number): Promise<void> {
-  const db = await getDb();
-  await db.run("DELETE FROM photos WHERE id = ?", [photoId]);
+  const supabase = getSupabaseAdmin();
+  const { error } = await supabase.from("photos").delete().eq("id", photoId);
+  if (error) throw error;
 }
 
-type Db = Awaited<ReturnType<typeof getDb>>;
+/** URL of a single photo row (for admin actions). */
+export async function getPhotoUrlById(photoId: number): Promise<string | null> {
+  const supabase = getSupabaseAdmin();
+  const { data, error } = await supabase.from("photos").select("url").eq("id", photoId).maybeSingle();
+  if (error) throw error;
+  if (!data) return null;
+  return String((data as { url: string }).url);
+}
 
-async function ensureUniqueSlug(db: Db, base: string): Promise<string> {
+/** First photo URL in album sort order (for cover fallback). */
+export async function getFirstPhotoUrlForAlbum(albumId: number): Promise<string | null> {
+  const supabase = getSupabaseAdmin();
+  const { data, error } = await supabase
+    .from("photos")
+    .select("url")
+    .eq("album_id", albumId)
+    .order("sort_order", { ascending: true })
+    .order("id", { ascending: true })
+    .limit(1)
+    .maybeSingle();
+  if (error) throw error;
+  if (!data) return null;
+  return String((data as { url: string }).url);
+}
+
+/** Set album cover image (or clear with null). */
+export async function setAlbumCoverImage(albumId: number, url: string | null): Promise<void> {
+  const supabase = getSupabaseAdmin();
+  const { error } = await supabase.from("albums").update({ cover_image: url }).eq("id", albumId);
+  if (error) throw error;
+}
+
+async function ensureUniqueSlug(base: string): Promise<string> {
+  const supabase = getSupabaseAdmin();
   let slug = base;
   let n = 2;
-  while (await db.first("SELECT 1 FROM albums WHERE slug = ?", [slug])) {
+  while (true) {
+    const { data } = await supabase.from("albums").select("id").eq("slug", slug).maybeSingle();
+    if (!data) return slug;
     slug = `${base}-${n++}`;
   }
-  return slug;
 }
