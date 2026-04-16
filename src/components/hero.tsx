@@ -1,39 +1,10 @@
-import Image from "next/image";
 import Link from "next/link";
-
-const HERO_IMAGES = [
-  { src: "/hero/1.png", alt: "Autoslalom St. Gallenkirch" },
-  { src: "/hero/2.png", alt: "Motorsport im Klostertal" },
-  { src: "/hero/3.png", alt: "Rallyeclub Klostertal Event" },
-  { src: "/hero/4.png", alt: "Rallyeclub Klostertal Fahrzeug" },
-];
 
 export function Hero() {
   return (
     <section className="relative overflow-hidden bg-ink text-white">
-      <div className="absolute inset-0 opacity-40">
-        <div className="grid h-full grid-cols-2 md:grid-cols-4">
-          {HERO_IMAGES.map((img) => (
-            <div key={img.src} className="relative h-full">
-              <Image
-                src={img.src}
-                alt={img.alt}
-                fill
-                priority
-                className="object-cover"
-                sizes="(min-width: 768px) 25vw, 50vw"
-              />
-            </div>
-          ))}
-        </div>
-      </div>
-      <div
-        className="absolute inset-0"
-        style={{
-          background:
-            "linear-gradient(180deg, rgba(10,10,10,0.55) 0%, rgba(10,10,10,0.75) 40%, rgba(10,10,10,0.95) 100%)",
-        }}
-      />
+      <div className="hero-motorsport-bg absolute inset-0" aria-hidden />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/70 to-ink" aria-hidden />
 
       <div className="container-wide relative py-28 md:py-36 lg:py-48">
         <div className="max-w-3xl animate-slide-up">

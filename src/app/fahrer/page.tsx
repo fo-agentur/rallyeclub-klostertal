@@ -1,5 +1,5 @@
-import Image from "next/image";
 import { SectionHeader } from "@/components/section-header";
+import { PortraitImage } from "@/components/portrait-image";
 import { DRIVERS } from "@/content/drivers";
 
 export const metadata = {
@@ -21,12 +21,10 @@ export default function DriversPage() {
           {DRIVERS.map((driver) => (
             <div key={driver.name} className="group border border-neutral-200 bg-white">
               <div className="relative aspect-[4/5] overflow-hidden bg-neutral-100">
-                <Image
+                <PortraitImage
                   src={driver.photo}
                   alt={driver.name}
-                  fill
-                  className="object-cover transition duration-500 group-hover:scale-105"
-                  sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+                  imgClassName="transition duration-500 group-hover:scale-105"
                 />
               </div>
               <div className="border-t border-neutral-200 p-6">

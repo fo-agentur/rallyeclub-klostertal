@@ -1,5 +1,5 @@
-import Image from "next/image";
 import { SectionHeader } from "@/components/section-header";
+import { PortraitImage } from "@/components/portrait-image";
 import { BOARD, HONORARY, MEMBERS, type MemberGroup } from "@/content/members";
 
 export const metadata = {
@@ -25,25 +25,11 @@ function MemberCard({
           size === "md" ? "aspect-square w-full" : "aspect-square w-full"
         } overflow-hidden bg-neutral-100`}
       >
-        {photo ? (
-          <Image
-            src={photo}
-            alt={name}
-            fill
-            className="object-cover transition duration-500 group-hover:scale-105"
-            sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
-          />
-        ) : (
-          <div className="flex h-full items-center justify-center bg-ink text-racing">
-            <span className="font-display text-3xl tracking-widest opacity-60">
-              {name
-                .split(" ")
-                .map((w) => w[0])
-                .slice(0, 2)
-                .join("")}
-            </span>
-          </div>
-        )}
+        <PortraitImage
+          src={photo}
+          alt={name}
+          imgClassName="transition duration-500 group-hover:scale-105"
+        />
       </div>
       <div className="mt-4">
         <div className="text-sm font-semibold text-ink">{name}</div>

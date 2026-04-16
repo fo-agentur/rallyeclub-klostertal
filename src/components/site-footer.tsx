@@ -1,13 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
-
-const SPONSORS = [
-  { name: "Motor Freizeit Trends", src: "/sponsors/motorfreizeittrends.JPG" },
-  { name: "Kogler Autopflege", src: "/sponsors/kogler_autopflege.PNG" },
-];
+import { ClubLogo } from "@/components/club-logo";
+import { SponsorStrip } from "@/components/sponsor-strip";
 
 export function SiteFooter() {
   const pathname = usePathname();
@@ -19,9 +15,7 @@ export function SiteFooter() {
         <div className="grid gap-12 md:grid-cols-4">
           <div className="md:col-span-2">
             <div className="flex items-center gap-3">
-              <span className="flex h-10 w-10 items-center justify-center bg-racing text-white font-display text-xl">
-                RCK
-              </span>
+              <ClubLogo className="shrink-0" />
               <span className="font-display text-lg tracking-widest text-white">
                 RALLYECLUB KLOSTERTAL
               </span>
@@ -78,22 +72,7 @@ export function SiteFooter() {
 
         <div className="mt-12 border-t border-ink-line pt-8">
           <div className="flex flex-col items-start gap-6 md:flex-row md:items-center md:justify-between">
-            <div className="flex items-center gap-6">
-              {SPONSORS.map((s) => (
-                <div
-                  key={s.name}
-                  className="relative h-12 w-28 bg-white/5 transition hover:bg-white/10"
-                >
-                  <Image
-                    src={s.src}
-                    alt={s.name}
-                    fill
-                    className="object-contain p-2"
-                    sizes="112px"
-                  />
-                </div>
-              ))}
-            </div>
+            <SponsorStrip compact variant="dark" />
 
             <div className="flex items-center gap-4 text-xs text-neutral-500">
               <Link href="/impressum" className="transition hover:text-racing">

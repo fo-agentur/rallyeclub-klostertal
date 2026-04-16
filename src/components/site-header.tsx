@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
+import { ClubLogo } from "@/components/club-logo";
 
 const NAV = [
   { href: "/", label: "Home" },
@@ -44,9 +45,7 @@ export function SiteHeader() {
     >
       <div className="container-wide flex h-20 items-center justify-between">
         <Link href="/" className="flex items-center gap-3" aria-label="Rallyeclub Klostertal — Home">
-          <span className="flex h-10 w-10 items-center justify-center bg-racing text-white font-display text-xl leading-none">
-            RCK
-          </span>
+          <ClubLogo className="shrink-0" />
           <span className="hidden flex-col leading-none md:flex">
             <span className="font-display text-lg tracking-widest text-ink">RALLYECLUB</span>
             <span className="text-[10px] font-semibold uppercase tracking-[0.25em] text-neutral-500">

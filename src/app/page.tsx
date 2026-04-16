@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Hero } from "@/components/hero";
+import { SponsorStrip } from "@/components/sponsor-strip";
 import { PostCard } from "@/components/post-card";
 import { EventList } from "@/components/event-list";
 import { SectionHeader } from "@/components/section-header";
@@ -148,30 +149,11 @@ export default async function HomePage() {
       {/* Sponsors */}
       <section className="border-y border-neutral-200 bg-white py-12">
         <div className="container-wide">
-          <div className="flex flex-col items-center gap-8 md:flex-row md:justify-center md:gap-16">
+          <div className="flex flex-col items-center gap-8">
             <div className="text-xs font-semibold uppercase tracking-widest text-neutral-500">
               Mit Unterstützung von
             </div>
-            <div className="flex items-center gap-10">
-              <div className="relative h-16 w-40">
-                <Image
-                  src="/sponsors/motorfreizeittrends.JPG"
-                  alt="Motor Freizeit Trends"
-                  fill
-                  className="object-contain"
-                  sizes="160px"
-                />
-              </div>
-              <div className="relative h-16 w-40">
-                <Image
-                  src="/sponsors/kogler_autopflege.PNG"
-                  alt="Kogler Autopflege"
-                  fill
-                  className="object-contain"
-                  sizes="160px"
-                />
-              </div>
-            </div>
+            <SponsorStrip />
           </div>
         </div>
       </section>
