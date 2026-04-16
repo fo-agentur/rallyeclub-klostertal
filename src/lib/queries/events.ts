@@ -1,4 +1,4 @@
-import { getSupabaseAdmin } from "../supabase/admin";
+import { getSupabaseAdmin, isSupabaseConfigured } from "../supabase/admin";
 import type { Event } from "../db";
 
 function mapEvent(row: Record<string, unknown>): Event {
@@ -14,6 +14,7 @@ function mapEvent(row: Record<string, unknown>): Event {
 }
 
 export async function listEvents(): Promise<Event[]> {
+  if (!isSupabaseConfigured()) return [];
   const supabase = getSupabaseAdmin();
   const { data, error } = await supabase.from("events").select("*").order("date", { ascending: true });
   if (error) throw error;
@@ -21,6 +22,7 @@ export async function listEvents(): Promise<Event[]> {
 }
 
 export async function listUpcomingEvents(limit?: number): Promise<Event[]> {
+  if (!isSupabaseConfigured()) return [];
   const today = new Date().toISOString().slice(0, 10);
   const supabase = getSupabaseAdmin();
   let q = supabase.from("events").select("*").gte("date", today).order("date", { ascending: true });
@@ -31,6 +33,7 @@ export async function listUpcomingEvents(limit?: number): Promise<Event[]> {
 }
 
 export async function listPastEvents(): Promise<Event[]> {
+  if (!isSupabaseConfigured()) return [];
   const today = new Date().toISOString().slice(0, 10);
   const supabase = getSupabaseAdmin();
   const { data, error } = await supabase
@@ -43,6 +46,7 @@ export async function listPastEvents(): Promise<Event[]> {
 }
 
 export async function getEventById(id: number): Promise<Event | null> {
+  if (!isSupabaseConfigured()) return null;
   const supabase = getSupabaseAdmin();
   const { data, error } = await supabase.from("events").select("*").eq("id", id).maybeSingle();
   if (error) throw error;

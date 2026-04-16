@@ -1,4 +1,4 @@
-import { getSupabaseAdmin } from "../supabase/admin";
+import { getSupabaseAdmin, isSupabaseConfigured } from "../supabase/admin";
 import type { Album, Photo } from "../db";
 import { slugify } from "../utils";
 
@@ -28,6 +28,7 @@ function mapPhoto(row: Record<string, unknown>): Photo {
 export type AlbumWithCount = Album & { photo_count: number };
 
 export async function listAlbums(): Promise<AlbumWithCount[]> {
+  if (!isSupabaseConfigured()) return [];
   const supabase = getSupabaseAdmin();
   const { data, error } = await supabase
     .from("album_list")
@@ -42,6 +43,7 @@ export async function listAlbums(): Promise<AlbumWithCount[]> {
 }
 
 export async function getAlbumBySlug(slug: string): Promise<Album | null> {
+  if (!isSupabaseConfigured()) return null;
   const supabase = getSupabaseAdmin();
   const { data, error } = await supabase.from("albums").select("*").eq("slug", slug).maybeSingle();
   if (error) throw error;
@@ -50,6 +52,7 @@ export async function getAlbumBySlug(slug: string): Promise<Album | null> {
 }
 
 export async function getAlbumById(id: number): Promise<Album | null> {
+  if (!isSupabaseConfigured()) return null;
   const supabase = getSupabaseAdmin();
   const { data, error } = await supabase.from("albums").select("*").eq("id", id).maybeSingle();
   if (error) throw error;
@@ -58,6 +61,7 @@ export async function getAlbumById(id: number): Promise<Album | null> {
 }
 
 export async function getAlbumPhotos(albumId: number): Promise<Photo[]> {
+  if (!isSupabaseConfigured()) return [];
   const supabase = getSupabaseAdmin();
   const { data, error } = await supabase
     .from("photos")
@@ -158,6 +162,7 @@ export async function deletePhoto(photoId: number): Promise<void> {
 
 /** URL of a single photo row (for admin actions). */
 export async function getPhotoUrlById(photoId: number): Promise<string | null> {
+  if (!isSupabaseConfigured()) return null;
   const supabase = getSupabaseAdmin();
   const { data, error } = await supabase.from("photos").select("url").eq("id", photoId).maybeSingle();
   if (error) throw error;
@@ -167,6 +172,7 @@ export async function getPhotoUrlById(photoId: number): Promise<string | null> {
 
 /** First photo URL in album sort order (for cover fallback). */
 export async function getFirstPhotoUrlForAlbum(albumId: number): Promise<string | null> {
+  if (!isSupabaseConfigured()) return null;
   const supabase = getSupabaseAdmin();
   const { data, error } = await supabase
     .from("photos")

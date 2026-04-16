@@ -1,4 +1,4 @@
-import { getSupabaseAdmin } from "../supabase/admin";
+import { getSupabaseAdmin, isSupabaseConfigured } from "../supabase/admin";
 import type { Post } from "../db";
 import { slugify } from "../utils";
 
@@ -16,6 +16,7 @@ function mapPost(row: Record<string, unknown>): Post {
 }
 
 export async function listPosts(limit?: number): Promise<Post[]> {
+  if (!isSupabaseConfigured()) return [];
   const supabase = getSupabaseAdmin();
   let q = supabase.from("posts").select("*").order("published_at", { ascending: false });
   if (limit != null) q = q.limit(limit);
@@ -25,6 +26,7 @@ export async function listPosts(limit?: number): Promise<Post[]> {
 }
 
 export async function getPostBySlug(slug: string): Promise<Post | null> {
+  if (!isSupabaseConfigured()) return null;
   const supabase = getSupabaseAdmin();
   const { data, error } = await supabase.from("posts").select("*").eq("slug", slug).maybeSingle();
   if (error) throw error;
@@ -33,6 +35,7 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
 }
 
 export async function getPostById(id: number): Promise<Post | null> {
+  if (!isSupabaseConfigured()) return null;
   const supabase = getSupabaseAdmin();
   const { data, error } = await supabase.from("posts").select("*").eq("id", id).maybeSingle();
   if (error) throw error;
