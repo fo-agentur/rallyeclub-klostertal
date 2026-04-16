@@ -74,6 +74,21 @@ Werte wie in `.env.local`. OpenNext kopiert nicht alle Bindings nach `process.en
 
 Ohne gültige Supabase-Variablen schlagen Seiten mit Datenbankzugriff fehl — **Logs** unter Workers → Observability prüfen.
 
+## Vercel
+
+| Einstellung | Wert |
+|-------------|------|
+| **Framework Preset** | Next.js |
+| **Build Command** | `npm run build` (NICHT `cf:build` — der erzeugt nur `.open-next/` für Cloudflare) |
+| **Output Directory** | leer / Standard — **kein** Custom-Ordner (z. B. nicht `.open-next`) |
+| **Install Command** | `npm install` |
+
+**404 `NOT_FOUND` auf `*.vercel.app`:** Tritt oft auf, wenn im Projekt fälschlich der Cloudflare-Build (`npm run cf:build`) oder ein **Output Directory** gesetzt ist — Vercel findet dann kein gültiges Next.js-Deployment. `vercel.json` im Repo pinnt `buildCommand` auf `npm run build`.
+
+**Environment Variables** (Project → Settings → Environment Variables) — dieselben Namen wie lokal: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `AUTH_SECRET`, `ADMIN_PASSWORD_HASH` (für Production + Preview jeweils setzen). Ohne Supabase-Keys: **500** beim Seitenaufruf.
+
+**Node:** `package.json` verlangt `node >= 22` — passt zu den [unterstützten Vercel-Runtime-Versionen](https://vercel.com/docs/functions/runtimes/node-js/node-js-versions).
+
 ## Docker (optional, ohne Supabase)
 
 ```bash
