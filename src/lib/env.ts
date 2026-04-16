@@ -2,19 +2,21 @@ import { getCloudflareContext } from "@opennextjs/cloudflare";
 
 /**
  * Read env vars on Cloudflare Workers + Node.
- * OpenNext copies only `typeof === "string"` from `env` into `process.env`; some bindings need a direct read.
+ * Prefer Worker `env` from `getCloudflareContext()` — OpenNext only copies `typeof === "string"`
+ * bindings into `process.env`, so secrets or non-string bindings must be read from context.
  */
 export function getEnv(key: string): string | undefined {
-  const fromProcess = process.env[key];
-  if (fromProcess !== undefined && fromProcess !== "") return fromProcess;
-
   try {
     const { env } = getCloudflareContext();
-    const raw = (env as Record<string, unknown>)[key];
-    return unwrapBinding(raw);
+    const fromContext = unwrapBinding((env as Record<string, unknown>)[key]);
+    if (fromContext !== undefined && fromContext !== "") return fromContext;
   } catch {
-    return undefined;
+    // No Cloudflare request context (e.g. local `next dev` without proxy, or SSG edge case).
   }
+
+  const fromProcess = process.env[key];
+  if (fromProcess !== undefined && fromProcess !== "") return fromProcess;
+  return undefined;
 }
 
 function unwrapBinding(v: unknown): string | undefined {
