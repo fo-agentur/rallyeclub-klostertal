@@ -4,15 +4,22 @@ import { isAuthenticated } from "@/lib/auth";
 import { listPosts } from "@/lib/queries/posts";
 import { listEvents } from "@/lib/queries/events";
 import { listAlbums } from "@/lib/queries/albums";
+import { listMessages } from "@/lib/queries/messages";
 import { logout } from "../actions";
 
 export default async function DashboardPage() {
   if (!(await isAuthenticated())) redirect("/admin");
 
-  const [posts, events, albums] = await Promise.all([listPosts(), listEvents(), listAlbums()]);
+  const [posts, events, albums, messages] = await Promise.all([
+    listPosts(),
+    listEvents(),
+    listAlbums(),
+    listMessages(),
+  ]);
   const postCount = posts.length;
   const eventCount = events.length;
   const albumCount = albums.length;
+  const messageCount = messages.length;
 
   const tiles = [
     {
@@ -32,6 +39,12 @@ export default async function DashboardPage() {
       label: "Termine",
       count: eventCount,
       hint: "Veranstaltungen",
+    },
+    {
+      href: "/admin/messages",
+      label: "Nachrichten",
+      count: messageCount,
+      hint: "Kontaktanfragen",
     },
   ];
 
