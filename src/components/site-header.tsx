@@ -52,25 +52,7 @@ export function SiteHeader() {
     >
       <div className="container-wide flex h-20 items-center justify-between">
         <Link href="/" className="flex items-center gap-3" aria-label="Rallyeclub Klostertal — Home">
-          <ClubLogo className="shrink-0" />
-          <span className="hidden flex-col leading-none md:flex">
-            <span
-              className={cn(
-                "font-display text-lg tracking-widest transition-colors duration-300",
-                dark ? "text-white" : "text-ink"
-              )}
-            >
-              RALLYECLUB
-            </span>
-            <span
-              className={cn(
-                "text-[10px] font-semibold uppercase tracking-[0.25em] transition-colors duration-300",
-                dark ? "text-neutral-400" : "text-neutral-500"
-              )}
-            >
-              Klostertal · Vorarlberg
-            </span>
-          </span>
+          <ClubLogo className="shrink-0" variant="mark" />
         </Link>
 
         <nav className="hidden items-center gap-1 lg:flex">
