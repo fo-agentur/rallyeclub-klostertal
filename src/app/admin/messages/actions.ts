@@ -12,8 +12,16 @@ async function requireAuth() {
 export async function deleteMessageAction(formData: FormData): Promise<void> {
   await requireAuth();
   const id = Number(formData.get("id"));
-  if (!id) return;
-  await deleteMessage(id);
+  if (!id || !Number.isFinite(id)) redirect("/admin/messages");
+  try {
+    await deleteMessage(id);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "";
+    if (message.includes("Supabase nicht konfiguriert")) {
+      redirect("/admin/messages?error=config");
+    }
+    redirect("/admin/messages?error=delete");
+  }
   revalidatePath("/admin/messages");
   redirect("/admin/messages");
 }

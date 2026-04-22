@@ -2,11 +2,20 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { isAuthenticated } from "@/lib/auth";
 import { listMessages } from "@/lib/queries/messages";
+import { isSupabaseConfigured } from "@/lib/supabase/admin";
 import { formatDate } from "@/lib/utils";
 import { deleteMessageAction } from "./actions";
 
-export default async function AdminMessagesPage() {
+export default async function AdminMessagesPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string>>;
+}) {
   if (!(await isAuthenticated())) redirect("/admin");
+  const params = await searchParams;
+  const backendError = params.error === "config";
+  const deleteError = params.error === "delete";
+  const backendMissing = !isSupabaseConfigured();
   const messages = await listMessages();
 
   return (
@@ -29,9 +38,27 @@ export default async function AdminMessagesPage() {
           </span>
         </div>
 
+        {backendMissing && (
+          <div className="mt-6 border border-amber-200 bg-amber-50 px-5 py-3 text-xs font-semibold uppercase tracking-widest text-amber-700">
+            Backend nicht konfiguriert – Nachrichten nicht verfügbar
+          </div>
+        )}
+        {backendError && (
+          <div className="mt-6 border border-red-200 bg-red-50 px-5 py-3 text-xs font-semibold uppercase tracking-widest text-red-700">
+            Löschen fehlgeschlagen – Backend nicht konfiguriert
+          </div>
+        )}
+        {deleteError && (
+          <div className="mt-6 border border-red-200 bg-red-50 px-5 py-3 text-xs font-semibold uppercase tracking-widest text-red-700">
+            Löschen fehlgeschlagen – bitte erneut versuchen
+          </div>
+        )}
+
         <div className="mt-10 border border-neutral-200 bg-white">
           {messages.length === 0 && (
-            <div className="p-8 text-sm text-neutral-500">Noch keine Nachrichten.</div>
+            <div className="p-8 text-sm text-neutral-500">
+              {backendMissing ? "Backend nicht konfiguriert." : "Noch keine Nachrichten."}
+            </div>
           )}
           {messages.map((m) => (
             <div

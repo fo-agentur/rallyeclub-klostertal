@@ -31,6 +31,7 @@ export async function listMessages(limit?: number): Promise<Message[]> {
 }
 
 export async function deleteMessage(id: number): Promise<void> {
+  if (!isSupabaseConfigured()) throw new Error("Supabase nicht konfiguriert");
   const supabase = getSupabaseAdmin();
   const { error } = await supabase.from("messages").delete().eq("id", id);
   if (error) throw error;
