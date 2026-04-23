@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 const STATS = [
@@ -6,88 +7,114 @@ const STATS = [
   { value: "VBG", label: "Vorarlberg" },
 ];
 
+const HERO_SHOTS = [
+  "/images/headers/hero-hq-1.png",
+  "/images/headers/hero-hq-2.png",
+  "/images/headers/hero-hq-3.png",
+];
+
 export function Hero() {
   return (
-    <section className="relative flex min-h-[88vh] flex-col overflow-hidden bg-ink text-white">
-      {/* Red radial glow */}
-      <div
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(ellipse 75% 60% at 12% 48%, rgba(225,6,0,0.11) 0%, transparent 65%)",
-        }}
-        aria-hidden
+    <section className="relative isolate flex min-h-[92vh] flex-col overflow-hidden bg-ink text-white">
+      <Image
+        src="/images/headers/hero-hq-1.png"
+        alt="Autoslalom des Rallyeclub Klostertal in St. Gallenkirch"
+        fill
+        priority
+        className="object-cover object-center"
+        sizes="100vw"
       />
-      {/* Subtle grid overlay */}
+
+      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(10,10,10,0.88)_0%,rgba(10,10,10,0.72)_42%,rgba(10,10,10,0.38)_68%,rgba(10,10,10,0.6)_100%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_28%,rgba(225,6,0,0.28),transparent_32%),radial-gradient(circle_at_78%_22%,rgba(255,255,255,0.12),transparent_22%)]" />
       <div
-        className="pointer-events-none absolute inset-0 opacity-30"
+        className="pointer-events-none absolute inset-0 opacity-20"
         style={{
           backgroundImage:
-            "linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px)",
+            "linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)",
           backgroundSize: "72px 72px",
         }}
         aria-hidden
       />
-      {/* Large decorative display text */}
-      <div
-        className="pointer-events-none absolute -right-4 top-1/2 -translate-y-1/2 select-none overflow-hidden"
-        aria-hidden
-      >
-        <span className="font-display text-[clamp(10rem,28vw,22rem)] leading-none tracking-widest text-white/[0.025]">
-          RCK
-        </span>
-      </div>
 
-      {/* Main content */}
-      <div className="container-wide relative z-10 flex flex-1 flex-col justify-center py-32 lg:py-44">
-        <div className="max-w-5xl">
+      <div className="container-wide relative z-10 grid flex-1 items-end gap-12 py-24 lg:grid-cols-[minmax(0,1.1fr)_360px] lg:py-32">
+        <div className="max-w-4xl">
           <div className="mb-8 flex items-center gap-3">
             <span className="block h-px w-10 bg-racing" />
-            <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-racing">
-              Seit 1988 · Vorarlberg
+            <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/78">
+              Seit 1988 · St. Gallenkirch · Vorarlberg
             </span>
           </div>
 
-          <h1 className="font-display text-[clamp(4rem,11vw,9.5rem)] leading-[0.88] tracking-wider">
-            <span className="block text-white">Motorsport</span>
-            <span className="block text-racing">aus dem</span>
-            <span className="block text-white">Klostertal.</span>
+          <h1 className="font-display text-[clamp(4.2rem,10vw,9.5rem)] leading-[0.86] tracking-[0.04em] text-white drop-shadow-[0_10px_32px_rgba(0,0,0,0.45)]">
+            <span className="block">Motorsport</span>
+            <span className="block text-racing">mit Haltung.</span>
+            <span className="block">Aus dem Klostertal.</span>
           </h1>
 
-          <p className="mt-10 max-w-[480px] text-[15px] leading-relaxed text-neutral-400 md:text-base">
-            Der Rallyeclub Klostertal organisiert den Autoslalom in St.&nbsp;Gallenkirch,
-            Clubausfahrten und Kartrennen — ehrlicher Motorsport auf Vereinsbasis mit Leidenschaft
-            für Kurven, Zeiten und das Fahrerlager.
+          <p className="mt-8 max-w-[600px] text-base leading-relaxed text-white/78 md:text-lg">
+            Der Rallyeclub Klostertal organisiert den traditionellen Autoslalom in
+            St.&nbsp;Gallenkirch, Clubausfahrten und Motorsport-Events mit echter Nähe zur
+            Szene — bodenständig, schnell und mit Leidenschaft fürs Fahrerlager.
           </p>
 
           <div className="mt-10 flex flex-wrap items-center gap-4">
             <Link href="/veranstaltungen" className="btn-primary">
-              Nächste Termine
+              Termine ansehen
             </Link>
             <Link
               href="/galerie"
-              className="inline-flex items-center gap-2 border border-white/25 px-5 py-3 text-sm font-semibold uppercase tracking-widest text-white/80 transition hover:border-white/60 hover:text-white"
+              className="inline-flex items-center gap-2 border border-white/25 bg-white/5 px-5 py-3 text-sm font-semibold uppercase tracking-widest text-white transition hover:border-white/70 hover:bg-white/10"
             >
-              Galerie →
+              Bilder aus dem Club →
             </Link>
+          </div>
+        </div>
+
+        <div className="hidden lg:block">
+          <div className="grid gap-3">
+            {HERO_SHOTS.map((src, index) => (
+              <div
+                key={src}
+                className="group relative overflow-hidden border border-white/15 bg-white/5 shadow-[0_20px_50px_rgba(0,0,0,0.28)]"
+              >
+                <div className="relative aspect-[4/3]">
+                  <Image
+                    src={src}
+                    alt={`Motorsport-Motiv ${index + 1} des Rallyeclub Klostertal`}
+                    fill
+                    className="object-cover transition duration-700 group-hover:scale-105"
+                    sizes="360px"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/15 to-transparent" />
+                  <div className="absolute bottom-0 left-0 right-0 p-4">
+                    <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-racing">
+                      Clubmoment {index + 1}
+                    </div>
+                    <div className="mt-1 text-sm font-medium text-white/88">
+                      Autoslalom & Vereinsleben im Klostertal
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
 
-      {/* Stats bar */}
-      <div className="relative z-10 border-t border-white/[0.08] bg-white/[0.04]">
+      <div className="relative z-10 border-t border-white/10 bg-black/35 backdrop-blur-sm">
         <div className="container-wide grid grid-cols-3 py-6 md:py-8">
           {STATS.map(({ value, label }, i) => (
             <div
               key={label}
               className={`flex flex-col items-center gap-1 px-4 ${
-                i > 0 ? "border-l border-white/[0.08]" : ""
+                i > 0 ? "border-l border-white/10" : ""
               }`}
             >
               <span className="font-display text-3xl tracking-wider text-white md:text-4xl">
                 {value}
               </span>
-              <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-neutral-400">
+              <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/60">
                 {label}
               </span>
             </div>
@@ -95,8 +122,7 @@ export function Hero() {
         </div>
       </div>
 
-      {/* Bottom accent line */}
-      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-racing/50 to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-racing/60 to-transparent" />
     </section>
   );
 }
