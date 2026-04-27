@@ -86,6 +86,35 @@
   }
 }
 
+@layer components {
+  /* Speedway design system — shared section primitives */
+  .sec-kicker {
+    @apply mb-3 flex items-center gap-3 text-xs font-bold uppercase tracking-[0.25em] text-racing;
+  }
+  .sec-kicker::before {
+    content: "↘";
+    @apply font-display text-lg;
+  }
+
+  .sec-title {
+    @apply font-display text-[clamp(48px,6vw,88px)] uppercase leading-[0.92] tracking-wide;
+  }
+
+  .sec-head {
+    @apply mb-11 flex flex-wrap items-end justify-between gap-5;
+  }
+
+  /* Diagonal checkered stripe separator */
+  .diag-stripe {
+    height: 6px;
+    background: repeating-linear-gradient(
+      45deg,
+      theme(colors.racing.DEFAULT) 0 14px,
+      theme(colors.ink.DEFAULT) 14px 28px
+    );
+  }
+}
+
 @layer utilities {
   .line-clamp-3 {
     display: -webkit-box;
