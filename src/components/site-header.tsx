@@ -22,10 +22,10 @@ export function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
 
   const isHome = pathname === "/";
-  const transparent = isHome && !scrolled;
+  const dark = isHome;
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
+    const onScroll = () => setScrolled(window.scrollY > 24);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -41,21 +41,23 @@ export function SiteHeader() {
     <header
       className={cn(
         "sticky top-0 z-40 w-full transition-all duration-300",
-        transparent
-          ? "bg-transparent"
+        isHome
+          ? scrolled
+            ? "border-b border-white/10 bg-ink/95 backdrop-blur-md"
+            : "border-b border-white/10 bg-ink/72 backdrop-blur-md"
           : scrolled
-            ? "border-b border-neutral-200 bg-white/90 backdrop-blur"
-            : "bg-white border-b border-neutral-200"
+            ? "border-b border-neutral-200 bg-white/92 backdrop-blur-md"
+            : "bg-white"
       )}
     >
       <div className="container-wide flex h-20 items-center justify-between">
         <Link href="/" className="flex items-center gap-3" aria-label="Rallyeclub Klostertal — Home">
-          <ClubLogo className="shrink-0" />
+          <ClubLogo className="shrink-0" variant="mark" />
           <span className="hidden flex-col leading-none md:flex">
             <span
               className={cn(
                 "font-display text-lg tracking-widest transition-colors duration-300",
-                transparent ? "text-white" : "text-ink"
+                dark ? "text-white" : "text-ink"
               )}
             >
               RALLYECLUB
@@ -63,7 +65,7 @@ export function SiteHeader() {
             <span
               className={cn(
                 "text-[10px] font-semibold uppercase tracking-[0.25em] transition-colors duration-300",
-                transparent ? "text-white/60" : "text-neutral-500"
+                dark ? "text-white/55" : "text-neutral-500"
               )}
             >
               Klostertal · Vorarlberg
@@ -80,11 +82,11 @@ export function SiteHeader() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "px-3 py-2 text-sm font-medium uppercase tracking-widest transition",
-                  transparent
+                  "px-3 py-2 text-sm font-medium uppercase tracking-widest transition-colors duration-200",
+                  dark
                     ? active
                       ? "text-racing"
-                      : "text-white/85 hover:text-racing"
+                      : "text-white/80 hover:text-white"
                     : active
                       ? "text-racing"
                       : "text-ink hover:text-racing"
@@ -98,42 +100,37 @@ export function SiteHeader() {
 
         <button
           type="button"
-          className={cn(
-            "flex h-10 w-10 items-center justify-center lg:hidden",
-            transparent ? "text-white" : "text-ink"
-          )}
+          className="flex h-10 w-10 items-center justify-center lg:hidden"
           aria-label="Menü öffnen"
           onClick={() => setOpen((v) => !v)}
         >
           <span className="sr-only">Menü</span>
           <div className="space-y-1.5">
-            <span
-              className={cn(
-                "block h-[2px] w-6 transition",
-                transparent ? "bg-white" : "bg-ink",
-                open && "translate-y-2 rotate-45"
-              )}
-            />
-            <span
-              className={cn(
-                "block h-[2px] w-6 transition",
-                transparent ? "bg-white" : "bg-ink",
-                open && "opacity-0"
-              )}
-            />
-            <span
-              className={cn(
-                "block h-[2px] w-6 transition",
-                transparent ? "bg-white" : "bg-ink",
-                open && "-translate-y-2 -rotate-45"
-              )}
-            />
+            {[
+              open ? "translate-y-2 rotate-45" : "",
+              open ? "opacity-0" : "",
+              open ? "-translate-y-2 -rotate-45" : "",
+            ].map((extra, i) => (
+              <span
+                key={i}
+                className={cn(
+                  "block h-[2px] w-6 transition-all duration-200",
+                  dark ? "bg-white" : "bg-ink",
+                  extra
+                )}
+              />
+            ))}
           </div>
         </button>
       </div>
 
       {open && (
-        <div className="border-t border-neutral-200 bg-white lg:hidden">
+        <div
+          className={cn(
+            "border-t lg:hidden",
+            isHome ? "border-white/10 bg-ink" : "border-neutral-200 bg-white"
+          )}
+        >
           <nav className="container-wide flex flex-col py-4">
             {NAV.map((item) => {
               const active =
@@ -143,8 +140,14 @@ export function SiteHeader() {
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "py-3 text-base font-medium uppercase tracking-widest",
-                    active ? "text-racing" : "text-ink"
+                    "py-3 text-base font-medium uppercase tracking-widest transition",
+                    isHome
+                      ? active
+                        ? "text-racing"
+                        : "text-white/80"
+                      : active
+                        ? "text-racing"
+                        : "text-ink"
                   )}
                 >
                   {item.label}

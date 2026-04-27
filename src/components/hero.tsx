@@ -1,24 +1,25 @@
+import Image from "next/image";
 import Link from "next/link";
 
 export function Hero() {
   return (
-    <section className="relative -mt-20 min-h-screen overflow-hidden text-white">
-      {/* Background photo */}
-      <div
-        className="absolute inset-0 bg-cover bg-center"
-        style={{
-          backgroundImage:
-            "url('https://images.unsplash.com/photo-1583121274602-3e2820c69888?auto=format&fit=crop&w=1920&q=80')",
-        }}
-        aria-hidden
+    <section className="relative flex min-h-[92vh] flex-col overflow-hidden bg-ink text-white">
+      {/* Background photo — lokale Club-Aufnahmen */}
+      <Image
+        src="/images/headers/hero-hq-1.png"
+        alt="Autoslalom des Rallyeclub Klostertal in St. Gallenkirch"
+        fill
+        priority
+        className="object-cover object-center"
+        sizes="100vw"
       />
 
-      {/* Diagonal red + dark overlay */}
+      {/* Diagonal red + dark overlay (Speedway V2) */}
       <div
         className="absolute inset-0"
         style={{
           background:
-            "linear-gradient(115deg, rgba(225,36,28,.48) 0%, rgba(10,10,10,.38) 50%, rgba(10,10,10,.88) 100%), linear-gradient(180deg, rgba(10,10,10,.45) 0%, rgba(10,10,10,0) 30%, rgba(10,10,10,.72) 100%)",
+            "linear-gradient(115deg, rgba(225,36,28,.45) 0%, rgba(10,10,10,.35) 50%, rgba(10,10,10,.85) 100%), linear-gradient(180deg, rgba(10,10,10,.4) 0%, rgba(10,10,10,0) 30%, rgba(10,10,10,.7) 100%)",
         }}
         aria-hidden
       />
@@ -34,12 +35,12 @@ export function Hero() {
       />
 
       {/* Main content */}
-      <div className="container-wide relative flex min-h-screen flex-col justify-center pb-28 pt-28">
-        <div className="animate-slide-up">
+      <div className="container-wide relative z-10 flex flex-1 flex-col justify-center py-24">
+        <div className="animate-slide-up max-w-4xl">
           <div className="mb-6 flex items-center gap-4">
             <span className="h-[2px] w-10 bg-racing" />
             <span className="text-[11px] font-semibold uppercase tracking-[0.28em] text-racing-100">
-              Rallyeclub Klostertal · seit 1979
+              Rallyeclub Klostertal · seit 1988 · Vorarlberg
             </span>
           </div>
 
@@ -47,25 +48,26 @@ export function Hero() {
             className="font-display text-[clamp(64px,10vw,160px)] uppercase leading-[0.92] tracking-wide text-white"
             style={{ textShadow: "0 4px 30px rgba(0,0,0,.4)" }}
           >
-            Benzin im Blut.
+            Motorsport
             <br />
-            <em className="not-italic text-racing">Berge im Herzen.</em>
+            <em className="not-italic text-racing">mit Haltung.</em>
           </h1>
 
-          <p className="mt-7 max-w-[560px] text-[17px] leading-relaxed opacity-90">
-            Motorsport aus dem Klostertal. Seit 1979 verbinden uns Leidenschaft
-            für PS, Asphalt und Gemeinschaft.
+          <p className="mt-7 max-w-[560px] text-base leading-relaxed text-white/85 md:text-lg">
+            Der Rallyeclub Klostertal organisiert den traditionellen Autoslalom in
+            St.&nbsp;Gallenkirch, Clubausfahrten und Motorsport-Events — bodenständig,
+            schnell und mit Leidenschaft fürs Fahrerlager.
           </p>
 
-          <div className="mt-9 flex flex-wrap gap-4">
-            <Link href="/news" className="btn-primary">
-              Aktuelle Berichte →
+          <div className="mt-10 flex flex-wrap gap-4">
+            <Link href="/veranstaltungen" className="btn-primary">
+              Termine ansehen
             </Link>
             <Link
-              href="/mitglieder"
-              className="inline-flex items-center gap-2 border border-white/50 px-5 py-3 text-sm font-semibold uppercase tracking-widest text-white transition hover:border-white hover:bg-white/10"
+              href="/galerie"
+              className="inline-flex items-center gap-2 border border-white/40 px-5 py-3 text-sm font-semibold uppercase tracking-widest text-white transition hover:border-white hover:bg-white/10"
             >
-              Über den Verein
+              Bilder aus dem Club →
             </Link>
           </div>
         </div>
@@ -90,15 +92,17 @@ export function Hero() {
       </div>
 
       {/* Meta bar */}
-      <div className="container-wide absolute inset-x-0 bottom-8 flex items-center justify-between text-[11px] font-semibold uppercase tracking-[0.18em] text-white/70">
-        <span>↘ Saison 2026</span>
-        <div className="flex items-center gap-2">
-          <span className="h-1.5 w-6 rounded bg-racing" />
-          <span className="h-1.5 w-1.5 rounded-full bg-white/40" />
-          <span className="h-1.5 w-1.5 rounded-full bg-white/40" />
-          <span className="h-1.5 w-1.5 rounded-full bg-white/40" />
+      <div className="relative z-10 border-t border-white/10 bg-black/30 backdrop-blur-sm">
+        <div className="container-wide flex items-center justify-between py-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/70">
+          <span>↘ Saison 2026</span>
+          <div className="flex items-center gap-2">
+            <span className="h-1.5 w-6 rounded bg-racing" />
+            <span className="h-1.5 w-1.5 rounded-full bg-white/40" />
+            <span className="h-1.5 w-1.5 rounded-full bg-white/40" />
+            <span className="h-1.5 w-1.5 rounded-full bg-white/40" />
+          </div>
+          <span>Scroll ↓</span>
         </div>
-        <span>Scroll ↓</span>
       </div>
     </section>
   );

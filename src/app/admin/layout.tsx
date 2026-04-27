@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { isAuthenticated } from "@/lib/auth";
+import { ClubLogo } from "@/components/club-logo";
 
 export const metadata = {
   title: "Admin · Rallyeclub Klostertal",
@@ -12,15 +13,13 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   return (
     <div className="min-h-screen bg-neutral-100">
       <header className="border-b border-neutral-200 bg-white">
-        <div className="container-wide flex h-14 items-center justify-between">
+        <div className="container-wide flex min-h-16 items-center justify-between gap-4 py-3">
           <Link
             href={authed ? "/admin/dashboard" : "/admin"}
             className="flex items-center gap-3"
           >
-            <span className="flex h-7 w-7 items-center justify-center bg-ink text-[11px] font-bold tracking-widest text-racing">
-              RCK
-            </span>
-            <span className="text-xs font-semibold uppercase tracking-widest text-ink">
+            <ClubLogo className="scale-[0.82] origin-left px-2 py-1.5 shadow-none ring-1 ring-neutral-200" variant="mark" />
+            <span className="text-xs font-semibold uppercase tracking-widest text-neutral-500">
               Admin
             </span>
           </Link>

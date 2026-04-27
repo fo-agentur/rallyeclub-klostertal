@@ -15,10 +15,7 @@ export function SiteFooter() {
         <div className="grid gap-12 md:grid-cols-4">
           <div className="md:col-span-2">
             <div className="flex items-center gap-3">
-              <ClubLogo className="shrink-0" />
-              <span className="font-display text-lg tracking-widest text-white">
-                RALLYECLUB KLOSTERTAL
-              </span>
+              <ClubLogo className="shrink-0" variant="mark" />
             </div>
             <p className="mt-6 max-w-md text-sm leading-relaxed text-neutral-400">
               Der Rallyeclub Klostertal ist ein Motorsportverein aus Vorarlberg und organisiert

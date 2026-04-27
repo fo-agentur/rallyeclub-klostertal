@@ -15,7 +15,7 @@ export default async function HomePage() {
     listUpcomingEvents(3),
     listAlbums(),
   ]);
-  const albums = allAlbums.slice(0, 6);
+  const albums = allAlbums.slice(0, 7);
   const leadPost = posts[0] ?? null;
   const smallPosts = posts.slice(1, 3);
 
@@ -28,11 +28,11 @@ export default async function HomePage() {
         <div className="container-wide">
           <div className="grid grid-cols-2 gap-y-10 md:grid-cols-4 md:gap-y-0">
             {[
-              { num: "1979", lbl: "Gegründet" },
-              { num: "47", lbl: "Mitglieder" },
-              { num: "14", lbl: "Aktive Fahrer" },
-              { num: "∞", lbl: "PS-Liebe" },
-            ].map((s, i) => (
+              { num: "1988", lbl: "Gegründet" },
+              { num: "30+", lbl: "Slalom-Ausgaben" },
+              { num: "VBG", lbl: "Vorarlberg" },
+              { num: "100%", lbl: "Leidenschaft" },
+            ].map((s) => (
               <div
                 key={s.lbl}
                 className="flex flex-col gap-1 border-l border-white/10 pl-7 first:border-l-0 first:pl-0"
@@ -70,10 +70,7 @@ export default async function HomePage() {
           {leadPost ? (
             <div className="grid gap-6 lg:grid-cols-[2fr_1fr_1fr]">
               {/* Lead card */}
-              <Link
-                href={`/news/${leadPost.slug}`}
-                className="group relative cursor-pointer"
-              >
+              <Link href={`/news/${leadPost.slug}`} className="group relative cursor-pointer">
                 <div className="relative aspect-[16/10] overflow-hidden bg-ink">
                   {leadPost.cover_image ? (
                     <Image
@@ -106,44 +103,38 @@ export default async function HomePage() {
               </Link>
 
               {/* Small cards */}
-              <div className="flex flex-col gap-6 lg:col-span-2 lg:flex-none lg:contents">
-                {smallPosts.map((post) => (
-                  <Link
-                    key={post.id}
-                    href={`/news/${post.slug}`}
-                    className="group cursor-pointer"
-                  >
-                    <div className="relative aspect-[4/3] overflow-hidden bg-ink">
-                      {post.cover_image ? (
-                        <Image
-                          src={post.cover_image}
-                          alt={post.title}
-                          fill
-                          className="object-cover transition duration-500 group-hover:scale-105"
-                          sizes="(min-width: 1024px) 20vw, 50vw"
-                        />
-                      ) : (
-                        <div className="flex h-full items-center justify-center bg-ink-muted">
-                          <span className="font-display text-4xl tracking-widest text-racing/50">RCK</span>
-                        </div>
-                      )}
-                    </div>
-                    <div className="mt-3 flex items-center gap-3">
-                      <span className="text-[11px] font-bold uppercase tracking-[0.15em] text-racing">
-                        {formatDate(post.published_at)}
-                      </span>
-                    </div>
-                    <h3 className="mt-2 font-display text-2xl uppercase leading-tight group-hover:text-racing">
-                      {post.title}
-                    </h3>
-                    {post.excerpt && (
-                      <p className="mt-2 text-sm leading-relaxed text-neutral-600 line-clamp-2">
-                        {post.excerpt}
-                      </p>
+              {smallPosts.map((post) => (
+                <Link key={post.id} href={`/news/${post.slug}`} className="group cursor-pointer">
+                  <div className="relative aspect-[4/3] overflow-hidden bg-ink">
+                    {post.cover_image ? (
+                      <Image
+                        src={post.cover_image}
+                        alt={post.title}
+                        fill
+                        className="object-cover transition duration-500 group-hover:scale-105"
+                        sizes="(min-width: 1024px) 20vw, 50vw"
+                      />
+                    ) : (
+                      <div className="flex h-full items-center justify-center bg-ink-muted">
+                        <span className="font-display text-4xl tracking-widest text-racing/50">RCK</span>
+                      </div>
                     )}
-                  </Link>
-                ))}
-              </div>
+                  </div>
+                  <div className="mt-3 flex items-center gap-3">
+                    <span className="text-[11px] font-bold uppercase tracking-[0.15em] text-racing">
+                      {formatDate(post.published_at)}
+                    </span>
+                  </div>
+                  <h3 className="mt-2 font-display text-2xl uppercase leading-tight group-hover:text-racing">
+                    {post.title}
+                  </h3>
+                  {post.excerpt && (
+                    <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-neutral-600">
+                      {post.excerpt}
+                    </p>
+                  )}
+                </Link>
+              ))}
             </div>
           ) : (
             <p className="text-sm text-neutral-500">Noch keine Berichte vorhanden.</p>
@@ -184,19 +175,19 @@ export default async function HomePage() {
         <div className="absolute inset-x-0 top-8 h-1.5 bg-ink" aria-hidden />
 
         <div className="container-wide relative">
-          <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+          <div className="sec-head">
             <div>
               <div className="sec-kicker">Crew</div>
               <h2 className="sec-title">
                 Aktive <em className="not-italic text-racing">Fahrer</em>
               </h2>
             </div>
-            <p className="max-w-sm text-sm leading-relaxed text-neutral-600 md:text-right">
+            <p className="max-w-sm text-sm leading-relaxed text-neutral-600">
               Slalom, Rallye und Bergrennen — unsere Fahrer auf Asphalt.
             </p>
           </div>
 
-          <div className="mt-10 grid grid-cols-3 gap-4 md:grid-cols-4 lg:grid-cols-7">
+          <div className="grid grid-cols-3 gap-4 md:grid-cols-4 lg:grid-cols-7">
             {DRIVERS.map((driver, i) => (
               <div
                 key={driver.name}
@@ -218,7 +209,7 @@ export default async function HomePage() {
                     </div>
                   )}
                 </div>
-                <p className="mt-2 text-center font-display text-lg uppercase tracking-wide leading-tight">
+                <p className="mt-2 text-center font-display text-lg uppercase leading-tight tracking-wide">
                   {driver.name}
                 </p>
               </div>
@@ -242,37 +233,35 @@ export default async function HomePage() {
               <div className="sec-kicker">Bilder &amp; Videos</div>
               <h2 className="sec-title mb-8">Galerie</h2>
 
-              {albums.length > 0 ? (
-                <div className="grid grid-cols-4 auto-rows-[130px] gap-2">
-                  {albums.slice(0, 7).map((album, i) => (
-                    <Link
-                      key={album.id}
-                      href={`/galerie/${album.slug}`}
-                      className={`group relative overflow-hidden bg-neutral-200 ${i === 0 || i === 5 ? "row-span-2" : ""}`}
-                    >
-                      {album.cover_image && (
-                        <Image
-                          src={album.cover_image}
-                          alt={album.title}
-                          fill
-                          className="object-cover transition duration-500 group-hover:scale-105"
-                          sizes="200px"
-                        />
-                      )}
-                      <div className="absolute inset-0 bg-black/20 opacity-0 transition group-hover:opacity-100" />
-                    </Link>
-                  ))}
-                </div>
-              ) : (
-                <div className="grid grid-cols-4 auto-rows-[130px] gap-2">
-                  {Array.from({ length: 7 }).map((_, i) => (
-                    <div
-                      key={i}
-                      className={`bg-neutral-200 ${i === 0 || i === 5 ? "row-span-2" : ""}`}
-                    />
-                  ))}
-                </div>
-              )}
+              <div className="grid grid-cols-4 auto-rows-[130px] gap-2">
+                {albums.length > 0
+                  ? albums.map((album, i) => (
+                      <Link
+                        key={album.id}
+                        href={`/galerie/${album.slug}`}
+                        className={`group relative overflow-hidden bg-neutral-200 ${
+                          i === 0 || i === 5 ? "row-span-2" : ""
+                        }`}
+                      >
+                        {album.cover_image && (
+                          <Image
+                            src={album.cover_image}
+                            alt={album.title}
+                            fill
+                            className="object-cover transition duration-500 group-hover:scale-105"
+                            sizes="200px"
+                          />
+                        )}
+                        <div className="absolute inset-0 bg-black/20 opacity-0 transition group-hover:opacity-100" />
+                      </Link>
+                    ))
+                  : Array.from({ length: 7 }).map((_, i) => (
+                      <div
+                        key={i}
+                        className={`bg-neutral-200 ${i === 0 || i === 5 ? "row-span-2" : ""}`}
+                      />
+                    ))}
+              </div>
 
               <Link href="/galerie" className="btn-ghost mt-6 inline-flex">
                 Komplette Galerie →
@@ -286,15 +275,12 @@ export default async function HomePage() {
 
               <div className="grid grid-cols-2 gap-2">
                 {[
-                  "https://images.unsplash.com/photo-1517524008697-84bbe3c3fd98?auto=format&fit=crop&w=400&q=80",
-                  "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=400&q=80",
-                  "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=400&q=80",
-                  "https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?auto=format&fit=crop&w=400&q=80",
+                  "/images/Autoslalom.jpg",
+                  "/images/Bericht-Kartfahren-Bild.png",
+                  "/images/Vorankuendigung.jpg",
+                  "/images/gallery/IMG-20150407-WA0034.jpg",
                 ].map((src, i) => (
-                  <div
-                    key={i}
-                    className="group relative aspect-square overflow-hidden bg-neutral-200"
-                  >
+                  <div key={i} className="group relative aspect-square overflow-hidden bg-neutral-200">
                     <Image
                       src={src}
                       alt=""
@@ -310,12 +296,12 @@ export default async function HomePage() {
               </div>
 
               <a
-                href="https://www.instagram.com/rallyeclub_klostertal"
+                href="https://www.facebook.com/rallyeclub.klostertal"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn-ghost mt-5 inline-flex"
               >
-                Auf Instagram folgen →
+                Auf Facebook folgen →
               </a>
             </div>
           </div>
@@ -325,10 +311,10 @@ export default async function HomePage() {
       {/* ── CONTACT + MAP ───────────────────────────────────────── */}
       <section className="bg-ink py-28 text-white">
         <div className="container-wide">
-          <div className="grid gap-14 lg:grid-cols-2 lg:gap-20 lg:items-center">
+          <div className="grid gap-14 lg:grid-cols-2 lg:items-center lg:gap-20">
             {/* Text */}
             <div>
-              <div className="sec-kicker" style={{ color: "var(--racing-color,#E10600)" }}>
+              <div className="sec-kicker">
                 <span className="text-racing">Komm vorbei</span>
               </div>
               <h2 className="font-display text-[clamp(56px,8vw,120px)] uppercase leading-[0.92]">
