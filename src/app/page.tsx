@@ -6,7 +6,6 @@ import { EventList } from "@/components/event-list";
 import { listPosts } from "@/lib/queries/posts";
 import { listUpcomingEvents } from "@/lib/queries/events";
 import { listAlbums } from "@/lib/queries/albums";
-import { DRIVERS } from "@/content/drivers";
 import { formatDate } from "@/lib/utils";
 
 export default async function HomePage() {
@@ -162,79 +161,68 @@ export default async function HomePage() {
       {upcoming.length > 0 && (
         <section className="section section-reveal border-y border-neutral-200 bg-neutral-50">
           <div className="container-wide">
-            <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+            <div className="grid gap-8 lg:grid-cols-[1.05fr_1.25fr] lg:items-start">
               <div>
                 <div className="sec-kicker">Kalender</div>
                 <h2 className="sec-title">
-                  Nächste <em className="not-italic text-racing">Termine</em>
+                  Nächste <em className="not-italic text-racing">Veranstaltungen</em>
                 </h2>
+                <p className="mt-4 max-w-md text-sm leading-7 text-neutral-600 md:text-base">
+                  Hier findest du die nächsten Termine, Rennen und Clubaktivitäten. Schnell
+                  erfassbar, ohne lange suchen zu müssen.
+                </p>
+                <div className="mt-6">
+                  <Link href="/veranstaltungen" className="btn-outline">
+                    Alle Termine ansehen
+                  </Link>
+                </div>
               </div>
-              <Link href="/veranstaltungen" className="btn-ghost self-start md:self-end">
-                Alle Termine →
-              </Link>
-            </div>
-            <div className="mt-10">
-              <EventList events={upcoming} emptyLabel="" />
+
+              <div className="rounded-[28px] border border-neutral-200 bg-white p-3 shadow-[0_18px_50px_rgba(20,20,20,0.06)] md:p-4">
+                <EventList events={upcoming} emptyLabel="" />
+              </div>
             </div>
           </div>
         </section>
       )}
 
-      <section className="section-reveal relative overflow-hidden bg-[#f0ebe1] py-24 md:py-28">
-        {/* Red diagonal clip at top */}
-        <div
-          className="absolute inset-x-0 top-0 h-14 bg-racing"
-          style={{ clipPath: "polygon(0 0,100% 0,100% 100%,0 35%)" }}
-          aria-hidden
-        />
-        <div className="absolute inset-x-0 top-8 h-1.5 bg-ink" aria-hidden />
-
-        <div className="container-wide relative">
-          <div className="sec-head">
+      <section className="section-reveal bg-white py-20 md:py-24">
+        <div className="container-wide">
+          <div className="grid gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-start">
             <div>
-              <div className="sec-kicker">Crew</div>
+              <div className="sec-kicker">Der Club</div>
               <h2 className="sec-title">
-                Aktive <em className="not-italic text-racing">Fahrer</em>
+                Motorsport mit <em className="not-italic text-racing">Substanz</em>
               </h2>
+              <p className="mt-5 max-w-2xl text-base leading-8 text-neutral-700">
+                Der Rallyeclub Klostertal verbindet sportlichen Anspruch mit einem starken
+                Vereinsleben. Im Mittelpunkt stehen der Autoslalom in St. Gallenkirch,
+                gemeinsame Ausfahrten, Veranstaltungen und die Begeisterung für ehrlichen
+                Motorsport in Vorarlberg.
+              </p>
+              <p className="mt-4 max-w-2xl text-base leading-8 text-neutral-700">
+                Statt unnötigem Schnickschnack soll diese Seite schnell zeigen, worum es geht:
+                was als Nächstes ansteht, was im Club passiert und wie man mit uns in Kontakt
+                kommt.
+              </p>
             </div>
-            <p className="max-w-sm text-sm leading-relaxed text-neutral-600">
-              Slalom, Rallye und Bergrennen — unsere Fahrer auf Asphalt.
-            </p>
-          </div>
 
-          <div className="grid grid-cols-3 gap-4 md:grid-cols-4 lg:grid-cols-7">
-            {DRIVERS.map((driver, i) => (
-              <div
-                key={driver.name}
-                className="group cursor-pointer border-2 border-ink bg-white p-2 transition duration-200 hover:z-10 hover:scale-105 hover:shadow-xl"
-                style={{ transform: `rotate(${i % 2 === 0 ? "-1.5deg" : "1.5deg"})` }}
-              >
-                <div className="relative aspect-square overflow-hidden bg-neutral-200">
-                  {driver.photo ? (
-                    <Image
-                      src={driver.photo}
-                      alt={driver.name}
-                      fill
-                      className="object-cover"
-                      sizes="160px"
-                    />
-                  ) : (
-                    <div className="flex h-full items-center justify-center bg-neutral-300">
-                      <span className="font-display text-2xl text-neutral-500">?</span>
-                    </div>
-                  )}
-                </div>
-                <p className="mt-2 text-center font-display text-lg uppercase leading-tight tracking-wide">
-                  {driver.name}
-                </p>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-10 text-center">
-            <Link href="/fahrer" className="btn-primary">
-              Alle Fahrer &amp; Mitglieder →
-            </Link>
+            <div className="grid gap-4 sm:grid-cols-2">
+              {[
+                { title: 'Veranstaltungen', text: 'Alle Rennen, Clubtermine und wichtige Daten auf einen Blick.', href: '/veranstaltungen' },
+                { title: 'News', text: 'Berichte, Rückblicke und Neuigkeiten aus dem Vereinsleben.', href: '/news' },
+                { title: 'Galerie', text: 'Bilder und Impressionen von Events, Fahrern und Momenten.', href: '/galerie' },
+                { title: 'Mitmachen', text: 'Kontakt aufnehmen, Mitglied werden oder einfach vorbeischauen.', href: '/kontakt' },
+              ].map((item) => (
+                <Link key={item.title} href={item.href} className="group rounded-[24px] border border-neutral-200 bg-neutral-50 p-6 transition duration-300 hover:-translate-y-1 hover:border-racing/40 hover:bg-white hover:shadow-card">
+                  <div className="text-[11px] font-bold uppercase tracking-[0.22em] text-racing">RCK</div>
+                  <h3 className="mt-3 font-display text-2xl uppercase leading-tight text-ink group-hover:text-racing">
+                    {item.title}
+                  </h3>
+                  <p className="mt-3 text-sm leading-7 text-neutral-600">{item.text}</p>
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -282,41 +270,41 @@ export default async function HomePage() {
               </Link>
             </div>
 
-            {/* Social wall */}
             <div>
-              <div className="sec-kicker">@rallyeclub_klostertal</div>
-              <h2 className="sec-title mb-8">Social Wall</h2>
+              <div className="sec-kicker">Gemeinschaft</div>
+              <h2 className="sec-title mb-8">Clubleben</h2>
 
-              <div className="grid grid-cols-2 gap-2">
-                {[
-                  "/images/Autoslalom.jpg",
-                  "/images/Bericht-Kartfahren-Bild.png",
-                  "/images/Vorankuendigung.jpg",
-                  "/images/gallery/IMG-20150407-WA0034.jpg",
-                ].map((src, i) => (
-                  <div key={i} className="group relative aspect-square overflow-hidden bg-neutral-200">
-                    <Image
-                      src={src}
-                      alt=""
-                      fill
-                      className="object-cover transition duration-500 group-hover:scale-105"
-                      sizes="200px"
-                    />
-                    <div className="absolute right-2 top-2 flex h-6 w-6 items-center justify-center rounded-full bg-white/90 text-[10px] font-bold text-ink">
-                      IG
+              <div className="rounded-[28px] border border-neutral-200 bg-[#f7f5f0] p-7">
+                <p className="text-base leading-8 text-neutral-700">
+                  Der Rallyeclub lebt nicht nur von Rennen, sondern von Menschen, die sich für
+                  Motorsport begeistern. Stammtisch, Ausfahrten, Helfer, Fahrer und Freunde des
+                  Clubs machen genau diese Mischung aus.
+                </p>
+
+                <div className="mt-8 grid grid-cols-2 gap-3">
+                  {[
+                    '/images/Autoslalom.jpg',
+                    '/images/Bericht-Kartfahren-Bild.png',
+                    '/images/Vorankuendigung.jpg',
+                    '/images/gallery/IMG-20150407-WA0034.jpg',
+                  ].map((src, i) => (
+                    <div key={i} className="group relative aspect-[5/4] overflow-hidden rounded-[18px] bg-neutral-200">
+                      <Image
+                        src={src}
+                        alt="Impression aus dem Clubleben"
+                        fill
+                        className="object-cover transition duration-500 group-hover:scale-105"
+                        sizes="240px"
+                      />
                     </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
 
-              <a
-                href="https://www.facebook.com/rallyeclub.klostertal"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-ghost mt-5 inline-flex"
-              >
-                Auf Facebook folgen →
-              </a>
+                <div className="mt-7 flex flex-wrap gap-3">
+                  <Link href="/fahrer" className="btn-outline">Aktive Fahrer</Link>
+                  <Link href="/mitglieder" className="btn-outline">Mitglieder ansehen</Link>
+                </div>
+              </div>
             </div>
           </div>
         </div>
