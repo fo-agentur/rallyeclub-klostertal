@@ -320,9 +320,8 @@ export default async function HomePage() {
                 <span className="text-racing">Komm vorbei</span>
               </div>
               <h2 className="font-display text-[clamp(56px,8vw,120px)] uppercase leading-[0.92]">
-                Lust auf
-                <br />
-                <em className="not-italic text-racing">Motorsport?</em>
+                <span className="block">Lust auf</span>
+                <em className="mt-1 block not-italic text-racing">Motorsport?</em>
               </h2>
               <p className="mt-5 max-w-[480px] text-base leading-relaxed text-neutral-400">
                 Stammtisch jeden ersten Freitag im Monat im Vereinslokal. Einfach

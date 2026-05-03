@@ -80,6 +80,10 @@ export function SiteFooter() {
                 Kontakt
               </Link>
               <span>·</span>
+              <Link href="/admin" className="transition hover:text-racing">
+                Admin
+              </Link>
+              <span>·</span>
               <span>© {new Date().getFullYear()} Rallyeclub Klostertal</span>
             </div>
           </div>

@@ -44,9 +44,8 @@ export function Hero() {
             className="max-w-5xl font-display text-[clamp(48px,8vw,112px)] uppercase leading-[0.92] tracking-wide text-white"
             style={{ textShadow: "0 8px 40px rgba(0,0,0,.35)" }}
           >
-            Der Club für
-            <br />
-            <em className="not-italic text-racing">Motorsport im Klostertal.</em>
+            <span className="block">Der Club für</span>
+            <em className="mt-1 block not-italic text-racing">Motorsport im Klostertal.</em>
           </h1>
 
           <p className="mt-6 max-w-[640px] text-base leading-relaxed text-white/82 md:text-lg">
