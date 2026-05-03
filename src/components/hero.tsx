@@ -3,105 +3,78 @@ import Link from "next/link";
 
 export function Hero() {
   return (
-    <section className="relative flex min-h-[92vh] flex-col overflow-hidden bg-ink text-white">
-      {/* Background photo — lokale Club-Aufnahmen */}
+    <section className="relative flex min-h-[88vh] flex-col overflow-hidden bg-ink text-white">
       <Image
         src="/images/headers/hero-hq-1.png"
         alt="Autoslalom des Rallyeclub Klostertal in St. Gallenkirch"
         fill
         priority
-        className="object-cover object-center"
+        className="object-cover object-center motion-safe:scale-[1.02] motion-safe:animate-hero-zoom"
         sizes="100vw"
       />
 
-      {/* Diagonal red + dark overlay (Speedway V2) */}
       <div
         className="absolute inset-0"
         style={{
           background:
-            "linear-gradient(115deg, rgba(225,36,28,.45) 0%, rgba(10,10,10,.35) 50%, rgba(10,10,10,.85) 100%), linear-gradient(180deg, rgba(10,10,10,.4) 0%, rgba(10,10,10,0) 30%, rgba(10,10,10,.7) 100%)",
+            "linear-gradient(110deg, rgba(225,36,28,.34) 0%, rgba(10,10,10,.22) 40%, rgba(10,10,10,.88) 100%), linear-gradient(180deg, rgba(10,10,10,.25) 0%, rgba(10,10,10,.15) 40%, rgba(10,10,10,.78) 100%)",
         }}
         aria-hidden
       />
 
-      {/* Speed lines */}
       <div
-        className="pointer-events-none absolute inset-0"
+        className="pointer-events-none absolute inset-0 opacity-60"
         style={{
           background:
-            "repeating-linear-gradient(115deg,rgba(255,255,255,.04) 0 1px,transparent 1px 36px)",
+            "repeating-linear-gradient(115deg,rgba(255,255,255,.04) 0 1px,transparent 1px 42px)",
         }}
         aria-hidden
       />
 
-      {/* Main content */}
-      <div className="container-wide relative z-10 flex flex-1 flex-col justify-center py-24">
-        <div className="animate-slide-up max-w-4xl">
-          <div className="mb-6 flex items-center gap-4">
-            <span className="h-[2px] w-10 bg-racing" />
+      <div className="container-wide relative z-10 flex flex-1 flex-col justify-center py-24 md:py-28">
+        <div className="max-w-4xl animate-fade-up">
+          <div className="mb-5 inline-flex items-center gap-4 rounded-full border border-white/15 bg-white/6 px-4 py-2 backdrop-blur-sm">
+            <span className="h-[2px] w-8 bg-racing" />
             <span className="text-[11px] font-semibold uppercase tracking-[0.28em] text-racing-100">
               Rallyeclub Klostertal · seit 1988 · Vorarlberg
             </span>
           </div>
 
           <h1
-            className="font-display text-[clamp(64px,10vw,160px)] uppercase leading-[0.92] tracking-wide text-white"
-            style={{ textShadow: "0 4px 30px rgba(0,0,0,.4)" }}
+            className="max-w-5xl font-display text-[clamp(48px,8vw,112px)] uppercase leading-[0.92] tracking-wide text-white"
+            style={{ textShadow: "0 8px 40px rgba(0,0,0,.35)" }}
           >
-            Motorsport
+            Der Club für
             <br />
-            <em className="not-italic text-racing">mit Haltung.</em>
+            <em className="not-italic text-racing">Motorsport im Klostertal.</em>
           </h1>
 
-          <p className="mt-7 max-w-[560px] text-base leading-relaxed text-white/85 md:text-lg">
-            Der Rallyeclub Klostertal organisiert den traditionellen Autoslalom in
-            St.&nbsp;Gallenkirch, Clubausfahrten und Motorsport-Events — bodenständig,
-            schnell und mit Leidenschaft fürs Fahrerlager.
+          <p className="mt-6 max-w-[640px] text-base leading-relaxed text-white/82 md:text-lg">
+            Autoslalom, Clubleben und echte Leidenschaft für Motorsport. Hier findest du
+            Termine, News, Bilder und alles Wichtige rund um den Rallyeclub Klostertal —
+            klar, schnell und ohne Umwege.
           </p>
 
-          <div className="mt-10 flex flex-wrap gap-4">
+          <div className="mt-9 flex flex-wrap gap-4">
             <Link href="/veranstaltungen" className="btn-primary">
-              Termine ansehen
+              Nächste Termine ansehen
             </Link>
-            <Link
-              href="/galerie"
-              className="inline-flex items-center gap-2 border border-white/40 px-5 py-3 text-sm font-semibold uppercase tracking-widest text-white transition hover:border-white hover:bg-white/10"
-            >
-              Bilder aus dem Club →
+            <Link href="/kontakt" className="btn-outline-inverse">
+              Mitglied werden & Kontakt
             </Link>
           </div>
         </div>
       </div>
 
-      {/* Slider arrows */}
-      <div className="pointer-events-none absolute inset-x-0 top-1/2 flex -translate-y-1/2 justify-between px-6">
-        <button
-          type="button"
-          className="pointer-events-auto flex h-11 w-11 items-center justify-center rounded-full border border-white/40 text-xl text-white transition hover:border-racing hover:bg-racing"
-          aria-label="Vorheriges Bild"
-        >
-          ‹
-        </button>
-        <button
-          type="button"
-          className="pointer-events-auto flex h-11 w-11 items-center justify-center rounded-full border border-white/40 text-xl text-white transition hover:border-racing hover:bg-racing"
-          aria-label="Nächstes Bild"
-        >
-          ›
-        </button>
-      </div>
-
-      {/* Meta bar */}
-      <div className="relative z-10 border-t border-white/10 bg-black/30 backdrop-blur-sm">
-        <div className="container-wide flex items-center justify-between py-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/70">
-          <span>↘ Saison 2026</span>
-          <div className="flex items-center gap-2">
-            <span className="h-1.5 w-6 rounded bg-racing" />
-            <span className="h-1.5 w-1.5 rounded-full bg-white/40" />
+      <div className="relative z-10 border-t border-white/10 bg-black/28 backdrop-blur-sm">
+        <div className="container-wide grid gap-4 py-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/72 md:grid-cols-3 md:items-center">
+          <span>↘ Tradition seit 1988</span>
+          <div className="flex items-center justify-start gap-2 md:justify-center">
+            <span className="h-1.5 w-7 rounded bg-racing" />
             <span className="h-1.5 w-1.5 rounded-full bg-white/40" />
             <span className="h-1.5 w-1.5 rounded-full bg-white/40" />
           </div>
-          <span>Scroll ↓</span>
+          <span className="md:text-right">Slalom · Rallye · Clubleben</span>
         </div>
       </div>
     </section>

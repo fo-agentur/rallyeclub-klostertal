@@ -23,28 +23,46 @@ export default async function HomePage() {
     <>
       <Hero />
 
-      {/* ── STATS STRIP ─────────────────────────────────────────── */}
       <section className="bg-ink py-14 text-white">
         <div className="container-wide">
-          <div className="grid grid-cols-2 gap-y-10 md:grid-cols-4 md:gap-y-0">
-            {[
-              { num: "1988", lbl: "Gegründet" },
-              { num: "30+", lbl: "Slalom-Ausgaben" },
-              { num: "VBG", lbl: "Vorarlberg" },
-              { num: "100%", lbl: "Leidenschaft" },
-            ].map((s) => (
-              <div
-                key={s.lbl}
-                className="flex flex-col gap-1 border-l border-white/10 pl-7 first:border-l-0 first:pl-0"
-              >
-                <span className="font-display text-[72px] leading-[0.9] text-racing">
-                  {s.num}
-                </span>
-                <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-neutral-400">
-                  {s.lbl}
-                </span>
+          <div className="grid gap-6 md:grid-cols-[1.3fr_1fr] md:gap-10">
+            <div className="rounded-[28px] border border-white/10 bg-white/5 p-8 backdrop-blur-sm">
+              <div className="sec-kicker !mb-4 text-racing-100 before:text-racing-100">Kurz gesagt</div>
+              <h2 className="max-w-3xl font-display text-[clamp(34px,4vw,58px)] uppercase leading-[0.95] text-white">
+                Eine klare Vereinsseite statt digitalem Overload.
+              </h2>
+              <p className="mt-4 max-w-2xl text-sm leading-7 text-white/76 md:text-base">
+                Der Rallyeclub Klostertal steht für ehrlichen Motorsport, starke Veranstaltungen
+                und eine lebendige Gemeinschaft. Auf dieser Seite findest du alles Relevante auf
+                einen Blick: Termine, News, Galerie und Kontakt.
+              </p>
+              <div className="mt-7 flex flex-wrap gap-3">
+                <Link href="/news" className="btn-outline-inverse">Aktuelle News</Link>
+                <Link href="/galerie" className="btn-outline-inverse">Zur Galerie</Link>
               </div>
-            ))}
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              {[
+                { num: "1988", lbl: "Gegründet" },
+                { num: "30+", lbl: "Slalom-Ausgaben" },
+                { num: "VBG", lbl: "Standort" },
+                { num: "100%", lbl: "Leidenschaft" },
+              ].map((s, i) => (
+                <div
+                  key={s.lbl}
+                  className="rounded-[24px] border border-white/10 bg-white/5 p-6 transition duration-300 hover:-translate-y-1 hover:border-racing/40 hover:bg-white/8"
+                  style={{ animationDelay: `${i * 90}ms` }}
+                >
+                  <span className="font-display text-[46px] leading-[0.9] text-racing md:text-[56px]">
+                    {s.num}
+                  </span>
+                  <span className="mt-3 block text-[11px] font-semibold uppercase tracking-[0.2em] text-neutral-400">
+                    {s.lbl}
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -52,8 +70,7 @@ export default async function HomePage() {
       {/* ── DIAGONAL STRIPE ─────────────────────────────────────── */}
       <div className="diag-stripe" aria-hidden />
 
-      {/* ── NEWS ────────────────────────────────────────────────── */}
-      <section className="section">
+      <section className="section section-reveal">
         <div className="container-wide">
           <div className="sec-head">
             <div>
@@ -142,9 +159,8 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ── UPCOMING EVENTS ─────────────────────────────────────── */}
       {upcoming.length > 0 && (
-        <section className="section border-y border-neutral-200 bg-neutral-50">
+        <section className="section section-reveal border-y border-neutral-200 bg-neutral-50">
           <div className="container-wide">
             <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
               <div>
@@ -164,8 +180,7 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* ── AKTIVE FAHRER ───────────────────────────────────────── */}
-      <section className="relative overflow-hidden bg-[#f0ebe1] py-28">
+      <section className="section-reveal relative overflow-hidden bg-[#f0ebe1] py-24 md:py-28">
         {/* Red diagonal clip at top */}
         <div
           className="absolute inset-x-0 top-0 h-14 bg-racing"
@@ -224,8 +239,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ── GALLERY + SOCIAL ────────────────────────────────────── */}
-      <section className="section">
+      <section className="section section-reveal">
         <div className="container-wide">
           <div className="grid gap-12 lg:grid-cols-[3fr_2fr] lg:gap-16">
             {/* Gallery */}

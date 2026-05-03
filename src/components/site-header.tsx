@@ -8,10 +8,9 @@ import { ClubLogo } from "@/components/club-logo";
 
 const NAV = [
   { href: "/", label: "Home" },
-  { href: "/news", label: "News" },
   { href: "/veranstaltungen", label: "Termine" },
+  { href: "/news", label: "News" },
   { href: "/galerie", label: "Galerie" },
-  { href: "/mitglieder", label: "Mitglieder" },
   { href: "/fahrer", label: "Fahrer" },
   { href: "/kontakt", label: "Kontakt" },
 ];
@@ -96,6 +95,17 @@ export function SiteHeader() {
               </Link>
             );
           })}
+          <Link
+            href="/kontakt"
+            className={cn(
+              "ml-2 hidden rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] transition xl:inline-flex",
+              dark
+                ? "border-white/20 text-white hover:border-racing hover:bg-racing"
+                : "border-neutral-300 text-ink hover:border-racing hover:text-racing"
+            )}
+          >
+            Mitglied werden
+          </Link>
         </nav>
 
         <button

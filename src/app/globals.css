@@ -45,6 +45,10 @@
     @apply inline-flex items-center justify-center gap-2 border border-ink px-5 py-3 text-sm font-semibold uppercase tracking-widest text-ink transition hover:bg-ink hover:text-white focus:outline-none focus:ring-2 focus:ring-ink focus:ring-offset-2;
   }
 
+  .btn-outline-inverse {
+    @apply inline-flex items-center justify-center gap-2 border border-white/30 px-5 py-3 text-sm font-semibold uppercase tracking-widest text-white transition hover:border-white hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white/40 focus:ring-offset-2 focus:ring-offset-ink;
+  }
+
   .btn-ghost {
     @apply inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-ink transition hover:bg-neutral-100;
   }
@@ -101,6 +105,10 @@
       theme(colors.ink.DEFAULT) 14px 28px
     );
   }
+
+  .section-reveal {
+    @apply motion-safe:animate-fade-up;
+  }
 }
 
 @layer utilities {
@@ -114,4 +122,32 @@
   .text-balance {
     text-wrap: balance;
   }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes heroZoom {
+  from {
+    transform: scale(1.02);
+  }
+  to {
+    transform: scale(1.08);
+  }
+}
+
+.motion-safe\:animate-fade-up {
+  animation: fadeUp 0.75s ease-out both;
+}
+
+.motion-safe\:animate-hero-zoom {
+  animation: heroZoom 14s ease-out both;
 }
