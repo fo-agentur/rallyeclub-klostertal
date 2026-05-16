@@ -71,19 +71,23 @@ export function SiteFooter() {
           <div className="flex flex-col items-start gap-6 md:flex-row md:items-center md:justify-between">
             <SponsorStrip compact variant="dark" />
 
-            <div className="flex items-center gap-4 text-xs text-neutral-500">
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-neutral-500">
               <Link href="/impressum" className="transition hover:text-racing">
                 Impressum
               </Link>
-              <span>·</span>
+              <span aria-hidden>·</span>
+              <Link href="/datenschutz" className="transition hover:text-racing">
+                Datenschutz
+              </Link>
+              <span aria-hidden>·</span>
               <Link href="/kontakt" className="transition hover:text-racing">
                 Kontakt
               </Link>
-              <span>·</span>
+              <span aria-hidden>·</span>
               <Link href="/admin" className="transition hover:text-racing">
                 Admin
               </Link>
-              <span>·</span>
+              <span aria-hidden>·</span>
               <span>© {new Date().getFullYear()} Rallyeclub Klostertal</span>
             </div>
           </div>

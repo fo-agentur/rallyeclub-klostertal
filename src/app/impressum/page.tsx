@@ -15,9 +15,9 @@ export default function ImpressumPage() {
         <div className="prose-article mt-10">
           <h2>Medieninhaber &amp; Herausgeber</h2>
           <p>
-            Rallyeclub Klostertal
+            Rallyeclub Klostertal (eingetragener Verein)
             <br />
-            Obmann Christoph Schuler
+            Vertretungsbefugter Obmann: Christoph Schuler
             <br />
             Amerdonastraße 22
             <br />
@@ -31,6 +31,22 @@ export default function ImpressumPage() {
             <br />
             E-Mail:{" "}
             <a href="mailto:info@rallyeclub-klostertal.at">info@rallyeclub-klostertal.at</a>
+          </p>
+          <p>
+            <strong>ZVR-Zahl:</strong>{" "}
+            <em>[bitte vom Vorstand ergänzen — siehe ZVR-Auszug]</em>
+            <br />
+            <strong>Vereinsbehörde:</strong> Bezirkshauptmannschaft Feldkirch
+          </p>
+
+          <h2>Offenlegung gemäß § 25 Mediengesetz</h2>
+          <p>
+            <strong>Medieninhaber:</strong> Rallyeclub Klostertal, Amerdonastraße 22, 6820
+            Frastanz, Österreich.
+            <br />
+            <strong>Blattlinie:</strong> Informationen über den Verein, seine Veranstaltungen
+            (insbesondere den Autoslalom St. Gallenkirch), Aktivitäten der Mitglieder und
+            Berichte aus dem Vereinsleben.
           </p>
 
           <h2>Vereinszweck</h2>

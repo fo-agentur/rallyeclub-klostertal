@@ -15,6 +15,7 @@ next-env.d.ts
 
 # Cursor / local agent settings
 .claude/
+.cursor/
 
 # project-specific
 .data
