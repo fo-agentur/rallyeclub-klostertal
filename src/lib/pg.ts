@@ -1,5 +1,5 @@
 import { Pool, type QueryConfig, type QueryResult, type QueryResultRow } from "pg";
-import parse from "pg-connection-string";
+import { parse } from "pg-connection-string";
 import { getEnv } from "./env";
 
 let _pool: Pool | null = null;
