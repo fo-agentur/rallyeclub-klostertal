@@ -1,34 +1,41 @@
 # Rallyeclub Klostertal — Webseite (v3)
 
-Öffentliche Vereinsseite mit schlankem Admin-Panel. Stack: **Next.js 15** (App Router) +
-**Tailwind** + **Supabase** (Postgres + Storage für Uploads). Optional lokal: **`npm run seed`**
-nutzt weiterhin **SQLite** (`node:sqlite`) nur für den Import aus `scripts/data/`.
+Öffentliche Vereinsseite mit schlankem Admin-Panel.
+
+**Stack:** Next.js 15 (App Router) · Tailwind · **PostgreSQL** · **MinIO/S3** für Bild-Uploads.
+**Deploy:** Self-Hosted via **Coolify** (Docker Compose).
+
+---
 
 ## Lokal starten
 
 ```bash
 npm install
-cp .env.example .env.local
-# .env.local: ADMIN_PASSWORD_HASH, AUTH_SECRET, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY
-npm run dev             # → http://localhost:3000
+cp .env.example .env.local        # ADMIN_PASSWORD_HASH, AUTH_SECRET, DATABASE_URL, S3_*
+docker compose up -d postgres minio minio-init   # nur Infra hochfahren
+npm run migrate                   # Schema einspielen
+npm run dev                       # → http://localhost:3000
 ```
 
-**Supabase einrichten:** SQL aus [`supabase/migrations/001_init.sql`](supabase/migrations/001_init.sql) im **Supabase SQL Editor** ausführen (Tabellen, View `album_list`, Storage-Bucket `uploads`). Keys: **Project Settings → API** (`service_role` nur serverseitig).
+Admin: `http://localhost:3000/admin` — Passwort wie in `.env.local` gehasht (`npm run hash-password <pw>`).
 
-Admin: `http://localhost:3000/admin` — Passwort wie in `.env` gehasht (`npm run hash-password`).
+> Komplettes Stack lokal in Containern: `docker compose up -d --build` (inkl. `web`).
+
+---
 
 ## Scripts
 
-| Befehl | Zweck |
-|---|---|
-| `npm run dev` | Dev-Server (Hot Reload) |
-| `npm run build` | Production-Build (nur Next.js — für **Cloudflare** `cf:build` nutzen) |
-| `npm run cf:build` | OpenNext + Next.js — erzeugt `.open-next/` für Cloudflare Workers |
-| `npm run cf:deploy` | Lokal: `cf:build` + Deploy (Wrangler) |
-| `npm run start` | Production-Server (nach Build) |
-| `npm run scrape` | Bilder + Posts von alter Joomla-Seite ziehen |
-| `npm run seed` | Optional: lokale SQLite `.data/rck.db` + Seeds (nur Import-Workflow) |
-| `npm run hash-password` | neues Admin-Passwort hashen (bcrypt) |
+| Befehl                  | Zweck                                                     |
+| ----------------------- | --------------------------------------------------------- |
+| `npm run dev`           | Dev-Server (Hot Reload)                                   |
+| `npm run build`         | Production-Build (Next.js standalone)                     |
+| `npm run start`         | Production-Server (nach Build)                            |
+| `npm run migrate`       | SQL aus `db/migrations/` in Postgres einspielen           |
+| `npm run scrape`        | Bilder + Posts von alter Joomla-Seite ziehen              |
+| `npm run seed`          | DB mit Scrape-Output (+ Demo-Termine) befüllen            |
+| `npm run hash-password` | Neues Admin-Passwort hashen (bcrypt)                      |
+
+---
 
 ## Projektstruktur
 
@@ -36,75 +43,77 @@ Admin: `http://localhost:3000/admin` — Passwort wie in `.env` gehasht (`npm ru
 src/
 ├── app/              → Routen (öffentlich + /admin)
 ├── lib/
-│   ├── db.ts         → Typen (+ SQLite-SCHEMA nur für npm run seed)
-│   ├── supabase/     → Server-Client (service role)
+│   ├── db.ts         → Entity-Typen
+│   ├── pg.ts         → Postgres-Pool (Singleton)
+│   ├── s3.ts         → S3/MinIO-Client + Upload-Helpers
 │   ├── auth.ts       → Cookie-Session (HMAC) + bcrypt
-│   ├── upload.ts     → Supabase Storage oder public/uploads (ohne Supabase-Env)
-│   └── queries/      → posts, events, albums (Supabase)
+│   ├── upload.ts     → Bild-Resize + Upload nach S3
+│   └── queries/      → posts, events, albums, messages
 ├── components/
 └── content/          → statische Vereinsseiten
 
-supabase/migrations/  → Postgres-Schema für Supabase SQL Editor
+db/migrations/        → Postgres-Schema (von `npm run migrate` eingespielt)
+docker-compose.yml    → web + postgres + minio + minio-init (für Coolify)
 ```
+
+---
 
 ## Admin
 
-- **Beiträge** — News mit Markdown + Titelbild  
-- **Galerie** — Alben mit Fotos (Supabase Storage wenn konfiguriert)  
-- **Termine** — Veranstaltungen  
+- **Beiträge** — News mit Markdown + Titelbild
+- **Galerie** — Alben mit Fotos (MinIO/S3)
+- **Termine** — Veranstaltungen
+- **Nachrichten** — Kontaktformular-Eingang
 - **Logout**
 
-## Cloudflare Workers (Git-Build)
+---
 
-| Schritt | Befehl |
-|--------|--------|
-| **Build command** | `npm run cf:build` |
-| **Deploy command** | `npx wrangler deploy --keep-vars` (oder `npm run cf:deploy`) |
+## Deploy auf Coolify
 
-**Wichtig:** Ohne `--keep-vars` **löscht Wrangler** bei jedem Deploy alle im Dashboard gesetzten Variablen, wenn sie nicht in `wrangler.jsonc` stehen — danach fehlen `SUPABASE_*` / `AUTH_SECRET` und die Seite liefert **500**. Alternativ: Variablen dauerhaft in der Wrangler-Config pflegen (nicht empfohlen für Secrets).
+1. **Projekt anlegen** → *Resource* → *Docker Compose* → Git-Repo verbinden, Branch `main`, Compose-File `docker-compose.yml`.
+2. **Environment Variables** im Coolify-UI setzen (Werte aus `.env.example`):
 
-**Secrets im Worker:** Exakt diese **Namen** (Groß/Klein wie hier), jeweils als **Secret** oder Variable:
+   | Variable                | Beispiel                                         |
+   | ----------------------- | ------------------------------------------------ |
+   | `ADMIN_PASSWORD_HASH`   | `$2a$12$…` (aus `npm run hash-password`)         |
+   | `AUTH_SECRET`           | `openssl rand -base64 32`                        |
+   | `POSTGRES_USER`         | `rck`                                            |
+   | `POSTGRES_PASSWORD`     | starkes Passwort                                 |
+   | `POSTGRES_DB`           | `rck`                                            |
+   | `MINIO_ROOT_USER`       | `rck-admin`                                      |
+   | `MINIO_ROOT_PASSWORD`   | starkes Passwort                                 |
+   | `S3_BUCKET`             | `uploads`                                        |
+   | `S3_PUBLIC_URL`         | `https://files.rallyeclub-klostertal.at/uploads` |
 
-- `SUPABASE_URL`
-- `SUPABASE_SERVICE_ROLE_KEY` (vollständiger Name, nicht abgekürzt)
-- `ADMIN_PASSWORD_HASH`
-- `AUTH_SECRET`
+3. **Reverse-Proxy / Domains** in Coolify:
+   - `web` → `https://rallyeclub-klostertal.at` (Port 3000)
+   - `minio` → `https://files.rallyeclub-klostertal.at` (Port 9000) — **nur** dieser eine Host für öffentliche Bild-URLs; das MinIO-Console-Port (9001) sollte **nicht** öffentlich exponiert werden.
+4. **Deploy** starten.
+5. Einmalig Migration einspielen (über Coolify-Terminal im `web`-Container):
+   ```bash
+   npm run migrate
+   ```
+6. Login auf `/admin`. Bilder über das Admin-Panel hochladen — landen automatisch im MinIO-Bucket.
 
-Werte wie in `.env.local`. OpenNext kopiert nicht alle Bindings nach `process.env`; der Code liest zusätzlich den Worker-`env`-Context aus.
+> `S3_PUBLIC_URL` muss exakt der öffentlich erreichbaren MinIO-URL inkl. Bucket-Pfad entsprechen, sonst sind hochgeladene Bilder im Frontend nicht ladbar.
 
-Ohne gültige Supabase-Variablen schlagen Seiten mit Datenbankzugriff fehl — **Logs** unter Workers → Observability prüfen.
+---
 
-## Vercel
+## Environment-Variablen (Übersicht)
 
-| Einstellung | Wert |
-|-------------|------|
-| **Framework Preset** | Next.js |
-| **Build Command** | `npm run build` (NICHT `cf:build` — der erzeugt nur `.open-next/` für Cloudflare) |
-| **Output Directory** | leer / Standard — **kein** Custom-Ordner (z. B. nicht `.open-next`) |
-| **Install Command** | `npm install` |
+| Variable                                     | Zweck                                              |
+| -------------------------------------------- | -------------------------------------------------- |
+| `ADMIN_PASSWORD_HASH`                        | bcrypt-Hash des Admin-Passworts                    |
+| `AUTH_SECRET`                                | HMAC-Secret für Session-Cookie                     |
+| `DATABASE_URL`                               | Postgres-Connection (`postgres://…`)               |
+| `S3_ENDPOINT`                                | MinIO/S3-Endpoint (compose-intern `http://minio:9000`) |
+| `S3_BUCKET`                                  | Bucket-Name (`uploads`)                            |
+| `S3_ACCESS_KEY_ID` / `S3_SECRET_ACCESS_KEY`  | MinIO-Credentials                                  |
+| `S3_PUBLIC_URL`                              | öffentlich erreichbare Basis-URL der Bilder        |
+| `S3_REGION`                                  | optional, default `us-east-1`                      |
+| `S3_FORCE_PATH_STYLE`                        | default `true` (Pflicht für MinIO)                 |
 
-**404 `NOT_FOUND` auf `*.vercel.app`:** Tritt oft auf, wenn im Projekt fälschlich der Cloudflare-Build (`npm run cf:build`) oder ein **Output Directory** gesetzt ist — Vercel findet dann kein gültiges Next.js-Deployment. `vercel.json` im Repo pinnt `buildCommand` auf `npm run build`.
-
-**Environment Variables** (Project → Settings → Environment Variables) — dieselben Namen wie lokal: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `AUTH_SECRET`, `ADMIN_PASSWORD_HASH` (für Production + Preview jeweils setzen). Ohne Supabase-Keys: **500** beim Seitenaufruf.
-
-**Node:** `package.json` verlangt `node >= 22` — passt zu den [unterstützten Vercel-Runtime-Versionen](https://vercel.com/docs/functions/runtimes/node-js/node-js-versions).
-
-## Docker (optional, ohne Supabase)
-
-```bash
-docker compose up -d --build
-```
-
-Nutzt lokale SQLite + `public/uploads` (siehe `Dockerfile`).
-
-## Environment-Variablen
-
-| Variable | Zweck |
-|---|---|
-| `ADMIN_PASSWORD_HASH` | bcrypt-Hash des Admin-Passworts |
-| `AUTH_SECRET` | Eigenes Geheimnis für Cookie-HMAC (`openssl rand -base64 32`) — **nicht** der Supabase-`sb_secret` |
-| `SUPABASE_URL` | Projekt-URL (`https://xxx.supabase.co`) |
-| `SUPABASE_SERVICE_ROLE_KEY` | **Nur Server** — niemals `NEXT_PUBLIC_` |
+---
 
 ## Lizenz / Inhalte
 

@@ -1,46 +1,56 @@
-import { getSupabaseAdmin, isSupabaseConfigured } from "../supabase/admin";
+import { isDatabaseConfigured, query } from "../pg";
 import type { Post } from "../db";
 import { slugify } from "../utils";
 
-function mapPost(row: Record<string, unknown>): Post {
+type PostRow = {
+  id: number;
+  slug: string;
+  title: string;
+  excerpt: string | null;
+  content: string;
+  cover_image: string | null;
+  published_at: string;
+  created_at: string | Date;
+};
+
+function mapPost(row: PostRow): Post {
   return {
     id: Number(row.id),
-    slug: String(row.slug),
-    title: String(row.title),
-    excerpt: row.excerpt != null ? String(row.excerpt) : null,
-    content: String(row.content),
-    cover_image: row.cover_image != null ? String(row.cover_image) : null,
-    published_at: String(row.published_at),
-    created_at: String(row.created_at),
+    slug: row.slug,
+    title: row.title,
+    excerpt: row.excerpt,
+    content: row.content,
+    cover_image: row.cover_image,
+    published_at: row.published_at,
+    created_at: row.created_at instanceof Date ? row.created_at.toISOString() : String(row.created_at),
   };
 }
 
 export async function listPosts(limit?: number): Promise<Post[]> {
-  if (!isSupabaseConfigured()) return [];
-  const supabase = getSupabaseAdmin();
-  let q = supabase.from("posts").select("*").order("published_at", { ascending: false });
-  if (limit != null) q = q.limit(limit);
-  const { data, error } = await q;
-  if (error) throw error;
-  return (data ?? []).map((row) => mapPost(row as Record<string, unknown>));
+  if (!isDatabaseConfigured()) return [];
+  const sql = limit != null
+    ? "SELECT * FROM posts ORDER BY published_at DESC LIMIT $1"
+    : "SELECT * FROM posts ORDER BY published_at DESC";
+  const { rows } = await query<PostRow>(sql, limit != null ? [limit] : undefined);
+  return rows.map(mapPost);
 }
 
 export async function getPostBySlug(slug: string): Promise<Post | null> {
-  if (!isSupabaseConfigured()) return null;
-  const supabase = getSupabaseAdmin();
-  const { data, error } = await supabase.from("posts").select("*").eq("slug", slug).maybeSingle();
-  if (error) throw error;
-  if (!data) return null;
-  return mapPost(data as Record<string, unknown>);
+  if (!isDatabaseConfigured()) return null;
+  const { rows } = await query<PostRow>(
+    "SELECT * FROM posts WHERE slug = $1 LIMIT 1",
+    [slug],
+  );
+  return rows[0] ? mapPost(rows[0]) : null;
 }
 
 export async function getPostById(id: number): Promise<Post | null> {
-  if (!isSupabaseConfigured()) return null;
-  const supabase = getSupabaseAdmin();
-  const { data, error } = await supabase.from("posts").select("*").eq("id", id).maybeSingle();
-  if (error) throw error;
-  if (!data) return null;
-  return mapPost(data as Record<string, unknown>);
+  if (!isDatabaseConfigured()) return null;
+  const { rows } = await query<PostRow>(
+    "SELECT * FROM posts WHERE id = $1 LIMIT 1",
+    [id],
+  );
+  return rows[0] ? mapPost(rows[0]) : null;
 }
 
 export type PostInput = {
@@ -53,54 +63,59 @@ export type PostInput = {
 };
 
 export async function createPost(input: PostInput): Promise<number> {
-  const supabase = getSupabaseAdmin();
   const slug = input.slug || (await ensureUniqueSlug(slugify(input.title)));
-  const { data, error } = await supabase
-    .from("posts")
-    .insert({
+  const { rows } = await query<{ id: number }>(
+    `INSERT INTO posts (slug, title, excerpt, content, cover_image, published_at)
+     VALUES ($1, $2, $3, $4, $5, $6)
+     RETURNING id`,
+    [
       slug,
-      title: input.title,
-      excerpt: input.excerpt ?? null,
-      content: input.content,
-      cover_image: input.cover_image ?? null,
-      published_at: input.published_at,
-    })
-    .select("id")
-    .single();
-  if (error) throw error;
-  return Number((data as { id: number }).id);
+      input.title,
+      input.excerpt ?? null,
+      input.content,
+      input.cover_image ?? null,
+      input.published_at,
+    ],
+  );
+  return Number(rows[0].id);
 }
 
 export async function updatePost(id: number, input: PostInput): Promise<void> {
-  const supabase = getSupabaseAdmin();
   const slug = input.slug || slugify(input.title);
-  const { error } = await supabase
-    .from("posts")
-    .update({
+  await query(
+    `UPDATE posts
+       SET slug = $1,
+           title = $2,
+           excerpt = $3,
+           content = $4,
+           cover_image = $5,
+           published_at = $6
+     WHERE id = $7`,
+    [
       slug,
-      title: input.title,
-      excerpt: input.excerpt ?? null,
-      content: input.content,
-      cover_image: input.cover_image ?? null,
-      published_at: input.published_at,
-    })
-    .eq("id", id);
-  if (error) throw error;
+      input.title,
+      input.excerpt ?? null,
+      input.content,
+      input.cover_image ?? null,
+      input.published_at,
+      id,
+    ],
+  );
 }
 
 export async function deletePost(id: number): Promise<void> {
-  const supabase = getSupabaseAdmin();
-  const { error } = await supabase.from("posts").delete().eq("id", id);
-  if (error) throw error;
+  await query("DELETE FROM posts WHERE id = $1", [id]);
 }
 
 async function ensureUniqueSlug(base: string): Promise<string> {
-  const supabase = getSupabaseAdmin();
   let slug = base;
   let n = 2;
   while (true) {
-    const { data } = await supabase.from("posts").select("id").eq("slug", slug).maybeSingle();
-    if (!data) return slug;
+    const { rows } = await query<{ id: number }>(
+      "SELECT id FROM posts WHERE slug = $1 LIMIT 1",
+      [slug],
+    );
+    if (rows.length === 0) return slug;
     slug = `${base}-${n++}`;
   }
 }

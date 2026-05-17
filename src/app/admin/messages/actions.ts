@@ -17,7 +17,7 @@ export async function deleteMessageAction(formData: FormData): Promise<void> {
     await deleteMessage(id);
   } catch (error) {
     const message = error instanceof Error ? error.message : "";
-    if (message.includes("Supabase nicht konfiguriert")) {
+    if (message.includes("Datenbank nicht konfiguriert")) {
       redirect("/admin/messages?error=config");
     }
     redirect("/admin/messages?error=delete");

@@ -57,20 +57,20 @@
 
 ## Technologie-Entscheidung
 
-**Empfehlung: Next.js + Supabase**
+**Gewählt: Next.js + PostgreSQL + MinIO, self-hosted via Coolify**
 
 | Was | Warum |
 |-----|-------|
-| Next.js | Ihr Team kennt es, App Router, einfaches Deployment auf Vercel |
-| Supabase | Ersatz für Firebase — einfacheres Dashboard, PostgreSQL, Storage für Bilder, Auth out-of-the-box |
-| Tailwind | Ihr Standard, bleibt |
+| Next.js | App Router, Server Actions, gut bekannt |
+| PostgreSQL | Robust, kostenlos, läuft als Coolify-Service |
+| MinIO | S3-kompatibler Object-Storage für Bilder, eigener Coolify-Service |
+| Coolify | Self-Hosted (volle Datenkontrolle), Docker Compose, Auto-Deploy aus Git |
+| Tailwind | Standard, bleibt |
 
-Alternativen:
-- [ ] Next.js + Supabase ← **empfohlen**
-- [ ] Next.js + Uploadthing (nur für Bilder) + Markdown-Files (für Beiträge)
-- [ ] Next.js + Firebase (bekannt, aber komplexer)
-
-**Entscheidung:** ___
+Verworfen:
+- Supabase — externer SaaS, weniger Datenhoheit
+- Vercel/Cloudflare — kein eigener Server, lock-in
+- Firebase — Komplexität wie in V2
 
 ---
 
@@ -109,8 +109,8 @@ Kein Klick-Chaos. Keine 15 Einstellungen auf einmal.
 ---
 
 ## Offene Fragen vor Start
-- [ ] Supabase oder Firebase? → Entscheidung treffen
-- [ ] Hosting: Vercel (einfach) oder Hostinger?
+- [x] Datenbank: PostgreSQL (in Coolify)
+- [x] Hosting: Self-Hosted via Coolify
 - [ ] Login: Nur ein Admin-Account oder mehrere?
 - [ ] Welche Inhalte aus V2 übernehmen (Fotos, Texte)?
 

@@ -1,28 +1,33 @@
 import path from "path";
 import { fileURLToPath } from "url";
-import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
-
-// Nur bei `npm run dev` – sonst bricht `next build` / Docker mit Miniflare ab
-if (process.env.npm_lifecycle_event === "dev") {
-  initOpenNextCloudflareForDev();
-}
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+const PUBLIC_UPLOAD_HOST = (() => {
+  const url = process.env.S3_PUBLIC_URL || process.env.S3_ENDPOINT;
+  if (!url) return null;
+  try {
+    return new URL(url).hostname;
+  } catch {
+    return null;
+  }
+})();
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Verhindert falsche Wurzel bei mehreren lockfiles (Parent-Ordner) – sonst kaputte Builds/Tracing
+  // Verhindert falsche Wurzel bei mehreren lockfiles (Parent-Ordner)
   outputFileTracingRoot: path.join(__dirname),
-  // Standalone nur für Docker; Vercel nutzt den normalen Next-Build
-  ...(process.env.DOCKER === "1" ? { output: "standalone" } : {}),
+  output: "standalone",
   images: {
     formats: ["image/avif", "image/webp"],
     remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "*.supabase.co",
-        pathname: "/storage/v1/object/public/**",
-      },
+      // MinIO / S3 — Host dynamisch aus ENV, sonst Wildcard als Notnagel
+      PUBLIC_UPLOAD_HOST
+        ? { protocol: "https", hostname: PUBLIC_UPLOAD_HOST }
+        : { protocol: "https", hostname: "**" },
+      PUBLIC_UPLOAD_HOST
+        ? { protocol: "http", hostname: PUBLIC_UPLOAD_HOST }
+        : { protocol: "http", hostname: "**" },
     ],
   },
   experimental: {

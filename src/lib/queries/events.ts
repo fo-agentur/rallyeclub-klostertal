@@ -1,57 +1,66 @@
-import { getSupabaseAdmin, isSupabaseConfigured } from "../supabase/admin";
+import { isDatabaseConfigured, query } from "../pg";
 import type { Event } from "../db";
 
-function mapEvent(row: Record<string, unknown>): Event {
+type EventRow = {
+  id: number;
+  title: string;
+  date: string;
+  end_date: string | null;
+  location: string | null;
+  description: string | null;
+  created_at: string | Date;
+};
+
+function mapEvent(row: EventRow): Event {
   return {
     id: Number(row.id),
-    title: String(row.title),
-    date: String(row.date),
-    end_date: row.end_date != null ? String(row.end_date) : null,
-    location: row.location != null ? String(row.location) : null,
-    description: row.description != null ? String(row.description) : null,
-    created_at: String(row.created_at),
+    title: row.title,
+    date: row.date,
+    end_date: row.end_date,
+    location: row.location,
+    description: row.description,
+    created_at: row.created_at instanceof Date ? row.created_at.toISOString() : String(row.created_at),
   };
 }
 
 export async function listEvents(): Promise<Event[]> {
-  if (!isSupabaseConfigured()) return [];
-  const supabase = getSupabaseAdmin();
-  const { data, error } = await supabase.from("events").select("*").order("date", { ascending: true });
-  if (error) throw error;
-  return (data ?? []).map((row) => mapEvent(row as Record<string, unknown>));
+  if (!isDatabaseConfigured()) return [];
+  const { rows } = await query<EventRow>(
+    "SELECT * FROM events ORDER BY date ASC",
+  );
+  return rows.map(mapEvent);
 }
 
 export async function listUpcomingEvents(limit?: number): Promise<Event[]> {
-  if (!isSupabaseConfigured()) return [];
+  if (!isDatabaseConfigured()) return [];
   const today = new Date().toISOString().slice(0, 10);
-  const supabase = getSupabaseAdmin();
-  let q = supabase.from("events").select("*").gte("date", today).order("date", { ascending: true });
-  if (limit != null) q = q.limit(limit);
-  const { data, error } = await q;
-  if (error) throw error;
-  return (data ?? []).map((row) => mapEvent(row as Record<string, unknown>));
+  const sql = limit != null
+    ? "SELECT * FROM events WHERE date >= $1 ORDER BY date ASC LIMIT $2"
+    : "SELECT * FROM events WHERE date >= $1 ORDER BY date ASC";
+  const { rows } = await query<EventRow>(
+    sql,
+    limit != null ? [today, limit] : [today],
+  );
+  return rows.map(mapEvent);
 }
 
 export async function listPastEvents(): Promise<Event[]> {
-  if (!isSupabaseConfigured()) return [];
+  if (!isDatabaseConfigured()) return [];
   const today = new Date().toISOString().slice(0, 10);
-  const supabase = getSupabaseAdmin();
-  const { data, error } = await supabase
-    .from("events")
-    .select("*")
-    .lt("date", today)
-    .order("date", { ascending: false });
-  if (error) throw error;
-  return (data ?? []).map((row) => mapEvent(row as Record<string, unknown>));
+  const { rows } = await query<EventRow>(
+    "SELECT * FROM events WHERE date < $1 ORDER BY date DESC",
+    [today],
+  );
+  return rows.map(mapEvent);
 }
 
 export async function getEventById(id: number): Promise<Event | null> {
-  if (!isSupabaseConfigured()) return null;
-  const supabase = getSupabaseAdmin();
-  const { data, error } = await supabase.from("events").select("*").eq("id", id).maybeSingle();
-  if (error) throw error;
-  if (!data) return null;
-  return mapEvent(data as Record<string, unknown>);
+  if (!isDatabaseConfigured()) return null;
+  const { rows } = await query<EventRow>(
+    "SELECT * FROM events WHERE id = $1 LIMIT 1",
+    [id],
+  );
+  return rows[0] ? mapEvent(rows[0]) : null;
 }
 
 export type EventInput = {
@@ -63,39 +72,37 @@ export type EventInput = {
 };
 
 export async function createEvent(input: EventInput): Promise<number> {
-  const supabase = getSupabaseAdmin();
-  const { data, error } = await supabase
-    .from("events")
-    .insert({
-      title: input.title,
-      date: input.date,
-      end_date: input.end_date ?? null,
-      location: input.location ?? null,
-      description: input.description ?? null,
-    })
-    .select("id")
-    .single();
-  if (error) throw error;
-  return Number((data as { id: number }).id);
+  const { rows } = await query<{ id: number }>(
+    `INSERT INTO events (title, date, end_date, location, description)
+     VALUES ($1, $2, $3, $4, $5)
+     RETURNING id`,
+    [
+      input.title,
+      input.date,
+      input.end_date ?? null,
+      input.location ?? null,
+      input.description ?? null,
+    ],
+  );
+  return Number(rows[0].id);
 }
 
 export async function updateEvent(id: number, input: EventInput): Promise<void> {
-  const supabase = getSupabaseAdmin();
-  const { error } = await supabase
-    .from("events")
-    .update({
-      title: input.title,
-      date: input.date,
-      end_date: input.end_date ?? null,
-      location: input.location ?? null,
-      description: input.description ?? null,
-    })
-    .eq("id", id);
-  if (error) throw error;
+  await query(
+    `UPDATE events
+       SET title = $1, date = $2, end_date = $3, location = $4, description = $5
+     WHERE id = $6`,
+    [
+      input.title,
+      input.date,
+      input.end_date ?? null,
+      input.location ?? null,
+      input.description ?? null,
+      id,
+    ],
+  );
 }
 
 export async function deleteEvent(id: number): Promise<void> {
-  const supabase = getSupabaseAdmin();
-  const { error } = await supabase.from("events").delete().eq("id", id);
-  if (error) throw error;
+  await query("DELETE FROM events WHERE id = $1", [id]);
 }

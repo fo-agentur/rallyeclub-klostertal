@@ -1,5 +1,8 @@
--- Rallyeclub Klostertal — Postgres schema for Supabase
--- Run once in Supabase SQL Editor (or via supabase db push).
+-- Rallyeclub Klostertal — Postgres schema
+-- Einmalig ausführen:
+--   docker compose exec -T postgres psql -U $POSTGRES_USER -d $POSTGRES_DB < db/migrations/001_init.sql
+-- oder vom Host:
+--   psql "$DATABASE_URL" -f db/migrations/001_init.sql
 
 CREATE TABLE IF NOT EXISTS posts (
   id SERIAL PRIMARY KEY,
@@ -41,10 +44,6 @@ CREATE TABLE IF NOT EXISTS photos (
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
-CREATE INDEX IF NOT EXISTS idx_posts_published ON posts (published_at DESC);
-CREATE INDEX IF NOT EXISTS idx_events_date ON events (date);
-CREATE INDEX IF NOT EXISTS idx_photos_album ON photos (album_id, sort_order);
-
 CREATE TABLE IF NOT EXISTS messages (
   id SERIAL PRIMARY KEY,
   name TEXT NOT NULL,
@@ -54,23 +53,6 @@ CREATE TABLE IF NOT EXISTS messages (
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
--- List view with photo counts (replaces SQLite GROUP BY in listAlbums)
-CREATE OR REPLACE VIEW album_list AS
-SELECT
-  a.id,
-  a.slug,
-  a.title,
-  a.description,
-  a.cover_image,
-  a.date,
-  a.created_at,
-  (SELECT COUNT(*)::integer FROM photos p WHERE p.album_id = a.id) AS photo_count
-FROM albums a;
-
--- Storage bucket for image uploads (create in Dashboard → Storage if this insert is not allowed)
-INSERT INTO storage.buckets (id, name, public)
-VALUES ('uploads', 'uploads', true)
-ON CONFLICT (id) DO NOTHING;
-
-DROP POLICY IF EXISTS "Public read uploads" ON storage.objects;
-CREATE POLICY "Public read uploads" ON storage.objects FOR SELECT USING (bucket_id = 'uploads');
+CREATE INDEX IF NOT EXISTS idx_posts_published ON posts (published_at DESC);
+CREATE INDEX IF NOT EXISTS idx_events_date ON events (date);
+CREATE INDEX IF NOT EXISTS idx_photos_album ON photos (album_id, sort_order);

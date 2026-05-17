@@ -2,7 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { isAuthenticated } from "@/lib/auth";
 import { listMessages } from "@/lib/queries/messages";
-import { isSupabaseConfigured } from "@/lib/supabase/admin";
+import { isDatabaseConfigured } from "@/lib/pg";
 import { formatDate } from "@/lib/utils";
 import { deleteMessageAction } from "./actions";
 
@@ -15,7 +15,7 @@ export default async function AdminMessagesPage({
   const params = await searchParams;
   const backendError = params.error === "config";
   const deleteError = params.error === "delete";
-  const backendMissing = !isSupabaseConfigured();
+  const backendMissing = !isDatabaseConfigured();
   const messages = await listMessages();
 
   return (

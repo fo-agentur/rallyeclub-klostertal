@@ -1,4 +1,4 @@
-import { getSupabaseAdmin, isSupabaseConfigured } from "../supabase/admin";
+import { isDatabaseConfigured, query } from "../pg";
 
 export type Message = {
   id: number;
@@ -9,30 +9,54 @@ export type Message = {
   created_at: string;
 };
 
-function mapMessage(row: Record<string, unknown>): Message {
+type MessageRow = {
+  id: number;
+  name: string;
+  email: string;
+  phone: string | null;
+  body: string;
+  created_at: string | Date;
+};
+
+function mapMessage(row: MessageRow): Message {
   return {
     id: Number(row.id),
-    name: String(row.name),
-    email: String(row.email),
-    phone: row.phone != null ? String(row.phone) : null,
-    body: String(row.body),
-    created_at: String(row.created_at),
+    name: row.name,
+    email: row.email,
+    phone: row.phone,
+    body: row.body,
+    created_at: row.created_at instanceof Date ? row.created_at.toISOString() : String(row.created_at),
   };
 }
 
 export async function listMessages(limit?: number): Promise<Message[]> {
-  if (!isSupabaseConfigured()) return [];
-  const supabase = getSupabaseAdmin();
-  let q = supabase.from("messages").select("*").order("created_at", { ascending: false });
-  if (limit != null) q = q.limit(limit);
-  const { data, error } = await q;
-  if (error) throw error;
-  return (data ?? []).map((row) => mapMessage(row as Record<string, unknown>));
+  if (!isDatabaseConfigured()) return [];
+  const sql = limit != null
+    ? "SELECT * FROM messages ORDER BY created_at DESC LIMIT $1"
+    : "SELECT * FROM messages ORDER BY created_at DESC";
+  const { rows } = await query<MessageRow>(sql, limit != null ? [limit] : undefined);
+  return rows.map(mapMessage);
+}
+
+export type MessageInput = {
+  name: string;
+  email: string;
+  phone?: string | null;
+  body: string;
+};
+
+export async function createMessage(input: MessageInput): Promise<number> {
+  if (!isDatabaseConfigured()) throw new Error("Datenbank nicht konfiguriert");
+  const { rows } = await query<{ id: number }>(
+    `INSERT INTO messages (name, email, phone, body)
+     VALUES ($1, $2, $3, $4)
+     RETURNING id`,
+    [input.name, input.email, input.phone ?? null, input.body],
+  );
+  return Number(rows[0].id);
 }
 
 export async function deleteMessage(id: number): Promise<void> {
-  if (!isSupabaseConfigured()) throw new Error("Supabase nicht konfiguriert");
-  const supabase = getSupabaseAdmin();
-  const { error } = await supabase.from("messages").delete().eq("id", id);
-  if (error) throw error;
+  if (!isDatabaseConfigured()) throw new Error("Datenbank nicht konfiguriert");
+  await query("DELETE FROM messages WHERE id = $1", [id]);
 }
