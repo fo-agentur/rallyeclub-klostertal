@@ -28,7 +28,11 @@ COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 USER nextjs
 EXPOSE 3000
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
-  CMD wget -qO- http://127.0.0.1:3000/ >/dev/null 2>&1 || exit 1
+# Healthcheck uses Node itself: node:alpine ships without wget/curl, so
+# shelling out to them fails with 127 and the container is marked unhealthy
+# even though the app is fine. Hit a dedicated lightweight /api/health route
+# so flaky DB/S3 cannot take the web container offline.
+HEALTHCHECK --interval=30s --timeout=5s --start-period=45s --retries=3 \
+  CMD node -e "fetch('http://127.0.0.1:3000/api/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"
 
 CMD ["node", "server.js"]
