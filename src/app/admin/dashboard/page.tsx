@@ -7,6 +7,8 @@ import { listAlbums } from "@/lib/queries/albums";
 import { listMessages } from "@/lib/queries/messages";
 import { logout } from "../actions";
 
+export const dynamic = "force-dynamic";
+
 export default async function DashboardPage() {
   if (!(await isAuthenticated())) redirect("/admin");
 
@@ -79,6 +81,22 @@ export default async function DashboardPage() {
               </div>
             </Link>
           ))}
+
+          <Link
+            href="/admin/passwort"
+            prefetch={false}
+            className="group block border border-neutral-200 bg-white p-8 transition hover:border-ink"
+          >
+            <div className="text-xs font-semibold uppercase tracking-widest text-racing">
+              Sicherheit
+            </div>
+            <div className="mt-6 font-display text-2xl tracking-wider text-ink group-hover:text-racing">
+              Passwort ändern
+            </div>
+            <div className="mt-1 text-xs font-semibold uppercase tracking-widest text-neutral-400">
+              Aktuelles + neues Passwort →
+            </div>
+          </Link>
 
           <form action={logout} className="block">
             <button

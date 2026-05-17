@@ -2,6 +2,9 @@ import Link from "next/link";
 import { isAuthenticated } from "@/lib/auth";
 import { ClubLogo } from "@/components/club-logo";
 
+// Cookie/session must be read on every request — avoid static shell that redirects to /admin.
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "Admin · Rallyeclub Klostertal",
   robots: { index: false, follow: false },
@@ -27,9 +30,10 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             {authed && (
               <Link
                 href="/admin/passwort"
+                prefetch={false}
                 className="text-xs font-semibold uppercase tracking-widest text-neutral-500 hover:text-ink"
               >
-                Passwort
+                Passwort ändern
               </Link>
             )}
             <Link

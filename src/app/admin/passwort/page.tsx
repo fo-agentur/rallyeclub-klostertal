@@ -2,6 +2,8 @@ import { redirect } from "next/navigation";
 import { isAuthenticated } from "@/lib/auth";
 import { ChangePasswordForm } from "./change-password-form";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "Passwort ändern",
   robots: { index: false, follow: false },
