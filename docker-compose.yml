@@ -62,11 +62,16 @@ services:
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
     volumes:
       - minio-data:/data
-    ports:
-      # In Coolify diese Ports lieber NICHT public mappen — stattdessen über
-      # Coolifys Reverse-Proxy mit eigenem Hostname routen.
-      - "9000:9000"
-      - "9001:9001"
+    # WICHTIG: keine Host-Port-Mappings.
+    # `web` erreicht MinIO intern über `http://minio:9000` (Docker-Netzwerk).
+    # Soll MinIO öffentlich erreichbar sein (z. B. für Bilder oder Console),
+    # dann in Coolify pro Port einen Domain-Proxy setzen:
+    #   - 9000 → files.<deine-domain>          (S3-API, S3_PUBLIC_URL)
+    #   - 9001 → s3-admin.<deine-domain>       (Web-Console, optional)
+    # Direkt-Mappings auf den Host führen unter Coolify zu Port-Konflikten.
+    expose:
+      - "9000"
+      - "9001"
     healthcheck:
       test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:9000/minio/health/live || exit 1"]
       interval: 10s
