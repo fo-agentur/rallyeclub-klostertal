@@ -23,12 +23,22 @@ export default async function AdminLayout({ children }: { children: React.ReactN
               Admin
             </span>
           </Link>
-          <Link
-            href="/"
-            className="text-xs font-semibold uppercase tracking-widest text-neutral-500 hover:text-ink"
-          >
-            ← Zur Website
-          </Link>
+          <div className="flex items-center gap-6">
+            {authed && (
+              <Link
+                href="/admin/passwort"
+                className="text-xs font-semibold uppercase tracking-widest text-neutral-500 hover:text-ink"
+              >
+                Passwort
+              </Link>
+            )}
+            <Link
+              href="/"
+              className="text-xs font-semibold uppercase tracking-widest text-neutral-500 hover:text-ink"
+            >
+              ← Zur Website
+            </Link>
+          </div>
         </div>
       </header>
       <main>{children}</main>

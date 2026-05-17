@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import { cookies } from "next/headers";
 import crypto from "node:crypto";
 import { getEnv } from "@/lib/env";
+import { getAdminPasswordHashFromDb } from "@/lib/queries/admin-password";
 
 const COOKIE_NAME = "rck_session";
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 14; // 14 days
@@ -28,8 +29,15 @@ function verify(signed: string): string | null {
   return value;
 }
 
+/** Effective bcrypt hash: DB row wins over ADMIN_PASSWORD_HASH env (bootstrap). */
+export async function getEffectiveAdminPasswordHash(): Promise<string | undefined> {
+  const fromDb = await getAdminPasswordHashFromDb();
+  if (fromDb) return fromDb;
+  return getEnv("ADMIN_PASSWORD_HASH");
+}
+
 export async function verifyPassword(password: string): Promise<boolean> {
-  const hash = getEnv("ADMIN_PASSWORD_HASH");
+  const hash = await getEffectiveAdminPasswordHash();
   if (!hash) return false;
   return bcrypt.compare(password, hash);
 }
