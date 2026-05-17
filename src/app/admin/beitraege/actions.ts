@@ -11,6 +11,7 @@ import {
   getPostById,
   updatePost,
 } from "@/lib/queries/posts";
+import { parseOptionalFormPk, parseRequiredFormPk } from "@/lib/form-parse";
 import { slugify } from "@/lib/utils";
 
 async function requireAuth() {
@@ -35,8 +36,7 @@ export async function savePostAction(
 ): Promise<PostFormState> {
   await requireAuth();
 
-  const idRaw = formData.get("id");
-  const id = idRaw ? Number(idRaw) : null;
+  const id = parseOptionalFormPk(formData.get("id"));
 
   const raw = {
     title: String(formData.get("title") ?? "").trim(),
@@ -94,7 +94,7 @@ export async function savePostAction(
 
 export async function deletePostAction(formData: FormData): Promise<void> {
   await requireAuth();
-  const id = Number(formData.get("id"));
+  const id = parseRequiredFormPk(formData.get("id"));
   if (!id) return;
   const p = await getPostById(id);
   if (p?.cover_image) await deleteUpload(p.cover_image);

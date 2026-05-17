@@ -10,6 +10,7 @@ import {
   getEventById,
   updateEvent,
 } from "@/lib/queries/events";
+import { parseOptionalFormPk, parseRequiredFormPk } from "@/lib/form-parse";
 
 async function requireAuth() {
   if (!(await isAuthenticated())) redirect("/admin");
@@ -33,8 +34,7 @@ export async function saveEventAction(
 ): Promise<EventFormState> {
   await requireAuth();
 
-  const idRaw = formData.get("id");
-  const id = idRaw ? Number(idRaw) : null;
+  const id = parseOptionalFormPk(formData.get("id"));
 
   const raw = {
     title: String(formData.get("title") ?? "").trim(),
@@ -71,7 +71,7 @@ export async function saveEventAction(
 
 export async function deleteEventAction(formData: FormData): Promise<void> {
   await requireAuth();
-  const id = Number(formData.get("id"));
+  const id = parseRequiredFormPk(formData.get("id"));
   if (!id) return;
   await deleteEvent(id);
   revalidatePath("/veranstaltungen");

@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { isAuthenticated } from "@/lib/auth";
+import { parseRequiredFormPk } from "@/lib/form-parse";
 import { deleteMessage } from "@/lib/queries/messages";
 
 async function requireAuth() {
@@ -11,8 +12,8 @@ async function requireAuth() {
 
 export async function deleteMessageAction(formData: FormData): Promise<void> {
   await requireAuth();
-  const id = Number(formData.get("id"));
-  if (!id || !Number.isFinite(id)) redirect("/admin/messages");
+  const id = parseRequiredFormPk(formData.get("id"));
+  if (!id) redirect("/admin/messages");
   try {
     await deleteMessage(id);
   } catch (error) {

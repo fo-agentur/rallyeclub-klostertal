@@ -17,6 +17,7 @@ import {
   setAlbumCoverImage,
   updateAlbum,
 } from "@/lib/queries/albums";
+import { parseOptionalFormPk, parseRequiredFormPk } from "@/lib/form-parse";
 import { slugify } from "@/lib/utils";
 
 async function requireAuth() {
@@ -40,8 +41,7 @@ export async function saveAlbumAction(
 ): Promise<AlbumFormState> {
   await requireAuth();
 
-  const idRaw = formData.get("id");
-  const id = idRaw ? Number(idRaw) : null;
+  const id = parseOptionalFormPk(formData.get("id"));
 
   const raw = {
     title: String(formData.get("title") ?? "").trim(),
@@ -79,7 +79,7 @@ export async function saveAlbumAction(
 
 export async function deleteAlbumAction(formData: FormData): Promise<void> {
   await requireAuth();
-  const id = Number(formData.get("id"));
+  const id = parseRequiredFormPk(formData.get("id"));
   if (!id) return;
   const photos = await getAlbumPhotos(id);
   for (const p of photos) {
@@ -97,8 +97,8 @@ export async function deleteAlbumAction(formData: FormData): Promise<void> {
 
 export async function uploadPhotosAction(formData: FormData): Promise<void> {
   await requireAuth();
-  const albumId = Number(formData.get("album_id"));
-  const album = await getAlbumById(albumId);
+  const albumId = parseRequiredFormPk(formData.get("album_id"));
+  const album = albumId ? await getAlbumById(albumId) : null;
   if (!albumId || !album) return;
 
   const files = formData.getAll("photos") as File[];
@@ -116,9 +116,9 @@ export async function uploadPhotosAction(formData: FormData): Promise<void> {
 
 export async function deletePhotoAction(formData: FormData): Promise<void> {
   await requireAuth();
-  const photoId = Number(formData.get("photo_id"));
-  const albumId = Number(formData.get("album_id"));
-  if (!photoId) return;
+  const photoId = parseRequiredFormPk(formData.get("photo_id"));
+  const albumId = parseRequiredFormPk(formData.get("album_id"));
+  if (!photoId || !albumId) return;
 
   const photoUrl = await getPhotoUrlById(photoId);
   if (photoUrl) {
@@ -145,8 +145,8 @@ export async function deletePhotoAction(formData: FormData): Promise<void> {
 
 export async function setCoverAction(formData: FormData): Promise<void> {
   await requireAuth();
-  const photoId = Number(formData.get("photo_id"));
-  const albumId = Number(formData.get("album_id"));
+  const photoId = parseRequiredFormPk(formData.get("photo_id"));
+  const albumId = parseRequiredFormPk(formData.get("album_id"));
   if (!photoId || !albumId) return;
 
   const url = await getPhotoUrlById(photoId);
