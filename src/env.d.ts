@@ -4,6 +4,8 @@ declare global {
       // Auth
       ADMIN_PASSWORD_HASH?: string;
       AUTH_SECRET?: string;
+      /** Force Secure session cookies when x-forwarded-proto is missing (default: only https via proxy) */
+      COOKIE_SECURE?: string;
       // Postgres
       DATABASE_URL?: string;
       // S3 / MinIO

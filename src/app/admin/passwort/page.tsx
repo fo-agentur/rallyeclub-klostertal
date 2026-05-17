@@ -1,3 +1,4 @@
+import { connection } from "next/server";
 import { redirect } from "next/navigation";
 import { isAuthenticated } from "@/lib/auth";
 import { ChangePasswordForm } from "./change-password-form";
@@ -10,6 +11,7 @@ export const metadata = {
 };
 
 export default async function AdminPasswordPage() {
+  await connection();
   if (!(await isAuthenticated())) redirect("/admin");
 
   return (

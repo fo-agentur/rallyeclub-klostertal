@@ -28,13 +28,12 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           </Link>
           <div className="flex items-center gap-6">
             {authed && (
-              <Link
+              <a
                 href="/admin/passwort"
-                prefetch={false}
                 className="text-xs font-semibold uppercase tracking-widest text-neutral-500 hover:text-ink"
               >
                 Passwort ändern
-              </Link>
+              </a>
             )}
             <Link
               href="/"

@@ -1,11 +1,21 @@
 import bcrypt from "bcryptjs";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import crypto from "node:crypto";
 import { getEnv } from "@/lib/env";
 import { getAdminPasswordHashFromDb } from "@/lib/queries/admin-password";
 
 const COOKIE_NAME = "rck_session";
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 14; // 14 days
+
+/** Browsers omit Secure cookies on plain HTTP — use forwarded proto from Traefik/Coolify. */
+async function cookieSecureFlag(): Promise<boolean> {
+  if (process.env.NODE_ENV !== "production") return false;
+  const h = await headers();
+  const proto = h.get("x-forwarded-proto")?.split(",")[0]?.trim().toLowerCase();
+  if (proto === "https") return true;
+  if (proto === "http") return false;
+  return process.env.COOKIE_SECURE === "true";
+}
 
 function getSecret(): string {
   const s = getEnv("AUTH_SECRET");
@@ -48,7 +58,7 @@ export async function createSession(): Promise<void> {
   store.set(COOKIE_NAME, token, {
     httpOnly: true,
     sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
+    secure: await cookieSecureFlag(),
     path: "/",
     maxAge: COOKIE_MAX_AGE,
   });

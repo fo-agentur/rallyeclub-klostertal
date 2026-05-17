@@ -82,9 +82,8 @@ export default async function DashboardPage() {
             </Link>
           ))}
 
-          <Link
+          <a
             href="/admin/passwort"
-            prefetch={false}
             className="group block border border-neutral-200 bg-white p-8 transition hover:border-ink"
           >
             <div className="text-xs font-semibold uppercase tracking-widest text-racing">
@@ -96,7 +95,7 @@ export default async function DashboardPage() {
             <div className="mt-1 text-xs font-semibold uppercase tracking-widest text-neutral-400">
               Aktuelles + neues Passwort →
             </div>
-          </Link>
+          </a>
 
           <form action={logout} className="block">
             <button
