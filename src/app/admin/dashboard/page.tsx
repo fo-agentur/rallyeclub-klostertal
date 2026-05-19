@@ -97,6 +97,21 @@ export default async function DashboardPage() {
             </div>
           </a>
 
+          <a
+            href="/admin/import"
+            className="group block border border-neutral-200 bg-white p-8 transition hover:border-ink"
+          >
+            <div className="text-xs font-semibold uppercase tracking-widest text-racing">
+              Migration
+            </div>
+            <div className="mt-6 font-display text-2xl tracking-wider text-ink group-hover:text-racing">
+              Legacy-Import
+            </div>
+            <div className="mt-1 text-xs font-semibold uppercase tracking-widest text-neutral-400">
+              Bilder + Beiträge nach MinIO →
+            </div>
+          </a>
+
           <form action={logout} className="block">
             <button
               type="submit"

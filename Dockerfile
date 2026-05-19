@@ -24,6 +24,8 @@ RUN addgroup --system --gid 1001 nodejs \
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
+# scripts/data is needed at runtime by the legacy-import server action.
+COPY --from=builder --chown=nextjs:nodejs /app/scripts/data ./scripts/data
 
 USER nextjs
 EXPOSE 3000
