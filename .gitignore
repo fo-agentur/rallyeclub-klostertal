@@ -18,5 +18,7 @@ next-env.d.ts
 
 # project-specific
 .data
-public/uploads
+# Legacy gallery images (public/uploads/galerie/*) live in the repo since
+# they were scraped from the old Joomla site; new user uploads go via S3/MinIO.
+public/uploads/tmp
 /tmp
