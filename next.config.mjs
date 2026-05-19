@@ -17,6 +17,18 @@ const PUBLIC_UPLOAD_HOST = (() => {
 const nextConfig = {
   // Verhindert falsche Wurzel bei mehreren lockfiles (Parent-Ordner)
   outputFileTracingRoot: path.join(__dirname),
+  // `public/uploads/**` (Legacy-Galerie) und `scripts/data/**` sind reine
+  // Asset-/JSON-Daten — sie werden zur Laufzeit via fs.readFile gelesen,
+  // aber nicht via ES-Import. Aus dem Trace ausschließen, sonst frisst der
+  // letzte Build-Schritt unnötig Speicher (Coolify-Helper killt ihn dann).
+  outputFileTracingExcludes: {
+    "**": [
+      "public/uploads/**",
+      "scripts/data/**",
+      "node_modules/@swc/core-linux-*",
+      "node_modules/@esbuild/linux-*",
+    ],
+  },
   output: "standalone",
   images: {
     formats: ["image/avif", "image/webp"],
