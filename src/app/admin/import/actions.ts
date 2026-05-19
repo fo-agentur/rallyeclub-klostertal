@@ -52,6 +52,7 @@ function contentTypeFor(filename: string): string {
   if (ext === ".gif") return "image/gif";
   if (ext === ".webp") return "image/webp";
   if (ext === ".svg") return "image/svg+xml";
+  if (ext === ".pdf") return "application/pdf";
   return "application/octet-stream";
 }
 
@@ -59,14 +60,43 @@ function s3KeyFor(localPath: string): string {
   // localPath examples:
   //   /uploads/galerie/<album>/<file>  ->  legacy/galerie/<album>/<file>
   //   /images/<file>                   ->  legacy/posts/<file>
-  //   /images/headers/<file>           ->  legacy/posts/headers/<file>
+  //   /pdf/<file>                      ->  legacy/pdf/<file>
   if (localPath.startsWith("/uploads/")) {
     return `legacy/${localPath.replace(/^\/uploads\//, "")}`;
   }
   if (localPath.startsWith("/images/")) {
     return `legacy/posts/${localPath.replace(/^\/images\//, "")}`;
   }
+  if (localPath.startsWith("/pdf/")) {
+    return `legacy/pdf/${localPath.replace(/^\/pdf\//, "")}`;
+  }
   return `legacy${localPath.startsWith("/") ? "" : "/"}${localPath}`;
+}
+
+/**
+ * Probe several filename variants — old Joomla often stored files literally with
+ * URL-escapes in the name (e.g. `Vorank%C3%BCndigung.jpg`) while Markdown links
+ * may already use the decoded form (`Vorankündigung.jpg`).
+ */
+async function readPublicFile(relPath: string): Promise<{ buf: Buffer; abs: string } | null> {
+  const stripped = relPath.replace(/^\/+/, "");
+  const candidates = new Set<string>([stripped]);
+  try {
+    candidates.add(decodeURIComponent(stripped));
+  } catch {
+    /* malformed escape */
+  }
+  candidates.add(encodeURI(stripped));
+  for (const rel of candidates) {
+    const abs = path.join(process.cwd(), "public", rel);
+    try {
+      const buf = await fs.readFile(abs);
+      return { buf, abs };
+    } catch {
+      // try next
+    }
+  }
+  return null;
 }
 
 async function uploadLocal(
@@ -75,21 +105,54 @@ async function uploadLocal(
   log: string[],
 ): Promise<string | null> {
   if (cache.has(localPath)) return cache.get(localPath)!;
-  // Strip query/fragment defensively, decode URI-encoded path segments.
-  const cleanPath = decodeURIComponent(localPath.split("?")[0].split("#")[0]);
-  const absPath = path.join(process.cwd(), "public", cleanPath.replace(/^\/+/, ""));
-  try {
-    await fs.access(absPath);
-  } catch {
+  const cleanPath = localPath.split("?")[0].split("#")[0];
+  const found = await readPublicFile(cleanPath);
+  if (!found) {
     log.push(`SKIP missing file: ${cleanPath}`);
     return null;
   }
-  const buf = await fs.readFile(absPath);
   const key = s3KeyFor(cleanPath);
-  const publicUrl = await putObject(key, buf, contentTypeFor(absPath));
+  const publicUrl = await putObject(key, found.buf, contentTypeFor(found.abs));
   cache.set(localPath, publicUrl);
   log.push(`UP ${cleanPath} -> ${key}`);
   return publicUrl;
+}
+
+const LEGACY_PATH_RE = /\/(?:images|pdf|uploads)\/[^\s)"'<>]+/g;
+
+/** Collect every legacy asset path (`/images/...`, `/pdf/...`, `/uploads/...`) referenced in a text. */
+function extractLegacyPaths(text: string | null | undefined): string[] {
+  if (!text) return [];
+  return Array.from(text.matchAll(LEGACY_PATH_RE)).map((m) => m[0]);
+}
+
+/** Replace every occurrence of `oldPath` with `newUrl` in the given text. */
+function replaceAllPaths(text: string, oldPath: string, newUrl: string): string {
+  return text.split(oldPath).join(newUrl);
+}
+
+/**
+ * Reduce Markdown to a plain-text excerpt:
+ *   - drop image syntax `![alt](src)` entirely
+ *   - flatten link syntax `[label](url)` to just `label`
+ *   - strip leftover `*` `_` `#` markers and collapse whitespace
+ * If nothing readable remains (e.g. the excerpt was just an image), returns null.
+ */
+function stripMarkdownToText(input: string | null | undefined): string | null {
+  if (!input) return null;
+  let t = input;
+  t = t.replace(/!\[[^\]]*\]\([^)]*\)/g, ""); // images out
+  t = t.replace(/\[([^\]]+)\]\([^)]*\)/g, "$1"); // links to label
+  t = t.replace(/[`*_>#~]+/g, ""); // common markup markers
+  t = t.replace(/\s+/g, " ").trim();
+  return t.length > 0 ? t : null;
+}
+
+/** Pull the first markdown image url out of a text, or null. */
+function firstMarkdownImageUrl(text: string | null | undefined): string | null {
+  if (!text) return null;
+  const m = text.match(/!\[[^\]]*\]\(([^)]+)\)/);
+  return m ? m[1] : null;
 }
 
 export async function importLegacyAction(): Promise<ImportLegacyState> {
@@ -115,18 +178,22 @@ export async function importLegacyAction(): Promise<ImportLegacyState> {
   let skipped = 0;
 
   try {
+    // Step 1: collect every legacy asset referenced anywhere — covers, excerpts,
+    // inline markdown in content (`/images/...`, `/pdf/...`, `/uploads/...`).
+    const allPaths = new Set<string>();
     for (const p of postsJson) {
-      if (!p.cover) continue;
-      const url = await uploadLocal(p.cover, urlCache, log);
-      if (!url) skipped++;
+      if (p.cover) allPaths.add(p.cover);
+      for (const ref of extractLegacyPaths(p.excerpt)) allPaths.add(ref);
+      for (const ref of extractLegacyPaths(p.content)) allPaths.add(ref);
     }
     for (const a of albumsJson) {
-      const cu = await uploadLocal(a.cover_image, urlCache, log);
-      if (!cu) skipped++;
-      for (const photo of a.photos) {
-        const u = await uploadLocal(photo, urlCache, log);
-        if (!u) skipped++;
-      }
+      allPaths.add(a.cover_image);
+      for (const photo of a.photos) allPaths.add(photo);
+    }
+
+    for (const ref of allPaths) {
+      const url = await uploadLocal(ref, urlCache, log);
+      if (!url) skipped++;
     }
   } catch (e) {
     return {
@@ -141,11 +208,30 @@ export async function importLegacyAction(): Promise<ImportLegacyState> {
 
     let postCount = 0;
     for (const p of postsJson) {
-      const cover = p.cover ? (urlCache.get(p.cover) ?? null) : null;
+      // Rewrite every legacy path inside the markdown body to its MinIO URL.
+      let content = p.content;
+      for (const ref of extractLegacyPaths(content)) {
+        const u = urlCache.get(ref);
+        if (u) content = replaceAllPaths(content, ref, u);
+      }
+
+      // Excerpts come straight out of Joomla and sometimes are *just* a markdown
+      // image — that renders as raw `![](...)` on the listing cards. Strip to
+      // plain prose; if nothing's left fall back to null so the UI hides it.
+      const excerpt = stripMarkdownToText(p.excerpt);
+
+      // Cover priority: explicit cover -> first inline image in content -> null.
+      let cover: string | null = null;
+      if (p.cover) cover = urlCache.get(p.cover) ?? null;
+      if (!cover) {
+        const inlineFirst = firstMarkdownImageUrl(p.content);
+        if (inlineFirst) cover = urlCache.get(inlineFirst) ?? null;
+      }
+
       await query(
         `INSERT INTO posts (slug, title, excerpt, content, cover_image, published_at)
          VALUES ($1, $2, $3, $4, $5, $6)`,
-        [p.slug, p.title, p.excerpt ?? null, p.content, cover, p.date],
+        [p.slug, p.title, excerpt, content, cover, p.date],
       );
       postCount++;
     }
