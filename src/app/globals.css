@@ -1,0 +1,153 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-white text-ink antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  ::selection {
+    @apply bg-racing text-white;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply tracking-tight;
+  }
+}
+
+@layer components {
+  .container-wide {
+    @apply mx-auto w-full max-w-7xl px-6 md:px-10;
+  }
+
+  .container-prose {
+    @apply mx-auto w-full max-w-3xl px-6 md:px-8;
+  }
+
+  .eyebrow {
+    @apply text-xs font-semibold uppercase tracking-widest text-racing;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 bg-racing px-5 py-3 text-sm font-semibold uppercase tracking-widest text-white transition hover:bg-racing-600 focus:outline-none focus:ring-2 focus:ring-racing focus:ring-offset-2;
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center justify-center gap-2 border border-ink px-5 py-3 text-sm font-semibold uppercase tracking-widest text-ink transition hover:bg-ink hover:text-white focus:outline-none focus:ring-2 focus:ring-ink focus:ring-offset-2;
+  }
+
+  .btn-outline-inverse {
+    @apply inline-flex items-center justify-center gap-2 border border-white/30 px-5 py-3 text-sm font-semibold uppercase tracking-widest text-white transition hover:border-white hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white/40 focus:ring-offset-2 focus:ring-offset-ink;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-ink transition hover:bg-neutral-100;
+  }
+
+  .input {
+    @apply block w-full border border-neutral-300 bg-white px-4 py-3 text-sm text-ink placeholder:text-neutral-400 focus:border-racing focus:outline-none focus:ring-1 focus:ring-racing;
+  }
+
+  .label {
+    @apply mb-2 block text-xs font-semibold uppercase tracking-widest text-neutral-600;
+  }
+
+  .card {
+    @apply block border border-neutral-200 bg-white transition hover:-translate-y-0.5 hover:shadow-card;
+  }
+
+  .section {
+    @apply py-20 md:py-28;
+  }
+
+  .section-dark {
+    @apply bg-ink text-white;
+  }
+
+  .prose-article {
+    @apply prose prose-neutral max-w-none prose-headings:font-semibold prose-headings:tracking-tight prose-a:text-racing hover:prose-a:text-racing-600 prose-strong:text-ink;
+  }
+}
+
+@layer components {
+  /* Speedway design system — shared section primitives */
+  .sec-kicker {
+    @apply mb-3 flex items-center gap-3 text-xs font-bold uppercase tracking-[0.25em] text-racing;
+  }
+  .sec-kicker::before {
+    content: "↘";
+    @apply font-display text-lg;
+  }
+
+  .sec-title {
+    @apply font-display text-[clamp(48px,6vw,88px)] uppercase leading-[0.92] tracking-wide;
+  }
+
+  .sec-head {
+    @apply mb-11 flex flex-wrap items-end justify-between gap-5;
+  }
+
+  /* Diagonal checkered stripe separator */
+  .diag-stripe {
+    height: 6px;
+    background: repeating-linear-gradient(
+      45deg,
+      theme(colors.racing.DEFAULT) 0 14px,
+      theme(colors.ink.DEFAULT) 14px 28px
+    );
+  }
+
+  .section-reveal {
+    @apply motion-safe:animate-fade-up;
+  }
+}
+
+@layer utilities {
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes heroZoom {
+  from {
+    transform: scale(1.02);
+  }
+  to {
+    transform: scale(1.08);
+  }
+}
+
+.motion-safe\:animate-fade-up {
+  animation: fadeUp 0.75s ease-out both;
+}
+
+.motion-safe\:animate-hero-zoom {
+  animation: heroZoom 14s ease-out both;
+}

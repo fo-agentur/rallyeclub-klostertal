@@ -1,0 +1,16 @@
+node_modules
+.next
+.git
+.gitignore
+.env
+.env.local
+.env*.local
+.data
+# public/uploads – Legacy-Galerie wird einmalig nach MinIO importiert (s. /admin/import).
+# scripts/data – posts.json/albums.json fürs Import-Tool im Container verfügbar machen.
+npm-debug.log*
+*.tsbuildinfo
+.vscode
+.idea
+.claude
+.cursor

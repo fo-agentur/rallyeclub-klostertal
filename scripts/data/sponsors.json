@@ -1,0 +1,16 @@
+[
+  {
+    "name": "Motor Freizeit Trends",
+    "tagline": "Partner",
+    "website": "http://www.motor-freizeit-trends.at/",
+    "logo": "/sponsors/motorfreizeittrends.JPG",
+    "sort_order": 1
+  },
+  {
+    "name": "Kogler Autopflege",
+    "tagline": "Autopflege",
+    "website": "http://www.koglerpflege.com/",
+    "logo": "/sponsors/kogler_autopflege.PNG",
+    "sort_order": 2
+  }
+]

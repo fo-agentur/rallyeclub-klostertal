@@ -1,0 +1,230 @@
+[
+  {
+    "name": "Christoph Schuler",
+    "role": "Obmann",
+    "group_label": "Vorstand",
+    "photo": "/mitglieder/ObmannChristophSchuler.jpg",
+    "is_driver": true,
+    "car": "Renault 5 GT Turbo",
+    "driver_photo": "/fahrer/ChristianBreuss.jpg",
+    "sort_order": 1
+  },
+  {
+    "name": "Christian Breuss",
+    "role": "Vizeobmann",
+    "group_label": "Vorstand",
+    "photo": "/mitglieder/christianbreus.jpg",
+    "sort_order": 2
+  },
+  {
+    "name": "Martina Zögernitz",
+    "role": "Schriftführerin & Kassierin",
+    "group_label": "Vorstand",
+    "photo": "/mitglieder/martinazoegernitz.JPG",
+    "sort_order": 3
+  },
+  {
+    "name": "Manuel Schuler",
+    "role": "Vorstand",
+    "group_label": "Vorstand",
+    "photo": "/mitglieder/manuelschuler.jpg",
+    "sort_order": 4
+  },
+  {
+    "name": "Herbert Schuler",
+    "role": "Vorstand",
+    "group_label": "Vorstand",
+    "photo": "/mitglieder/herbertschuler.jpg",
+    "sort_order": 5
+  },
+  {
+    "name": "Alex Schmöllerl",
+    "role": "Fahrervertreter",
+    "group_label": "Vorstand",
+    "sort_order": 6
+  },
+  {
+    "name": "Elias Schnetzer",
+    "role": "Sportrat",
+    "group_label": "Vorstand",
+    "sort_order": 7
+  },
+  {
+    "name": "Gernot Kogler",
+    "role": "Sportrat",
+    "group_label": "Vorstand",
+    "photo": "/fahrer/SPORTRATGernotKogler.jpg",
+    "sort_order": 8
+  },
+  {
+    "name": "Andrea Schuler",
+    "role": "Kassaprüferin",
+    "group_label": "Vorstand",
+    "photo": "/mitglieder/andreaschuler.JPG",
+    "sort_order": 9
+  },
+  {
+    "name": "Marion Neusiedler",
+    "role": "Kassaprüferin",
+    "group_label": "Vorstand",
+    "sort_order": 10
+  },
+  {
+    "name": "Armin Gassner",
+    "role": "Ehrenobmann",
+    "group_label": "Ehrenmitglieder",
+    "photo": "/mitglieder/armingassner.jpg",
+    "sort_order": 1
+  },
+  {
+    "name": "Fritz Kogler",
+    "role": "Ehrenvizeobmann",
+    "group_label": "Ehrenmitglieder",
+    "photo": "/mitglieder/fritzkogler.jpg",
+    "sort_order": 2
+  },
+  {
+    "name": "Adrian Imthurn",
+    "role": "Ehrenmitglied",
+    "group_label": "Ehrenmitglieder",
+    "photo": "/mitglieder/AdrianImthurn.jpg",
+    "sort_order": 3
+  },
+  {
+    "name": "Gerd Lampert",
+    "role": "Ehrenmitglied",
+    "group_label": "Ehrenmitglieder",
+    "photo": "/mitglieder/GerdLampert.jpg",
+    "sort_order": 4
+  },
+  {
+    "name": "Joe Dorner",
+    "group_label": "Mitglieder",
+    "photo": "/mitglieder/ObmannStellvertreterJoeDorner.jpg",
+    "sort_order": 1
+  },
+  {
+    "name": "Dieter Bettinazzi",
+    "group_label": "Mitglieder",
+    "photo": "/mitglieder/DieterBettinazzi.jpg",
+    "sort_order": 2
+  },
+  {
+    "name": "Günter Matt",
+    "group_label": "Mitglieder",
+    "photo": "/mitglieder/GuenterMatt.jpg",
+    "sort_order": 3
+  },
+  {
+    "name": "Johanna Matt",
+    "group_label": "Mitglieder",
+    "photo": "/mitglieder/JohannaMauracher.jpg",
+    "sort_order": 4
+  },
+  {
+    "name": "Manfred Fischer",
+    "group_label": "Mitglieder",
+    "photo": "/mitglieder/ManfredFischer.jpg",
+    "sort_order": 5
+  },
+  {
+    "name": "Marco Schmid",
+    "group_label": "Mitglieder",
+    "photo": "/mitglieder/MarcoSchmid.jpg",
+    "sort_order": 6
+  },
+  {
+    "name": "Mike Korpics",
+    "group_label": "Mitglieder",
+    "photo": "/mitglieder/MikeKorpics.jpg",
+    "sort_order": 7
+  },
+  {
+    "name": "Norbert Matt",
+    "group_label": "Mitglieder",
+    "photo": "/mitglieder/NorbertMatt.JPG",
+    "sort_order": 8
+  },
+  {
+    "name": "Sarah Matt",
+    "group_label": "Mitglieder",
+    "photo": "/mitglieder/SarahMatt.jpg",
+    "sort_order": 9
+  },
+  {
+    "name": "Wolfgang Ospelt",
+    "group_label": "Mitglieder",
+    "photo": "/mitglieder/WolfgangOspelt.jpg",
+    "sort_order": 10
+  },
+  {
+    "name": "Rainer Neusiedler",
+    "group_label": "Mitglieder",
+    "photo": "/mitglieder/RainerNeusiedler.jpg",
+    "sort_order": 11
+  },
+  {
+    "name": "Melanie Schnetzer",
+    "group_label": "Mitglieder",
+    "photo": "/mitglieder/MelanieSchnetzer.jpg",
+    "sort_order": 12
+  },
+  {
+    "name": "Tobias Sohler",
+    "group_label": "Mitglieder",
+    "photo": "/mitglieder/TobiasSohler.JPG",
+    "sort_order": 13
+  },
+  {
+    "name": "Daniel Zimmermann",
+    "group_label": "Mitglieder",
+    "photo": "/mitglieder/DanielZimmermann.jpg",
+    "is_driver": true,
+    "car": "Honda Civic",
+    "driver_photo": "/fahrer/zimmermann.jpg",
+    "sort_order": 14
+  },
+  {
+    "name": "Thomas Ammann",
+    "group_label": "Mitglieder",
+    "sort_order": 15
+  },
+  {
+    "name": "Rene Bargehr",
+    "group_label": "Mitglieder",
+    "sort_order": 16
+  },
+  {
+    "name": "Michael Bargehr",
+    "group_label": "Mitglieder",
+    "sort_order": 17
+  },
+  {
+    "name": "Anja Dorner",
+    "group_label": "Mitglieder",
+    "sort_order": 18
+  },
+  {
+    "name": "Michael Gassner",
+    "group_label": "Mitglieder",
+    "sort_order": 19
+  },
+  {
+    "name": "Martin Taumberger",
+    "group_label": "Mitglieder",
+    "is_driver": true,
+    "car": "Peugeot",
+    "driver_photo": "/fahrer/taumberger.jpg",
+    "sort_order": 20
+  },
+  {
+    "name": "David Wiederin",
+    "group_label": "Mitglieder",
+    "sort_order": 21
+  },
+  {
+    "name": "Peter Füchsl",
+    "group_label": "Mitglieder",
+    "sort_order": 22
+  }
+]
