@@ -18,7 +18,7 @@ const bebas = Bebas_Neue({
   display: "swap",
 });
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://rallyeclub-klostertal.at"),
@@ -29,11 +29,34 @@ export const metadata: Metadata = {
   description:
     "Offizielle Webseite des Rallyeclub Klostertal aus Vorarlberg. Autoslalom, Clubausfahrten, News und Termine aus dem Klostertal.",
   keywords: ["Rallyeclub", "Klostertal", "Autoslalom", "Motorsport", "Vorarlberg", "Frastanz"],
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
-    title: "Rallyeclub Klostertal",
+    title: "Rallyeclub Klostertal — Motorsport im Klostertal",
     description: "Motorsport aus dem Klostertal — News, Termine und Galerie.",
+    url: "https://rallyeclub-klostertal.at",
+    siteName: "Rallyeclub Klostertal",
     locale: "de_AT",
     type: "website",
+    images: [
+      {
+        url: "/images/headers/hero-hq-1.png",
+        width: 1920,
+        height: 1080,
+        alt: "Rallyeclub Klostertal — Autoslalom",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Rallyeclub Klostertal",
+    description: "Motorsport aus dem Klostertal.",
+    images: ["/images/headers/hero-hq-1.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
   },
 };
 

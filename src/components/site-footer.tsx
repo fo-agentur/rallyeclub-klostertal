@@ -85,10 +85,6 @@ export function SiteFooter({ sponsors }: { sponsors: Sponsor[] }) {
                 Kontakt
               </Link>
               <span aria-hidden>·</span>
-              <Link href="/admin" className="transition hover:text-racing">
-                Admin
-              </Link>
-              <span aria-hidden>·</span>
               <span>© {new Date().getFullYear()} Rallyeclub Klostertal</span>
             </div>
           </div>

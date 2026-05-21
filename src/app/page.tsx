@@ -286,7 +286,7 @@ export default async function HomePage() {
                 <div className="sec-kicker">Bilder &amp; Videos</div>
                 <h2 className="sec-title mb-8">Galerie</h2>
 
-                <div className="grid grid-cols-4 auto-rows-[130px] gap-2">
+                <div className="grid grid-cols-2 auto-rows-[120px] gap-2 sm:grid-cols-3 sm:auto-rows-[130px] lg:grid-cols-4">
                   {albums.length > 0
                     ? albums.map((album, i) => (
                         <Link
@@ -300,10 +300,10 @@ export default async function HomePage() {
                           {album.cover_image && (
                             <Image
                               src={album.cover_image}
-                              alt={album.title}
+                              alt={`Galerie: ${album.title}`}
                               fill
                               className="object-cover transition duration-[700ms] ease-out group-hover:scale-[1.08]"
-                              sizes="200px"
+                              sizes="(min-width: 1024px) 200px, (min-width: 640px) 33vw, 50vw"
                             />
                           )}
                           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition duration-500 group-hover:opacity-100" />
@@ -342,18 +342,18 @@ export default async function HomePage() {
 
                   <div className="mt-8 grid grid-cols-2 gap-3">
                     {[
-                      '/images/Autoslalom.jpg',
-                      '/images/Bericht-Kartfahren-Bild.png',
-                      '/images/Vorankuendigung.jpg',
-                      '/images/gallery/IMG-20150407-WA0034.jpg',
-                    ].map((src, i) => (
+                      { src: '/images/Autoslalom.jpg', alt: 'Autoslalom des Rallyeclub Klostertal' },
+                      { src: '/images/Bericht-Kartfahren-Bild.png', alt: 'Kartfahren mit dem Club' },
+                      { src: '/images/Vorankuendigung.jpg', alt: 'Vorankündigung eines Vereinstermins' },
+                      { src: '/images/gallery/IMG-20150407-WA0034.jpg', alt: 'Clubmitglieder beim Autoslalom' },
+                    ].map((img, i) => (
                       <div key={i} className="card-hover group relative aspect-[5/4] overflow-hidden rounded-[18px] bg-neutral-200">
                         <Image
-                          src={src}
-                          alt="Impression aus dem Clubleben"
+                          src={img.src}
+                          alt={img.alt}
                           fill
                           className="object-cover transition duration-[700ms] ease-out group-hover:scale-[1.08]"
-                          sizes="240px"
+                          sizes="(min-width: 1024px) 240px, 50vw"
                         />
                       </div>
                     ))}
@@ -386,8 +386,8 @@ export default async function HomePage() {
                   <em className="mt-1 block not-italic text-racing">Motorsport?</em>
                 </h2>
                 <p className="mt-5 max-w-[480px] text-base leading-relaxed text-neutral-400">
-                  Stammtisch jeden ersten Freitag im Monat im Vereinslokal. Einfach
-                  reinschneien — wir beißen nicht. Außer beim Reifenwechsel.
+                  Stammtisch jeden ersten Freitag im Monat im Vereinslokal. Komm vorbei,
+                  lerne den Club kennen oder werde selbst Mitglied.
                 </p>
 
                 <div className="mt-8 flex flex-col gap-4 text-sm">

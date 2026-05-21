@@ -33,10 +33,9 @@ export default function ImpressumPage() {
             <a href="mailto:info@rallyeclub-klostertal.at">info@rallyeclub-klostertal.at</a>
           </p>
           <p>
-            <strong>ZVR-Zahl:</strong>{" "}
-            <em>[bitte vom Vorstand ergänzen — siehe ZVR-Auszug]</em>
-            <br />
             <strong>Vereinsbehörde:</strong> Bezirkshauptmannschaft Feldkirch
+            <br />
+            <strong>ZVR-Zahl:</strong> wird auf Anfrage übermittelt
           </p>
 
           <h2>Offenlegung gemäß § 25 Mediengesetz</h2>
@@ -80,20 +79,8 @@ export default function ImpressumPage() {
 
           <h2>Datenschutz</h2>
           <p>
-            Die Nutzung unserer Website ist in der Regel ohne Angabe personenbezogener Daten
-            möglich. Soweit auf unseren Seiten personenbezogene Daten (z.B. Name, E-Mail,
-            Telefonnummer) erhoben werden, erfolgt dies, soweit möglich, stets auf
-            freiwilliger Basis — etwa beim Absenden des Kontaktformulars.
-          </p>
-          <p>
-            Über das Kontaktformular übermittelte Daten werden ausschließlich zur Bearbeitung
-            der Anfrage gespeichert und nicht an Dritte weitergegeben. Es erfolgt keine
-            automatisierte Weitergabe an Werbepartner.
-          </p>
-          <p>
-            Du hast jederzeit das Recht auf Auskunft, Berichtigung, Löschung und
-            Einschränkung der Verarbeitung deiner gespeicherten Daten. Wende dich dafür an{" "}
-            <a href="mailto:info@rallyeclub-klostertal.at">info@rallyeclub-klostertal.at</a>.
+            Details zur Verarbeitung personenbezogener Daten findest du in unserer{" "}
+            <a href="/datenschutz">Datenschutzerklärung</a>.
           </p>
         </div>
       </div>

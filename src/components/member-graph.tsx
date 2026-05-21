@@ -495,6 +495,8 @@ export function MemberGraph({ members }: { members: GraphMember[] }) {
   const [hover, setHover] = useState<string | null>(null);
   const [selected, setSelected] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
+  const [query, setQuery] = useState("");
+  const [mutedGroups, setMutedGroups] = useState<Set<string>>(() => new Set());
   const svgRef = useRef<SVGSVGElement | null>(null);
 
   useEffect(() => {
@@ -502,12 +504,25 @@ export function MemberGraph({ members }: { members: GraphMember[] }) {
     setView({ x: 0, y: 0, scale: 1 });
     setSelected(null);
     setHover(null);
+    setQuery("");
+    setMutedGroups(new Set());
   }, [graph]);
 
   useEffect(() => {
     const timeout = window.setTimeout(() => setMounted(true), 80);
     return () => window.clearTimeout(timeout);
   }, []);
+
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      if (selected) setSelected(null);
+      else if (query) setQuery("");
+      else if (mutedGroups.size > 0) setMutedGroups(new Set());
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [selected, query, mutedGroups]);
 
   const nodeById = useMemo(() => new Map(nodes.map((node) => [node.id, node])), [nodes]);
   const neighbors = useMemo(() => {
@@ -534,6 +549,40 @@ export function MemberGraph({ members }: { members: GraphMember[] }) {
   const groupCount = new Set(members.map((member) => member.group_label)).size;
   const driverCount = members.filter((member) => member.is_driver).length;
 
+  const normalizedQuery = query.trim().toLowerCase();
+  const matchedIds = useMemo(() => {
+    if (!normalizedQuery) return null;
+    const set = new Set<string>();
+    for (const node of nodes) {
+      if (node.kind !== "person") continue;
+      const hay = `${node.label} ${node.sublabel ?? ""}`.toLowerCase();
+      if (hay.includes(normalizedQuery)) set.add(node.id);
+    }
+    return set;
+  }, [normalizedQuery, nodes]);
+
+  const matchCount = matchedIds?.size ?? 0;
+
+  const isGroupMuted = (group: string) => mutedGroups.has(group);
+  const toggleGroup = (group: string) => {
+    setMutedGroups((current) => {
+      const next = new Set(current);
+      if (next.has(group)) next.delete(group);
+      else next.add(group);
+      return next;
+    });
+  };
+
+  const isNodeMuted = (node: SimNode): boolean => {
+    if (node.kind === "center") return false;
+    if (mutedGroups.has(node.group)) return true;
+    if (matchedIds && node.kind === "person" && !matchedIds.has(node.id)) {
+      // keep group/center visible; person not matching → mute
+      return true;
+    }
+    return false;
+  };
+
   const toSvgPoint = (event: { clientX: number; clientY: number }) => {
     const rect = svgRef.current?.getBoundingClientRect();
     if (!rect) return CENTER;
@@ -549,12 +598,18 @@ export function MemberGraph({ members }: { members: GraphMember[] }) {
   });
 
   const isHighlighted = (id: string) => {
+    const node = nodeById.get(id);
+    if (node && isNodeMuted(node)) return false;
     if (!active) return true;
     if (id === active) return true;
     return neighbors.get(active)?.has(id) ?? false;
   };
 
   const isEdgeHighlighted = (edge: SimEdge) => {
+    const a = nodeById.get(edge.a);
+    const b = nodeById.get(edge.b);
+    if (a && isNodeMuted(a)) return false;
+    if (b && isNodeMuted(b)) return false;
     if (!active) return true;
     return edge.a === active || edge.b === active;
   };
@@ -720,16 +775,52 @@ export function MemberGraph({ members }: { members: GraphMember[] }) {
         aria-hidden
       />
 
-      <div className="pointer-events-none absolute left-3 top-3 z-10 flex flex-wrap gap-2 sm:left-5 sm:top-5">
-        <span className="border border-white/[0.12] bg-white/[0.07] px-3 py-2 text-[10px] font-bold uppercase tracking-[0.16em] text-white/75 backdrop-blur">
-          {members.length} Mitglieder
+      <div className="pointer-events-none absolute left-3 top-3 right-16 z-10 flex flex-wrap items-center gap-2 sm:left-5 sm:top-5 sm:right-auto">
+        <div
+          className="pointer-events-auto flex items-center gap-1 rounded-md border border-white/[0.14] bg-black/[0.4] pl-3 pr-1 backdrop-blur focus-within:border-racing/70"
+          onClick={(event) => event.stopPropagation()}
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            className="h-3.5 w-3.5 shrink-0 text-white/55"
+            aria-hidden
+          >
+            <circle cx="11" cy="11" r="7" />
+            <path d="m20 20-3.5-3.5" strokeLinecap="round" />
+          </svg>
+          <input
+            type="search"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="Mitglied suchen…"
+            aria-label="Mitglied im Netzwerk suchen"
+            className="w-32 bg-transparent py-2 text-[11px] font-semibold text-white placeholder:text-white/40 focus:outline-none sm:w-40"
+          />
+          {query && (
+            <button
+              type="button"
+              onClick={() => setQuery("")}
+              aria-label="Suche löschen"
+              className="flex h-7 w-7 items-center justify-center rounded text-white/55 transition hover:bg-white/10 hover:text-white"
+            >
+              ×
+            </button>
+          )}
+        </div>
+        <span className="pointer-events-none hidden border border-white/[0.12] bg-white/[0.07] px-3 py-2 text-[10px] font-bold uppercase tracking-[0.16em] text-white/75 backdrop-blur sm:inline-flex">
+          {matchedIds ? `${matchCount}/${members.length}` : `${members.length} Mitglieder`}
         </span>
-        <span className="hidden border border-white/[0.12] bg-white/[0.07] px-3 py-2 text-[10px] font-bold uppercase tracking-[0.16em] text-white/75 backdrop-blur sm:inline-flex">
-          {groupCount} Gruppen
-        </span>
-        {driverCount > 0 && (
-          <span className="hidden border border-racing/[0.35] bg-racing/[0.12] px-3 py-2 text-[10px] font-bold uppercase tracking-[0.16em] text-white backdrop-blur sm:inline-flex">
+        {!matchedIds && driverCount > 0 && (
+          <span className="pointer-events-none hidden border border-racing/[0.35] bg-racing/[0.12] px-3 py-2 text-[10px] font-bold uppercase tracking-[0.16em] text-white backdrop-blur sm:inline-flex">
             {driverCount} Fahrer
+          </span>
+        )}
+        {!matchedIds && (
+          <span className="pointer-events-none hidden border border-white/[0.12] bg-white/[0.07] px-3 py-2 text-[10px] font-bold uppercase tracking-[0.16em] text-white/75 backdrop-blur lg:inline-flex">
+            {groupCount} Gruppen
           </span>
         )}
       </div>
@@ -741,7 +832,7 @@ export function MemberGraph({ members }: { members: GraphMember[] }) {
         <button
           type="button"
           aria-label="Verkleinern"
-          title="Verkleinern"
+          title="Verkleinern (−)"
           className="flex h-10 w-10 items-center justify-center border-r border-white/10 text-lg leading-none text-white/80 transition hover:bg-white/10 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/40"
           onClick={() => zoomAt(0.9)}
         >
@@ -749,8 +840,8 @@ export function MemberGraph({ members }: { members: GraphMember[] }) {
         </button>
         <button
           type="button"
-          aria-label="Ansicht zuruecksetzen"
-          title="Ansicht zuruecksetzen"
+          aria-label="Ansicht zurücksetzen"
+          title="Ansicht zurücksetzen"
           className="flex h-10 w-10 items-center justify-center border-r border-white/10 text-base leading-none text-white/80 transition hover:bg-white/10 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/40"
           onClick={resetGraph}
         >
@@ -758,8 +849,8 @@ export function MemberGraph({ members }: { members: GraphMember[] }) {
         </button>
         <button
           type="button"
-          aria-label="Vergroessern"
-          title="Vergroessern"
+          aria-label="Vergrößern"
+          title="Vergrößern (+)"
           className="flex h-10 w-10 items-center justify-center text-lg leading-none text-white/80 transition hover:bg-white/10 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/40"
           onClick={() => zoomAt(1.1)}
         >
@@ -1046,21 +1137,41 @@ export function MemberGraph({ members }: { members: GraphMember[] }) {
         </g>
       </svg>
 
-      <div className="pointer-events-none absolute bottom-3 left-3 right-3 z-10 flex flex-wrap items-center gap-x-4 gap-y-2 text-[10px] font-bold uppercase tracking-[0.16em] text-white/[0.68] sm:bottom-5 sm:left-5 sm:right-5">
-        {["Vorstand", "Ehrenmitglieder", "Mitglieder"].map((group) => (
-          <span key={group} className="inline-flex items-center gap-2">
-            <span
-              className="inline-block h-2.5 w-2.5"
-              style={{ background: getGroupStyle(group).color }}
-            />
-            {group}
-          </span>
-        ))}
-        <span className="inline-flex items-center gap-2">
+      <div
+        className="absolute bottom-3 left-3 right-3 z-10 flex flex-wrap items-center gap-x-3 gap-y-2 text-[10px] font-bold uppercase tracking-[0.16em] text-white/[0.68] sm:bottom-5 sm:left-5 sm:right-5"
+        onClick={(event) => event.stopPropagation()}
+      >
+        {["Vorstand", "Ehrenmitglieder", "Mitglieder"].map((group) => {
+          const muted = isGroupMuted(group);
+          return (
+            <button
+              key={group}
+              type="button"
+              onClick={() => toggleGroup(group)}
+              aria-pressed={!muted}
+              aria-label={muted ? `${group} einblenden` : `${group} ausblenden`}
+              className={`inline-flex items-center gap-2 rounded border px-2 py-1 transition focus:outline-none focus:ring-2 focus:ring-racing/70 ${
+                muted
+                  ? "border-white/[0.05] bg-white/[0.02] text-white/30"
+                  : "border-white/[0.10] bg-white/[0.04] text-white/80 hover:border-white/[0.25] hover:bg-white/[0.08]"
+              }`}
+            >
+              <span
+                className="inline-block h-2.5 w-2.5"
+                style={{
+                  background: muted ? "transparent" : getGroupStyle(group).color,
+                  border: muted ? `1px solid ${getGroupStyle(group).color}` : "none",
+                }}
+              />
+              {group}
+            </button>
+          );
+        })}
+        <span className="pointer-events-none inline-flex items-center gap-2 px-2">
           <span className="inline-block h-[2px] w-6 bg-[#D6A341]" />
           Familie
         </span>
-        <span className="inline-flex items-center gap-2">
+        <span className="pointer-events-none inline-flex items-center gap-2 px-2">
           <span
             className="inline-block h-[2px] w-6"
             style={{
@@ -1070,6 +1181,18 @@ export function MemberGraph({ members }: { members: GraphMember[] }) {
           />
           Rolle
         </span>
+        {(mutedGroups.size > 0 || query) && (
+          <button
+            type="button"
+            onClick={() => {
+              setMutedGroups(new Set());
+              setQuery("");
+            }}
+            className="ml-auto inline-flex items-center gap-1 rounded border border-racing/40 bg-racing/[0.12] px-2 py-1 text-white transition hover:bg-racing/[0.2]"
+          >
+            Filter zurücksetzen
+          </button>
+        )}
       </div>
 
       {selectedNode?.kind === "person" && (
@@ -1140,7 +1263,7 @@ export function MemberGraph({ members }: { members: GraphMember[] }) {
               onClick={() => setSelected(null)}
               className="rounded-md border border-white/10 px-3 py-2 text-[10px] font-bold uppercase tracking-[0.18em] text-white/[0.55] transition hover:border-white/30 hover:text-white focus:outline-none focus:ring-2 focus:ring-racing"
             >
-              Schliessen
+              Schließen
             </button>
           </div>
         </div>

@@ -54,11 +54,45 @@ export default function DatenschutzPage() {
             </li>
           </ul>
 
-          <h2>Weitergabe an Dritte</h2>
+          <h2>Auftragsverarbeiter &amp; Hosting</h2>
           <p>
-            Eine Weitergabe deiner Daten an Dritte erfolgt nicht, ausgenommen an unsere
-            technischen Dienstleister (Hosting, ggf. Datenbank), die als Auftragsverarbeiter
-            im Sinne der DSGVO tätig sind. Es findet keine automatisierte Profilbildung statt.
+            Für den Betrieb dieser Website setzen wir technische Dienstleister ein, die als
+            Auftragsverarbeiter im Sinne der DSGVO tätig sind. Mit allen Auftragsverarbeitern
+            bestehen entsprechende Verträge gemäß Art. 28 DSGVO.
+          </p>
+          <ul>
+            <li>
+              <strong>Hosting (Anwendung &amp; Datenbank):</strong> Coolify-Server, betrieben
+              auf europäischer Infrastruktur. Server-Logfiles werden zur Sicherstellung des
+              Betriebs verarbeitet.
+            </li>
+            <li>
+              <strong>Bild- &amp; Dateispeicher:</strong> MinIO Object Storage (S3-kompatibel)
+              auf der gleichen europäischen Infrastruktur.
+            </li>
+          </ul>
+          <p>
+            Eine darüber hinausgehende Weitergabe deiner Daten an Dritte erfolgt nicht. Es
+            findet keine automatisierte Profilbildung statt.
+          </p>
+
+          <h2>Eingebettete Karten (Google Maps)</h2>
+          <p>
+            Auf der Startseite und ggf. auf der Kontaktseite binden wir eine Karte von Google
+            Maps ein (Anbieter: Google Ireland Limited, Gordon House, Barrow Street, Dublin 4,
+            Irland), damit du unser Vereinslokal leicht findest. Beim Laden der Karte werden
+            technisch notwendige Daten (insbesondere IP-Adresse, Browser-Informationen) an
+            Google übermittelt; Google kann zudem Cookies setzen. Rechtsgrundlage ist Art. 6
+            Abs. 1 lit. f DSGVO (berechtigtes Interesse an einer einfachen Anreiseinformation).
+            Details findest du in der{" "}
+            <a
+              href="https://policies.google.com/privacy"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Datenschutzerklärung von Google
+            </a>
+            .
           </p>
 
           <h2>Speicherdauer</h2>

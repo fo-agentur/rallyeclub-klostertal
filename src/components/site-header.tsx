@@ -81,10 +81,11 @@ export function SiteHeader() {
         <button
           type="button"
           className="flex h-11 w-11 shrink-0 items-center justify-center border border-neutral-300 bg-white shadow-sm lg:hidden"
-          aria-label="Menue oeffnen"
+          aria-label={open ? "Menü schließen" : "Menü öffnen"}
+          aria-expanded={open}
           onClick={() => setOpen((v) => !v)}
         >
-          <span className="sr-only">Menue</span>
+          <span className="sr-only">Menü</span>
           <div className="space-y-1.5">
             {[
               open ? "translate-y-2 rotate-45" : "",
