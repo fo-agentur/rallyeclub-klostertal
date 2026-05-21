@@ -20,24 +20,25 @@ export function EventList({ events, emptyLabel }: { events: Event[]; emptyLabel?
         return (
           <li
             key={event.id}
-            className="group flex overflow-hidden border border-neutral-200 bg-white transition hover:border-racing/30 hover:shadow-card"
+            className="card-hover group flex overflow-hidden border border-neutral-200 bg-white hover:border-racing/30 hover:shadow-card"
           >
             {/* Date block */}
             <time
               dateTime={event.date}
-              className="flex w-20 shrink-0 flex-col items-center justify-center bg-ink py-6 md:w-24"
+              className="relative flex w-20 shrink-0 flex-col items-center justify-center overflow-hidden bg-ink py-6 md:w-24"
             >
-              <span className="font-display text-3xl leading-none tracking-wider text-white md:text-4xl">
+              <span className="absolute inset-0 -translate-y-full bg-racing transition-transform duration-500 ease-out group-hover:translate-y-0" aria-hidden />
+              <span className="relative font-display text-3xl leading-none tracking-wider text-white md:text-4xl">
                 {day}
               </span>
-              <span className="mt-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-neutral-400">
+              <span className="relative mt-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-neutral-400 transition-colors group-hover:text-white/85">
                 {month} {year}
               </span>
             </time>
 
             {/* Content */}
             <div className="flex flex-1 flex-col justify-center border-l border-neutral-100 px-6 py-5">
-              <h3 className="text-base font-semibold leading-snug text-ink md:text-lg">
+              <h3 className="text-base font-semibold leading-snug text-ink transition-colors group-hover:text-racing md:text-lg">
                 {event.title}
               </h3>
               {event.location && (
@@ -51,7 +52,7 @@ export function EventList({ events, emptyLabel }: { events: Event[]; emptyLabel?
             </div>
 
             {/* Racing accent stripe */}
-            <div className="hidden w-1 shrink-0 bg-racing opacity-0 transition group-hover:opacity-100 md:block" />
+            <div className="hidden w-1 shrink-0 origin-bottom scale-y-0 bg-racing transition-transform duration-300 ease-out group-hover:scale-y-100 md:block" />
           </li>
         );
       })}

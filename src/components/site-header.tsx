@@ -60,11 +60,18 @@ export function SiteHeader() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "whitespace-nowrap px-3 py-2 text-sm font-medium uppercase tracking-widest transition-colors duration-200",
+                  "group relative whitespace-nowrap px-3 py-2 text-sm font-medium uppercase tracking-widest transition-colors duration-200",
                   active ? "text-racing" : "text-ink hover:text-racing",
                 )}
               >
-                {item.label}
+                <span>{item.label}</span>
+                <span
+                  aria-hidden
+                  className={cn(
+                    "pointer-events-none absolute inset-x-3 -bottom-0.5 h-0.5 origin-left bg-racing transition-transform duration-300 ease-out",
+                    active ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100",
+                  )}
+                />
               </Link>
             );
           })}

@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const SLIDES = [
   {
@@ -20,19 +20,46 @@ const SLIDES = [
 ];
 
 const INTERVAL_MS = 6000;
+const RING_R = 18;
+const RING_C = 2 * Math.PI * RING_R;
 
 export function Hero() {
   const [index, setIndex] = useState(0);
+  const [progress, setProgress] = useState(0); // 0..1
+  const [speedlineKey, setSpeedlineKey] = useState(0);
+  const rafRef = useRef<number | null>(null);
+  const startRef = useRef<number>(0);
 
+  // Auto-advance with smooth progress ring
   useEffect(() => {
-    const id = window.setInterval(() => {
-      setIndex((i) => (i + 1) % SLIDES.length);
-    }, INTERVAL_MS);
-    return () => window.clearInterval(id);
-  }, []);
+    startRef.current = performance.now();
+    setProgress(0);
+
+    const tick = (now: number) => {
+      const p = Math.min(1, (now - startRef.current) / INTERVAL_MS);
+      setProgress(p);
+      if (p < 1) {
+        rafRef.current = requestAnimationFrame(tick);
+      } else {
+        setIndex((i) => (i + 1) % SLIDES.length);
+        setSpeedlineKey((k) => k + 1);
+      }
+    };
+    rafRef.current = requestAnimationFrame(tick);
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, [index]);
+
+  const goTo = (i: number) => {
+    if (i === index) return;
+    setIndex(i);
+    setSpeedlineKey((k) => k + 1);
+  };
 
   return (
     <section className="relative flex min-h-[calc(100svh-74px)] flex-col overflow-hidden bg-ink text-white lg:min-h-[calc(100svh-80px)]">
+      {/* Slide images */}
       <div className="absolute inset-0">
         {SLIDES.map((slide, i) => (
           <Image
@@ -42,13 +69,20 @@ export function Hero() {
             fill
             priority={i === 0}
             sizes="100vw"
-            className={`object-cover object-center transition-opacity duration-1000 ease-out motion-safe:animate-hero-zoom ${
+            className={`object-cover object-center transition-opacity duration-[1200ms] ease-out motion-safe:animate-hero-zoom ${
               i === index ? "opacity-100" : "opacity-0"
             }`}
           />
         ))}
       </div>
 
+      {/* Speedlines triggered on slide change */}
+      <div key={speedlineKey} className="pointer-events-none absolute inset-0 z-[5] motion-reduce:hidden">
+        <div className="hero-speedline run" />
+        <div className="hero-speedline hero-speedline-2 run" />
+      </div>
+
+      {/* Color & vignette overlays */}
       <div
         className="absolute inset-0"
         style={{
@@ -57,7 +91,6 @@ export function Hero() {
         }}
         aria-hidden
       />
-
       <div
         className="pointer-events-none absolute inset-0 opacity-60"
         style={{
@@ -67,10 +100,14 @@ export function Hero() {
         aria-hidden
       />
 
+      {/* Racing corner accent */}
+      <div className="race-corner top-right hidden sm:block" aria-hidden />
+
+      {/* Hero copy */}
       <div className="container-wide relative z-10 flex flex-1 flex-col justify-center py-16 md:py-24">
         <div className="max-w-4xl animate-fade-up">
           <div className="mb-5 inline-flex max-w-full items-center gap-3 rounded-full border border-white/15 bg-white/6 px-4 py-2 backdrop-blur-sm">
-            <span className="h-[2px] w-8 shrink-0 bg-racing" />
+            <span className="live-dot" aria-hidden />
             <span className="text-[10px] font-semibold uppercase leading-snug tracking-[0.18em] text-racing-100 sm:hidden">
               RCK · seit 1988
             </span>
@@ -104,28 +141,61 @@ export function Hero() {
         </div>
       </div>
 
+      {/* Bottom info bar with speedo progress ring + dot indicators */}
       <div className="relative z-10 border-t border-white/10 bg-black/28 backdrop-blur-sm">
         <div className="container-wide grid gap-3 py-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-white/72 sm:text-[11px] md:grid-cols-3 md:items-center">
           <span>↘ Tradition seit 1988</span>
+
           <div
-            className="flex items-center justify-start gap-2 md:justify-center"
+            className="flex items-center justify-start gap-3 md:justify-center"
             role="tablist"
             aria-label="Hero-Bilder"
           >
-            {SLIDES.map((_, i) => (
-              <button
-                key={i}
-                type="button"
-                role="tab"
-                aria-selected={i === index}
-                aria-label={`Bild ${i + 1} anzeigen`}
-                onClick={() => setIndex(i)}
-                className={`h-1.5 rounded transition-all ${
-                  i === index ? "w-7 bg-racing" : "w-1.5 bg-white/40 hover:bg-white/70"
-                }`}
-              />
-            ))}
+            {/* Speedo progress ring */}
+            <span className="relative inline-flex h-10 w-10 items-center justify-center motion-reduce:hidden">
+              <svg
+                viewBox="0 0 44 44"
+                className="absolute inset-0 h-full w-full -rotate-90"
+                aria-hidden
+              >
+                <circle cx="22" cy="22" r={RING_R} stroke="rgba(255,255,255,0.18)" strokeWidth="2" fill="none" />
+                <circle
+                  cx="22"
+                  cy="22"
+                  r={RING_R}
+                  stroke="currentColor"
+                  className="text-racing"
+                  strokeWidth="2"
+                  fill="none"
+                  strokeDasharray={RING_C}
+                  strokeDashoffset={RING_C * (1 - progress)}
+                  strokeLinecap="round"
+                  style={{ transition: "stroke-dashoffset 80ms linear" }}
+                />
+              </svg>
+              <span className="font-display text-[11px] leading-none text-white/85">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+            </span>
+
+            {/* Dot tabs */}
+            <span className="flex items-center gap-2">
+              {SLIDES.map((_, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  role="tab"
+                  aria-selected={i === index}
+                  aria-label={`Bild ${i + 1} anzeigen`}
+                  onClick={() => goTo(i)}
+                  className={`h-1.5 rounded transition-all duration-300 ${
+                    i === index ? "w-7 bg-racing" : "w-1.5 bg-white/40 hover:bg-white/70"
+                  }`}
+                />
+              ))}
+            </span>
           </div>
+
           <span className="md:text-right">Slalom · Rallye · Clubleben</span>
         </div>
       </div>

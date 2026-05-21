@@ -8,7 +8,7 @@ export function PostCard({ post, featured = false }: { post: Post; featured?: bo
   return (
     <Link
       href={`/news/${post.slug}`}
-      className="group flex flex-col border border-neutral-200 bg-white transition hover:-translate-y-0.5 hover:shadow-card"
+      className="card-hover group flex flex-col border border-neutral-200 bg-white hover:shadow-card"
     >
       <div
         className={cn(
@@ -21,7 +21,7 @@ export function PostCard({ post, featured = false }: { post: Post; featured?: bo
             src={post.cover_image}
             alt={post.title}
             fill
-            className="object-cover transition duration-500 group-hover:scale-105"
+            className="object-cover transition duration-[700ms] ease-out group-hover:scale-[1.07]"
             sizes={featured ? "(min-width: 1024px) 60vw, 100vw" : "(min-width: 768px) 40vw, 100vw"}
           />
         ) : (
@@ -29,6 +29,7 @@ export function PostCard({ post, featured = false }: { post: Post; featured?: bo
             <span className="font-display text-6xl tracking-widest opacity-40">RCK</span>
           </div>
         )}
+        <div className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/15 to-transparent transition-transform duration-[900ms] ease-out group-hover:translate-x-full motion-reduce:hidden" />
       </div>
       <div className="flex flex-1 flex-col p-6">
         <time
@@ -50,8 +51,8 @@ export function PostCard({ post, featured = false }: { post: Post; featured?: bo
             {post.excerpt}
           </p>
         )}
-        <span className="mt-auto pt-6 text-xs font-semibold uppercase tracking-widest text-neutral-400 transition group-hover:text-racing">
-          Weiterlesen →
+        <span className="mt-auto inline-flex items-center gap-1 pt-6 text-xs font-semibold uppercase tracking-widest text-neutral-400 transition-all group-hover:gap-2 group-hover:text-racing">
+          Weiterlesen <span aria-hidden>→</span>
         </span>
       </div>
     </Link>

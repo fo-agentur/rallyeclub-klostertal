@@ -135,12 +135,54 @@
   }
 }
 
-@keyframes heroZoom {
-  from {
-    transform: scale(1.02);
+@keyframes heroKenBurns {
+  0% {
+    transform: scale(1.04) translate3d(0, 0, 0);
   }
-  to {
-    transform: scale(1.08);
+  100% {
+    transform: scale(1.14) translate3d(-1.5%, -1%, 0);
+  }
+}
+
+@keyframes heroSpeedline {
+  0% {
+    transform: translateX(-110%) skewX(-18deg);
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.85;
+  }
+  100% {
+    transform: translateX(220%) skewX(-18deg);
+    opacity: 0;
+  }
+}
+
+@keyframes marqueeX {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes pulseRing {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(225, 6, 0, 0.55);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(225, 6, 0, 0);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
   }
 }
 
@@ -149,5 +191,175 @@
 }
 
 .motion-safe\:animate-hero-zoom {
-  animation: heroZoom 14s ease-out both;
+  animation: heroKenBurns 14s ease-out both;
+}
+
+.animate-marquee {
+  animation: marqueeX 32s linear infinite;
+}
+
+.animate-pulse-ring {
+  animation: pulseRing 2.2s ease-out infinite;
+}
+
+/* Speedline overlay shown briefly on hero slide change */
+.hero-speedline {
+  position: absolute;
+  top: 18%;
+  left: 0;
+  width: 28%;
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.95) 50%,
+    transparent 100%
+  );
+  pointer-events: none;
+  filter: drop-shadow(0 0 10px rgba(225, 6, 0, 0.6));
+}
+.hero-speedline.run {
+  animation: heroSpeedline 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.hero-speedline-2 {
+  top: 62%;
+  height: 2px;
+  animation-delay: 0.12s;
+}
+
+/* Reveal-on-scroll system */
+.reveal-base {
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+[data-reveal][data-visible="false"] {
+  opacity: 0;
+}
+[data-reveal="up"][data-visible="false"] {
+  transform: translateY(28px);
+}
+[data-reveal="left"][data-visible="false"] {
+  transform: translateX(-32px);
+}
+[data-reveal="right"][data-visible="false"] {
+  transform: translateX(32px);
+}
+[data-reveal="scale"][data-visible="false"] {
+  transform: scale(0.96);
+}
+[data-reveal="fade"][data-visible="false"] {
+  filter: blur(2px);
+}
+[data-reveal][data-visible="true"] {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+/* Racing corner accent — used on hero & dark sections */
+.race-corner {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  pointer-events: none;
+  opacity: 0.55;
+}
+.race-corner::before,
+.race-corner::after {
+  content: "";
+  position: absolute;
+  background: repeating-linear-gradient(
+    45deg,
+    theme(colors.racing.DEFAULT) 0 6px,
+    transparent 6px 12px
+  );
+}
+.race-corner.top-right {
+  top: 0;
+  right: 0;
+}
+.race-corner.top-right::before {
+  top: 18px;
+  right: 0;
+  width: 92px;
+  height: 2px;
+}
+.race-corner.top-right::after {
+  top: 0;
+  right: 18px;
+  width: 2px;
+  height: 92px;
+}
+
+/* Underline-grow link for hover affordance */
+.link-grow {
+  position: relative;
+  display: inline-block;
+}
+.link-grow::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  height: 2px;
+  width: 100%;
+  background: theme(colors.racing.DEFAULT);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.link-grow:hover::after,
+.link-grow:focus-visible::after {
+  transform: scaleX(1);
+}
+
+/* Card hover lift + shine */
+.card-hover {
+  transition:
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.45s ease;
+  will-change: transform;
+}
+.card-hover:hover {
+  transform: translateY(-4px);
+}
+
+/* Tiny "live" red dot */
+.live-dot {
+  position: relative;
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: theme(colors.racing.DEFAULT);
+}
+.live-dot::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 9999px;
+  border: 2px solid theme(colors.racing.DEFAULT);
+  opacity: 0.6;
+  animation: pulseRing 2s ease-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-base,
+  .motion-safe\:animate-fade-up,
+  .motion-safe\:animate-hero-zoom,
+  .animate-marquee,
+  .animate-pulse-ring,
+  .hero-speedline {
+    animation: none !important;
+    transition: none !important;
+  }
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
 }
