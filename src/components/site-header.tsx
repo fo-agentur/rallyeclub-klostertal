@@ -12,6 +12,7 @@ const NAV = [
   { href: "/news", label: "News" },
   { href: "/galerie", label: "Galerie" },
   { href: "/fahrer", label: "Fahrer" },
+  { href: "/mitglieder", label: "Mitglieder" },
   { href: "/kontakt", label: "Kontakt" },
 ];
 
