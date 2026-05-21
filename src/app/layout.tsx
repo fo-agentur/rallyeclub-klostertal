@@ -42,7 +42,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   return (
     <html lang="de-AT" className={`${inter.variable} ${bebas.variable}`}>
-      <body className="min-h-screen bg-white text-ink">
+      <body className="min-h-screen overflow-x-hidden bg-white text-ink">
         <SiteHeader />
         <main>{children}</main>
         <SiteFooter sponsors={sponsors} />

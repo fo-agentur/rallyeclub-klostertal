@@ -22,11 +22,11 @@ export default async function AdminImportPage() {
           Legacy-Inhalte importieren
         </h1>
         <p className="mt-4 text-sm leading-relaxed text-neutral-600">
-          Lädt alle Bilder von der alten Joomla-Seite (Galerie, Post-Cover, Personen und Sponsoren)
-          nach MinIO hoch und schreibt Beiträge, Alben, Fotos, Veranstaltungen, Personen und
-          Sponsoren frisch in die Datenbank. Bilder werden unter dem Prefix{" "}
-          <span className="font-mono text-xs text-neutral-800">legacy/</span> abgelegt; neue
-          User-Uploads sind davon nicht betroffen.
+          Importiert die vorbereiteten Legacy-Daten aus der alten Joomla-Seite in die Datenbank:
+          Beiträge, Alben, Fotos, Veranstaltungen, Personen, Sponsoren und Seitentexte. Wenn S3/MinIO
+          konfiguriert ist, werden die Bilder unter dem Prefix{" "}
+          <span className="font-mono text-xs text-neutral-800">legacy/</span> hochgeladen. Lokal kann
+          der Import auch die vorhandenen Public-Bildpfade verwenden.
         </p>
         <ImportForm />
       </div>

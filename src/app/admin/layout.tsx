@@ -48,6 +48,12 @@ export default async function AdminLayout({ children }: { children: React.ReactN
                   Texte
                 </a>
                 <a
+                  href="/admin/import"
+                  className="text-xs font-semibold uppercase tracking-widest text-neutral-500 hover:text-ink"
+                >
+                  Import
+                </a>
+                <a
                   href="/admin/passwort"
                   className="text-xs font-semibold uppercase tracking-widest text-neutral-500 hover:text-ink"
                 >

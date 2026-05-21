@@ -1,19 +1,20 @@
 import { SectionHeader } from "@/components/section-header";
 import { PortraitImage } from "@/components/portrait-image";
+import { BOARD, HONORARY, MEMBERS, type MemberGroup } from "@/content/members";
 import { listPeople } from "@/lib/queries/people";
-import type { Person } from "@/lib/db";
+import type { Member } from "@/content/members";
 
 export const metadata = {
   title: "Mitglieder",
   description: "Vorstand und Mitglieder des Rallyeclub Klostertal.",
 };
 
-function MemberCard({ name, role, photo }: Person) {
+function MemberCard({ name, role, photo }: Member) {
   return (
     <div className="group text-center">
       <div className="relative mx-auto aspect-square w-full overflow-hidden bg-neutral-100">
         <PortraitImage
-          src={photo ?? undefined}
+          src={photo}
           alt={name}
           imgClassName="transition duration-500 group-hover:scale-105"
         />
@@ -30,11 +31,11 @@ function MemberCard({ name, role, photo }: Person) {
   );
 }
 
-function Group({ label, members, columns }: { label: string; members: Person[]; columns: 3 | 4 }) {
+function Group({ group, columns }: { group: MemberGroup; columns: 3 | 4 }) {
   return (
     <div className="mt-12">
       <h2 className="mb-8 font-display text-2xl tracking-wider text-ink md:text-3xl">
-        {label}
+        {group.label}
       </h2>
       <div
         className={`grid gap-8 ${
@@ -43,8 +44,8 @@ function Group({ label, members, columns }: { label: string; members: Person[]; 
             : "grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
         }`}
       >
-        {members.map((m) => (
-          <MemberCard key={m.id} {...m} />
+        {group.members.map((m) => (
+          <MemberCard key={m.name} {...m} />
         ))}
       </div>
     </div>
@@ -54,9 +55,21 @@ function Group({ label, members, columns }: { label: string; members: Person[]; 
 export default async function MembersPage() {
   const people = await listPeople();
   const order = ["Vorstand", "Ehrenmitglieder", "Mitglieder"];
-  const groups = order
-    .map((label) => ({ label, members: people.filter((p) => p.group_label === label) }))
-    .filter((group) => group.members.length > 0);
+  const groups: MemberGroup[] =
+    people.length > 0
+      ? order
+          .map((label) => ({
+            label,
+            members: people
+              .filter((p) => p.group_label === label)
+              .map((p) => ({
+                name: p.name,
+                role: p.role ?? undefined,
+                photo: p.photo ?? undefined,
+              })),
+          }))
+          .filter((group) => group.members.length > 0)
+      : [BOARD, HONORARY, MEMBERS];
 
   return (
     <div className="section">
@@ -67,20 +80,9 @@ export default async function MembersPage() {
           description="Die Menschen hinter dem Rallyeclub Klostertal: Vorstand, Ehrenmitglieder und aktive Clubmitglieder."
         />
 
-        {groups.length === 0 ? (
-          <p className="mt-12 text-sm text-neutral-500">
-            Noch keine Mitglieder in der Datenbank.
-          </p>
-        ) : (
-          groups.map((group) => (
-            <Group
-              key={group.label}
-              label={group.label}
-              members={group.members}
-              columns={group.label === "Vorstand" ? 3 : 4}
-            />
-          ))
-        )}
+        {groups.map((group) => (
+          <Group key={group.label} group={group} columns={group.label === "Vorstand" ? 3 : 4} />
+        ))}
       </div>
     </div>
   );

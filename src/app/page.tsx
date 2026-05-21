@@ -37,7 +37,7 @@ export default async function HomePage() {
                 und eine lebendige Gemeinschaft. Auf dieser Seite findest du alles Relevante auf
                 einen Blick: Termine, News, Galerie und Kontakt.
               </p>
-              <div className="mt-7 flex flex-wrap gap-3">
+              <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                 <Link href="/news" className="btn-outline-inverse">Aktuelle News</Link>
                 <Link href="/galerie" className="btn-outline-inverse">Zur Galerie</Link>
               </div>
@@ -345,13 +345,13 @@ export default async function HomePage() {
                 ))}
               </div>
 
-              <div className="mt-9 flex flex-wrap gap-4">
+              <div className="mt-9 flex flex-col gap-4 sm:flex-row sm:flex-wrap">
                 <Link href="/kontakt" className="btn-primary">
                   Mitglied werden
                 </Link>
                 <Link
                   href="/kontakt"
-                  className="inline-flex items-center gap-2 border border-white/40 px-5 py-3 text-sm font-semibold uppercase tracking-widest text-white transition hover:border-white hover:bg-white/10"
+                  className="btn-outline-inverse"
                 >
                   Nachricht schreiben
                 </Link>
@@ -359,23 +359,35 @@ export default async function HomePage() {
             </div>
 
             {/* Map */}
-            <div className="relative aspect-[4/3] overflow-hidden border border-white/10">
+            <div className="relative min-h-[360px] overflow-hidden border border-white/10 bg-neutral-950 sm:min-h-[420px] lg:min-h-0 lg:aspect-[4/3]">
               <iframe
                 src="https://www.google.com/maps?q=Amerdonastra%C3%9Fe+22%2C+6820+Frastanz%2C+Austria&output=embed&z=14"
-                className="h-full w-full border-0"
-                style={{
-                  filter: "invert(0.92) hue-rotate(180deg) saturate(0.6) contrast(0.95)",
-                }}
+                className="absolute inset-0 hidden h-full w-full border-0 md:block"
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
                 allowFullScreen
                 title="Karte Rallyeclub Klostertal"
               />
+              <div className="flex h-full min-h-[360px] flex-col justify-between p-6 md:hidden">
+                <div>
+                  <div className="sec-kicker mb-4">
+                    <span className="text-racing">Anfahrt</span>
+                  </div>
+                  <h3 className="font-display text-4xl uppercase leading-none text-white">
+                    Vereinslokal
+                  </h3>
+                  <p className="mt-4 max-w-xs text-sm leading-relaxed text-neutral-300">
+                    Amerdonastraße 22, 6820 Frastanz. Öffnet direkt in Google Maps,
+                    damit die Navigation am Handy sauber läuft.
+                  </p>
+                </div>
+              </div>
+              <div className="pointer-events-none absolute inset-0 hidden bg-gradient-to-t from-black/35 via-transparent to-transparent md:block" />
               <a
                 href="https://www.google.com/maps/search/?api=1&query=Amerdonastra%C3%9Fe+22%2C+6820+Frastanz"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="absolute bottom-3 right-3 z-10 inline-flex items-center gap-2 bg-racing px-4 py-2.5 text-[11px] font-bold uppercase tracking-[0.15em] text-white shadow-xl transition hover:bg-racing-600"
+                className="absolute inset-x-4 bottom-4 z-10 inline-flex items-center justify-center gap-2 bg-racing px-4 py-3 text-center text-[11px] font-bold uppercase tracking-[0.14em] text-white shadow-xl transition hover:bg-racing-600 sm:left-auto sm:right-4 sm:w-auto"
               >
                 In Google Maps öffnen →
               </a>

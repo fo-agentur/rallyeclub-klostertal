@@ -1,15 +1,24 @@
 import Image from "next/image";
+import { SPONSOR_ENTRIES } from "@/config/sponsors";
 import { cn } from "@/lib/utils";
-import type { Sponsor } from "@/lib/db";
 
 interface SponsorStripProps {
-  sponsors: Sponsor[];
+  sponsors?: SponsorEntry[];
   compact?: boolean;
   variant?: "light" | "dark";
 }
 
+type SponsorEntry = {
+  id: number | string;
+  name: string;
+  tagline?: string | null;
+  website?: string | null;
+  logo?: string | null;
+};
+
 export function SponsorStrip({ sponsors, compact, variant = "light" }: SponsorStripProps) {
-  if (sponsors.length === 0) return null;
+  const entries: readonly SponsorEntry[] =
+    sponsors && sponsors.length > 0 ? sponsors : SPONSOR_ENTRIES;
 
   const card = cn(
     "flex min-h-[4rem] min-w-[10rem] flex-col items-center justify-center px-5 py-3 text-center transition",
@@ -28,7 +37,7 @@ export function SponsorStrip({ sponsors, compact, variant = "light" }: SponsorSt
           : "flex flex-wrap items-center justify-center gap-10 md:gap-16"
       }
     >
-      {sponsors.map((s) => {
+      {entries.map((s) => {
         const body = (
           <>
             {s.logo && (

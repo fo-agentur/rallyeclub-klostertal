@@ -26,8 +26,9 @@ export function ImportForm() {
           <span className="font-mono text-xs">pages</span>
         </p>
         <p className="mt-2">
-          Anschließend werden alle Legacy-Bilder aus dem Container nach MinIO/S3 hochgeladen und die
-          Tabellen neu mit den S3-URLs befüllt. Das ist eine einmalige Aktion.
+          Anschließend werden die Legacy-Bilder aus dem Container nach MinIO/S3 hochgeladen. Wenn S3
+          lokal nicht konfiguriert ist, werden die vorhandenen Public-Pfade verwendet. Das ist eine
+          einmalige Aktion.
         </p>
       </div>
 
@@ -41,7 +42,7 @@ export function ImportForm() {
         <div className="rounded-md border border-emerald-300 bg-emerald-50 p-4 text-sm text-emerald-900">
           <p className="font-semibold">Import erfolgreich.</p>
           <ul className="mt-2 grid grid-cols-2 gap-y-1 font-mono text-xs">
-            <li>Hochgeladene Dateien</li>
+            <li>Bild-/Datei-Referenzen</li>
             <li>{state.uploaded}</li>
             <li>Beiträge</li>
             <li>{state.posts}</li>

@@ -157,6 +157,11 @@ async function uploadLocal(
     log.push(`SKIP missing file: ${cleanPath}`);
     return null;
   }
+  if (!isS3Configured()) {
+    cache.set(localPath, cleanPath);
+    log.push(`LOCAL ${cleanPath}`);
+    return cleanPath;
+  }
   const key = s3KeyFor(cleanPath);
   const publicUrl = await putObject(key, found.buf, contentTypeFor(found.abs));
   cache.set(localPath, publicUrl);
@@ -164,7 +169,7 @@ async function uploadLocal(
   return publicUrl;
 }
 
-const LEGACY_PATH_RE = /\/(?:images|pdf|uploads)\/[^\s)"'<>]+/g;
+const LEGACY_PATH_RE = /\/(?:images|pdf|uploads|mitglieder|fahrer|sponsors)\/[^\s)"'<>]+/g;
 
 /** Collect every legacy asset path (`/images/...`, `/pdf/...`, `/uploads/...`) referenced in a text. */
 function extractLegacyPaths(text: string | null | undefined): string[] {
@@ -201,10 +206,21 @@ function firstMarkdownImageUrl(text: string | null | undefined): string | null {
   return m ? m[1] : null;
 }
 
+async function ensureDatabaseSchema(): Promise<void> {
+  const migrationsDir = path.join(process.cwd(), "db", "migrations");
+  const files = (await fs.readdir(migrationsDir))
+    .filter((file) => file.endsWith(".sql"))
+    .sort();
+
+  for (const file of files) {
+    const sqlText = await fs.readFile(path.join(migrationsDir, file), "utf8");
+    await query(sqlText);
+  }
+}
+
 export async function importLegacyAction(): Promise<ImportLegacyState> {
   if (!(await isAuthenticated())) return { status: "error", error: "Nicht angemeldet." };
   if (!isDatabaseConfigured()) return { status: "error", error: "DATABASE_URL fehlt." };
-  if (!isS3Configured()) return { status: "error", error: "S3_* ENV nicht vollständig." };
 
   const dataDir = path.join(process.cwd(), "scripts", "data");
   let postsJson: SeedPost[];
@@ -230,6 +246,15 @@ export async function importLegacyAction(): Promise<ImportLegacyState> {
   let skipped = 0;
 
   try {
+    await ensureDatabaseSchema();
+  } catch (e) {
+    return {
+      status: "error",
+      error: `Datenbank-Migrationen konnten nicht eingespielt werden: ${(e as Error).message}`,
+    };
+  }
+
+  try {
     // Step 1: collect every legacy asset referenced anywhere — covers, excerpts,
     // inline markdown in content (`/images/...`, `/pdf/...`, `/uploads/...`).
     const allPaths = new Set<string>();
@@ -249,6 +274,9 @@ export async function importLegacyAction(): Promise<ImportLegacyState> {
     for (const sponsor of sponsorsJson) {
       if (sponsor.logo) allPaths.add(sponsor.logo);
     }
+    for (const page of pagesJson) {
+      for (const ref of extractLegacyPaths(page.body)) allPaths.add(ref);
+    }
 
     for (const ref of allPaths) {
       const url = await uploadLocal(ref, urlCache, log);
@@ -257,7 +285,7 @@ export async function importLegacyAction(): Promise<ImportLegacyState> {
   } catch (e) {
     return {
       status: "error",
-      error: `Upload nach S3 fehlgeschlagen: ${(e as Error).message}. Hinweis: ${log.slice(-5).join(" | ")}`,
+      error: `Legacy-Dateien konnten nicht vorbereitet werden: ${(e as Error).message}. Hinweis: ${log.slice(-5).join(" | ")}`,
     };
   }
 
@@ -371,6 +399,12 @@ export async function importLegacyAction(): Promise<ImportLegacyState> {
 
     let pageCount = 0;
     for (const page of pagesJson) {
+      let body = page.body;
+      for (const ref of extractLegacyPaths(body)) {
+        const u = urlCache.get(ref);
+        if (u) body = replaceAllPaths(body, ref, u);
+      }
+
       await query(
         `INSERT INTO pages (slug, title, body, updated_at)
          VALUES ($1, $2, $3, now())
@@ -378,7 +412,7 @@ export async function importLegacyAction(): Promise<ImportLegacyState> {
            SET title = EXCLUDED.title,
                body = EXCLUDED.body,
                updated_at = now()`,
-        [page.slug, page.title, page.body],
+        [page.slug, page.title, body],
       );
       pageCount++;
     }
