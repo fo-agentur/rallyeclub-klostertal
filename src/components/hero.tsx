@@ -100,22 +100,9 @@ export function Hero() {
         aria-hidden
       />
 
-      {/* Racing corner accent */}
-      <div className="race-corner top-right hidden sm:block" aria-hidden />
-
       {/* Hero copy */}
       <div className="container-wide relative z-10 flex flex-1 flex-col justify-center py-16 md:py-24">
         <div className="max-w-4xl animate-fade-up">
-          <div className="mb-5 inline-flex max-w-full items-center gap-3 rounded-full border border-white/15 bg-white/6 px-4 py-2 backdrop-blur-sm">
-            <span className="live-dot" aria-hidden />
-            <span className="text-[10px] font-semibold uppercase leading-snug tracking-[0.18em] text-racing-100 sm:hidden">
-              RCK · seit 1988
-            </span>
-            <span className="hidden text-[11px] font-semibold uppercase tracking-[0.28em] text-racing-100 sm:inline">
-              Rallyeclub Klostertal · seit 1988 · Vorarlberg
-            </span>
-          </div>
-
           <h1
             className="max-w-5xl font-display text-[clamp(40px,8vw,112px)] uppercase leading-[0.92] tracking-wide text-white"
             style={{ textShadow: "0 8px 40px rgba(0,0,0,.35)" }}

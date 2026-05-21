@@ -328,25 +328,6 @@
   transform: translateY(-4px);
 }
 
-/* Tiny "live" red dot */
-.live-dot {
-  position: relative;
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  border-radius: 9999px;
-  background: theme(colors.racing.DEFAULT);
-}
-.live-dot::after {
-  content: "";
-  position: absolute;
-  inset: -4px;
-  border-radius: 9999px;
-  border: 2px solid theme(colors.racing.DEFAULT);
-  opacity: 0.6;
-  animation: pulseRing 2s ease-out infinite;
-}
-
 @media (prefers-reduced-motion: reduce) {
   .reveal-base,
   .motion-safe\:animate-fade-up,

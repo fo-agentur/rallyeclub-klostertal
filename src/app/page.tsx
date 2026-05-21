@@ -9,18 +9,46 @@ import { listPosts } from "@/lib/queries/posts";
 import { listUpcomingEvents } from "@/lib/queries/events";
 import { listAlbums } from "@/lib/queries/albums";
 import { listSponsors } from "@/lib/queries/sponsors";
+import { listDrivers } from "@/lib/queries/people";
 import { formatDate } from "@/lib/utils";
+import { DRIVERS } from "@/content/drivers";
 
 export default async function HomePage() {
-  const [posts, upcoming, allAlbums, sponsors] = await Promise.all([
+  const [posts, upcoming, allAlbums, sponsors, databaseDrivers] = await Promise.all([
     listPosts(3),
     listUpcomingEvents(3),
     listAlbums(),
     listSponsors(),
+    listDrivers(),
   ]);
   const albums = allAlbums.slice(0, 7);
   const leadPost = posts[0] ?? null;
   const smallPosts = posts.slice(1, 3);
+  const activeDriverCount = databaseDrivers.length > 0 ? databaseDrivers.length : DRIVERS.length;
+  const clubFacts = [
+    {
+      staticText: "Seit 1988",
+      lbl: "Verein",
+      text: "Motorsport und Clubleben im Klostertal.",
+    },
+    {
+      to: activeDriverCount,
+      suffix: "",
+      lbl: "Aktive Fahrer",
+      text: "Eigene Fahrer-Seite mit Fahrzeugen und Bildern.",
+    },
+    {
+      staticText: "St. Gallenkirch",
+      lbl: "Autoslalom",
+      text: "Der sportliche Fixpunkt im Jahreskalender.",
+      compact: true,
+    },
+    {
+      staticText: "Archiv",
+      lbl: "Galerie",
+      text: "Rennen, Ausfahrten und Clubmomente im Archiv.",
+    },
+  ];
 
   return (
     <>
@@ -33,12 +61,12 @@ export default async function HomePage() {
               <div className="rounded-[28px] border border-white/10 bg-white/5 p-8 backdrop-blur-sm">
                 <div className="sec-kicker !mb-4 text-racing-100 before:text-racing-100">Kurz gesagt</div>
                 <h2 className="max-w-3xl font-display text-[clamp(34px,4vw,58px)] uppercase leading-[0.95] text-white">
-                  Eine klare Vereinsseite statt digitalem Overload.
+                  Motorsport, Termine und Clubleben auf einen Blick.
                 </h2>
                 <p className="mt-4 max-w-2xl text-sm leading-7 text-white/76 md:text-base">
-                  Der Rallyeclub Klostertal steht für ehrlichen Motorsport, starke Veranstaltungen
-                  und eine lebendige Gemeinschaft. Auf dieser Seite findest du alles Relevante auf
-                  einen Blick: Termine, News, Galerie und Kontakt.
+                  Der Rallyeclub Klostertal verbindet aktive Fahrer, den Autoslalom in
+                  St. Gallenkirch und eine starke Vereinsgemeinschaft. Die Seite führt direkt zu
+                  den Bereichen, die im Alltag wirklich gebraucht werden.
                 </p>
                 <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                   <Link href="/news" className="btn-outline-inverse">Aktuelle News</Link>
@@ -48,23 +76,21 @@ export default async function HomePage() {
             </Reveal>
 
             <div className="grid grid-cols-2 gap-4">
-              {[
-                { to: 1988, suffix: "", lbl: "Gegründet" },
-                { to: 30, suffix: "+", lbl: "Slalom-Ausgaben" },
-                { staticText: "VBG", lbl: "Standort" },
-                { to: 100, suffix: "%", lbl: "Leidenschaft" },
-              ].map((s, i) => (
+              {clubFacts.map((s, i) => (
                 <Reveal key={s.lbl} variant="up" delay={i * 90}>
-                  <div className="card-hover rounded-[24px] border border-white/10 bg-white/5 p-6 hover:border-racing/40 hover:bg-white/8">
+                  <div className="card-hover min-h-[158px] border border-white/10 bg-white/5 p-5 hover:border-racing/40 hover:bg-white/8 md:p-6">
                     <CountUp
                       to={s.to ?? 0}
                       suffix={s.suffix}
                       staticText={s.staticText}
-                      className="font-display text-[46px] leading-[0.9] text-racing md:text-[56px]"
+                      className={`block font-display uppercase leading-[0.9] text-racing ${
+                        s.compact ? "text-[30px] md:text-[38px]" : "text-[42px] md:text-[52px]"
+                      }`}
                     />
                     <span className="mt-3 block text-[11px] font-semibold uppercase tracking-[0.2em] text-neutral-400">
                       {s.lbl}
                     </span>
+                    <p className="mt-3 text-xs leading-5 text-white/58">{s.text}</p>
                   </div>
                 </Reveal>
               ))}
