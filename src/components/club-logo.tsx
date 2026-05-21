@@ -4,9 +4,11 @@ import { cn } from "@/lib/utils";
 interface ClubLogoProps {
   className?: string;
   variant?: "icon" | "mark";
+  /** Set to true for above-the-fold uses (e.g. header). Defaults to false to avoid preloading footer logos. */
+  priority?: boolean;
 }
 
-export function ClubLogo({ className, variant = "icon" }: ClubLogoProps) {
+export function ClubLogo({ className, variant = "icon", priority = false }: ClubLogoProps) {
   const width = variant === "mark" ? 340 : 168;
   const height = Math.round((width * 69) / 522);
   const imageClassName =
@@ -27,7 +29,7 @@ export function ClubLogo({ className, variant = "icon" }: ClubLogoProps) {
         width={width}
         height={height}
         className={imageClassName}
-        priority
+        priority={priority}
       />
     </span>
   );

@@ -71,11 +71,23 @@ export function SponsorStrip({
   };
 
   if (marquee && entries.length > 2) {
+    const fadeFrom = variant === "dark" ? "from-ink" : "from-white";
+    const fadeTo = variant === "dark" ? "from-ink" : "from-white";
     return (
       <div className="group relative w-full overflow-hidden">
         {/* Fade edges */}
-        <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-white to-transparent" />
-        <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-white to-transparent" />
+        <div
+          className={cn(
+            "pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r to-transparent",
+            fadeFrom,
+          )}
+        />
+        <div
+          className={cn(
+            "pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l to-transparent",
+            fadeTo,
+          )}
+        />
         <div className="flex w-max animate-marquee items-stretch gap-10 motion-reduce:animate-none [.group:hover_&]:[animation-play-state:paused] md:gap-16">
           {entries.map((s) => renderItem(s, "-a"))}
           {entries.map((s) => renderItem(s, "-b"))}

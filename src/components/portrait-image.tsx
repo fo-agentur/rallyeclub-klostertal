@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
@@ -16,12 +17,19 @@ interface PortraitImageProps {
   src?: string;
   alt: string;
   imgClassName?: string;
+  /** Hint for next/image sizes prop. */
+  sizes?: string;
 }
 
 /**
- * Local portrait path; falls back to initials when file is missing (e.g. not in git).
+ * Portrait image with graceful initials fallback when src is missing or fails to load.
  */
-export function PortraitImage({ src, alt, imgClassName }: PortraitImageProps) {
+export function PortraitImage({
+  src,
+  alt,
+  imgClassName,
+  sizes = "(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw",
+}: PortraitImageProps) {
   const [failed, setFailed] = useState(false);
 
   if (!src || failed) {
@@ -35,14 +43,13 @@ export function PortraitImage({ src, alt, imgClassName }: PortraitImageProps) {
   }
 
   return (
-    <div className="absolute inset-0">
-      <img
-        src={src}
-        alt={alt}
-        loading="lazy"
-        className={cn("h-full w-full object-cover", imgClassName)}
-        onError={() => setFailed(true)}
-      />
-    </div>
+    <Image
+      src={src}
+      alt={alt}
+      fill
+      sizes={sizes}
+      className={cn("object-cover", imgClassName)}
+      onError={() => setFailed(true)}
+    />
   );
 }

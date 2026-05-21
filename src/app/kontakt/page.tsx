@@ -37,6 +37,7 @@ export default function ContactPage() {
               <div className="eyebrow">Telefon</div>
               <a
                 href="tel:+436643512997"
+                aria-label="Telefonnummer null sechs sechs vier, drei fünf eins zwei neun neun sieben"
                 className="mt-3 block text-base text-ink hover:text-racing"
               >
                 0664 / 35 12 997

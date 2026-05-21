@@ -49,7 +49,7 @@ export function SiteHeader() {
           className="flex min-w-0 items-center"
           aria-label="Rallyeclub Klostertal - Home"
         >
-          <ClubLogo className="shrink-0" variant="mark" />
+          <ClubLogo className="shrink-0" variant="mark" priority />
         </Link>
 
         <nav className="hidden min-w-0 items-center justify-end gap-1 lg:flex">
